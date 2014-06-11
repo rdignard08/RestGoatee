@@ -1,7 +1,9 @@
 RestGoatee
 ==========
 
-The non-boilerplate way to deserialize objects
+The non-boilerplate way to deserialize objects.
+
+This framework has no dependencies beyond the objective-C runtime; it has support for CoreData which can be enabled by importing the CoreData header before (or within) RG_Deserialization.h
 
 Using this framework, Let's look at turning a request to [iTunes Search API](https://itunes.apple.com/search?term=pink+floyd) into objects...
 
