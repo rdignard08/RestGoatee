@@ -5,9 +5,9 @@ The non-boilerplate way to deserialize objects
 
 Using this framework, Let's look at making a request to iTunes Search API.
 
-Model Header
-============
+## Model Header
 
+```objc
 @interface RGBook : NSObject
 
 @property (nonatomic, strong) NSString* artistName;
@@ -18,14 +18,17 @@ Model Header
 @property (nonatomic, strong) NSString* trackName;
 
 @end
+```
 
-Model Implementation
-====================
+## Model Implementation
 
+```objc
 @implementation RGBook @end //nothing!
+```
 
-In your API...
-==============
+## In your API...
+
+```
 {
   ...
   for (NSDictionary* dictionary in json) {
@@ -35,3 +38,4 @@ In your API...
   }
   ...
 }
+```
