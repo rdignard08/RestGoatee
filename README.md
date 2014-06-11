@@ -31,7 +31,7 @@ Using this framework, Let's look at turning a request to [iTunes Search API](htt
 
 ## In your API...
 
-```
+```objc
 void foo (id json, ...) { /* your callback when the API returns */
   //...
   for (NSDictionary* dictionary in json) {
@@ -42,3 +42,7 @@ void foo (id json, ...) { /* your callback when the API returns */
   //...
 }
 ```
+
+License
+=======
+BSD Simplied (2-clause)
