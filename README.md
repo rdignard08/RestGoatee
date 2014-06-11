@@ -3,7 +3,7 @@ RestGoatee
 
 The non-boilerplate way to deserialize objects
 
-Using this framework, Let's look at making a request to iTunes Search API.
+Using this framework, Let's look at turning a request to [iTunes Search API](https://itunes.apple.com/search?term=pink+floyd) into objects...
 
 ## Model Header
 
