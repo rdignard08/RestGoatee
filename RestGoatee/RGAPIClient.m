@@ -40,7 +40,7 @@ static NSURL* _sBaseURL;
     return _sManager;
 }
 
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls keyPath:(NSString*)path completion:(void(^)(id, NSError*))completion {
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self GET:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
         id target;
         if (path && ![path isEqualToString:@""]) {
@@ -62,18 +62,18 @@ static NSURL* _sBaseURL;
 }
 
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self GET:url parameters:parameters class:cls keyPath:nil completion:completion];
+    [self GET:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
 
 - (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self GET:url parameters:nil class:cls keyPath:path completion:completion];
+    [self GET:url parameters:nil keyPath:path class:cls completion:completion];
 }
 
 - (void) GET:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self GET:url parameters:nil class:cls keyPath:nil completion:completion];
+    [self GET:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls keyPath:(NSString*)path completion:(void(^)(id, NSError*))completion {
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self POST:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
         id target;
         if (path && ![path isEqualToString:@""]) {
@@ -99,15 +99,15 @@ static NSURL* _sBaseURL;
 }
 
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self POST:url parameters:parameters class:cls keyPath:nil completion:completion];
+    [self POST:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
 
 - (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self POST:url parameters:nil class:cls keyPath:path completion:completion];
+    [self POST:url parameters:nil keyPath:path class:cls completion:completion];
 }
 
 - (void) POST:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self POST:url parameters:nil class:cls keyPath:nil completion:completion];
+    [self POST:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
 @end
