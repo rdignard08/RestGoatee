@@ -217,6 +217,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     NSObject* ret;
 #ifdef _COREDATADEFINES_H
     if ([self isSubclassOfClass:[NSManagedObject class]]) {
+        NSAssert(context, @"A subclass of NSManagedObject must be created within a valid NSManagedObjectContext.");
         ret = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass(self) inManagedObjectContext:context];
     } else {
         ret = [[self alloc] init];
