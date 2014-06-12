@@ -68,13 +68,14 @@
  */
 - (void) setObject:(id)obj forKeyedSubscript:(id<NSCopying, NSObject>)key;
 
-#ifdef _COREDATADEFINES_H
 
 /**
  @abstract subclasses of `NSManagedObject` must use this method since they cannot be initialized without a context.
  */
+#ifdef _COREDATADEFINES_H
 + (instancetype) objectFromJSON:(NSDictionary*)json inContext:(NSManagedObjectContext*)context;
-
+#else
++ (instancetype) objectFromJSON:(NSDictionary*)json inContext:(id)context;
 #endif
 
 /**

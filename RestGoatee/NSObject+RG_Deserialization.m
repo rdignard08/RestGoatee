@@ -250,7 +250,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         [overrides addEntriesFromDictionary:[(id)ret overrideKeysForMapping]];
     }
     for (NSString* key in json) {
-        NSString* destination = key; //default behavior self.key = json[key]
+        NSString* destination = key; /* default behavior self.key = json[key] */
         if (overrides[key]) {
             destination = overrides[key];
         }
