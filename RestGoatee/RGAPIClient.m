@@ -88,9 +88,13 @@ static NSURL* _sBaseURL;
         } else {
             responseObject = [cls objectFromJSON:target inContext:nil];
         }
-        if (completion) completion(responseObject, nil);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion(responseObject, nil);
+        });
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion(nil, error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion(nil, error);
+        });
     }];
 }
 
