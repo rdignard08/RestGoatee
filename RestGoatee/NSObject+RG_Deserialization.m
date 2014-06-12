@@ -55,6 +55,22 @@ extern NSString* serverTypeKey() __attribute__ ((weak));
 NSString* trimLeadingAndTrailingQuotes(NSString*);
 NSString* stringForTypeEncoding(NSString*);
 NSDictionary* parsePropertyStruct(objc_property_t);
+NSString* snakeCaseToCamelCase(NSString*);
+
+NSString* snakeCaseToCamelCase(NSString* snakeString) {
+    NSMutableString* ret = [NSMutableString string];
+    NSArray* substrings = [snakeString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"-_"]];
+    BOOL first = YES;
+    for (__strong NSString* substring in substrings) {
+        if (first) {
+            first = NO;
+        } else {
+            substring = [substring capitalizedString];
+        }
+        [ret appendString:substring];
+    }
+    return ret;
+}
 
 static inline BOOL isCollectionObject(Class cls) {
     return [cls isSubclassOfClass:[NSSet class]] || [cls isSubclassOfClass:[NSArray class]] || [cls isSubclassOfClass:[NSOrderedSet class]];
@@ -226,12 +242,28 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     ret = [[self alloc] init];
 #endif
     NSArray* propertiesToFill = [(id)ret writableProperties];
+    NSMutableDictionary* overrides = [NSMutableDictionary dictionary];
+    if ([(id)[ret class] respondsToSelector:@selector(overrideKeysForMapping)]) {
+        [overrides addEntriesFromDictionary:[(id)[ret class] overrideKeysForMapping]];
+    }
+    if ([(id)ret respondsToSelector:@selector(overrideKeysForMapping)]) {
+        [overrides addEntriesFromDictionary:[(id)ret overrideKeysForMapping]];
+    }
     for (NSString* key in json) {
-        if([propertiesToFill[RG_PROPERTY_NAME] indexOfObject:key] != NSNotFound) { /* If this key isn't writable skip it */
+        NSString* destination = key; //default behavior self.key = json[key]
+        if (overrides[key]) {
+            destination = overrides[key];
+        }
+        if ([propertiesToFill[RG_PROPERTY_NAME] indexOfObject:destination] != NSNotFound) { /* If this key isn't writable skip it */
             @try {
-                [ret initProperty:key withJSONValue:json[key]];
+                [ret initProperty:destination withJSONValue:json[key]];
             }
             @catch (NSException* e) {} /* Should this fail the property is left alone */
+        } else {
+            destination = snakeCaseToCamelCase(key);
+            if ([propertiesToFill[RG_PROPERTY_NAME] indexOfObject:destination] != NSNotFound) { /* try the standard camelCase too */
+                [ret initProperty:destination withJSONValue:json[key]];
+            }
         }
     }
     return ret;
@@ -306,8 +338,23 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         if ([JSONValue isKindOfClass:[NSNumber class]]) JSONValue = [JSONValue stringValue];
         [self setValue:[[propertyType alloc] initWithString:JSONValue] forKey:key];
     } else if ([propertyType isSubclassOfClass:[NSDate class]]) { /* NSDate */
+        NSString* providedDateFormat;
+        if ([(id)[self class] respondsToSelector:@selector(dateFormatForKey:)]) {
+            providedDateFormat = [(id)[self class] dateFormatForKey:key];
+        }
+        if ([self respondsToSelector:@selector(dateFormatForKey:)]) {
+            providedDateFormat = [(id)self dateFormatForKey:key];
+        }
         NSDateFormatter* df = [[NSDateFormatter alloc] init];
         NSDate* ret;
+        if (providedDateFormat) {
+            df.dateFormat = providedDateFormat;
+            ret = [df dateFromString:JSONValue];
+            if (ret) {
+                self[key] = ret;
+                return;
+            }
+        }
         for (NSString* dateFormat in @[DATE_FORMAT_JAVASCRIPT, DATE_FORMAT_NSDATE, DATE_FORMAT_SIMPLE]) {
             df.dateFormat = dateFormat;
             ret = [df dateFromString:JSONValue];

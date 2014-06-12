@@ -23,6 +23,39 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol RestGoateeSerialization <NSObject>
+
+@optional
+/**
+ @abstract Provide any overrides for default mapping behavior here.  The returned dictionary should have keys and values of type NSString and should be read left-to-right JSON source to target key.  Any unspecified key(s) will use the default behavior for mapping.
+ 
+  Instance mappings will override class mappings if both are implemented.
+ */
++ (NSDictionary*) overrideKeysForMapping;
+
+/**
+ @abstract Provide any overrides for default mapping behavior here.  The returned dictionary should have keys and values of type NSString and should be read left-to-right JSON source to target key.  Any unspecified key(s) will use the default behavior for mapping.  You are highly encouraged to implement this with a `dispatch_once()` block.
+ 
+ Instance mappings will override class mappings if both are implemented.
+ */
+- (NSDictionary*) overrideKeysForMapping;
+
+/**
+ @abstract Provide a custom date format for use with the given property `key`.  See documentation for NSDate for proper formats.
+ 
+ Instance mappings will override class mappings if both are implemented.
+ */
++ (NSString*) dateFormatForKey:(NSString*)key;
+
+/**
+ @abstract Provide a custom date format for use with the given property `key`.  See documentation for NSDate for proper formats.
+ 
+ Instance mappings will override class mappings if both are implemented.
+ */
+- (NSString*) dateFormatForKey:(NSString*)key;
+
+@end
+
 @interface NSObject (RG_Deserialization)
 
 /**
