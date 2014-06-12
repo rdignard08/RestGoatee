@@ -13,7 +13,7 @@ Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `bash pod install
 Example
 =======
 Using this framework, Let's look at turning a request to [iTunes Search API](https://itunes.apple.com/search?term=pink+floyd) into objects...
-## Model Header
+## Model
 
 ```objc
 @interface RGBook : NSObject
@@ -27,9 +27,6 @@ Using this framework, Let's look at turning a request to [iTunes Search API](htt
 
 @end
 ```
-
-## Model Implementation
-
 ```objc
 @implementation RGBook @end //nothing!
 ```
