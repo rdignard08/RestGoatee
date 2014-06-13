@@ -25,6 +25,7 @@
 #import <objc/runtime.h>
 
 #define RG_PROPERTY_NAME @"name"
+#define RG_PROPERTY_CANONICAL_NAME @"canonically"
 #define RG_PROPERTY_STORAGE @"storage"
 #define RG_PROPERTY_ATOMIC_TYPE @"atomicity"
 #define RG_PROPERTY_ACCESS @"access"
@@ -56,6 +57,11 @@ NSString* trimLeadingAndTrailingQuotes(NSString*);
 NSString* stringForTypeEncoding(NSString*);
 NSDictionary* parsePropertyStruct(objc_property_t);
 NSString* snakeCaseToCamelCase(NSString*);
+NSString* canonicalForm(NSString*);
+
+inline NSString* canonicalForm(NSString* input) {
+    return [[[input componentsSeparatedByCharactersInSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]] componentsJoinedByString:@""] uppercaseString];
+}
 
 NSString* snakeCaseToCamelCase(NSString* snakeString) {
     NSMutableString* ret = [NSMutableString string];
@@ -88,9 +94,13 @@ NSString* stringForTypeEncoding(NSString* str) {
 }
 
 NSDictionary* parsePropertyStruct(objc_property_t property) {
+    
+    NSString* name = [NSString stringWithUTF8String:property_getName(property)];
+    
     /* These are default values if there is no specification */
     NSMutableDictionary* propertyDict = [@{
-                                           RG_PROPERTY_NAME : [NSString stringWithUTF8String:property_getName(property)],
+                                           RG_PROPERTY_NAME : name,
+                                           RG_PROPERTY_CANONICAL_NAME : canonicalForm(name),
                                            RG_PROPERTY_STORAGE : RG_PROPERTY_ASSIGN,
                                            RG_PROPERTY_ATOMIC_TYPE : RG_PROPERTY_ATOMIC,
                                            RG_PROPERTY_ACCESS : RG_PROPERTY_READWRITE } mutableCopy];
@@ -178,6 +188,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
             [ret addObject:parsePropertyStruct(properties[i])];
         }
         free(properties);
+        [stack removeLastObject];
     }
     return ret;
 }
@@ -193,11 +204,8 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 }
 
 - (NSString*) classStringForProperty:(NSString*)propertyName {
-    objc_property_t prop = class_getProperty([self class], [propertyName UTF8String]);
-    char* typeAttribute = property_copyAttributeValue(prop, "T");
-    NSString* typeString = trimLeadingAndTrailingQuotes([NSString stringWithUTF8String:typeAttribute]);
-    free(typeAttribute);
-    return typeString;
+    NSUInteger index = [self.__property_list__[RG_PROPERTY_NAME] indexOfObject:propertyName];
+    return index == NSNotFound ? nil : self.__property_list__[index][RG_PROPERTY_CLASS];
 }
 
 @end
@@ -241,7 +249,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 #else
     ret = [[self alloc] init];
 #endif
-    NSArray* propertiesToFill = [(id)ret writableProperties];
+    NSArray* propertiesToFill = [ret __property_list__];
     NSMutableDictionary* overrides = [NSMutableDictionary dictionary];
     if ([(id)[ret class] respondsToSelector:@selector(overrideKeysForMapping)]) {
         [overrides addEntriesFromDictionary:[(id)[ret class] overrideKeysForMapping]];
@@ -250,19 +258,18 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         [overrides addEntriesFromDictionary:[(id)ret overrideKeysForMapping]];
     }
     for (NSString* key in json) {
-        NSString* destination = key; /* default behavior self.key = json[key] */
-        if (overrides[key]) {
-            destination = overrides[key];
-        }
-        if ([propertiesToFill[RG_PROPERTY_NAME] indexOfObject:destination] != NSNotFound) { /* If this key isn't writable skip it */
+        if (overrides[key]) { /* The developer provided an override keypath */
             @try {
-                [ret initProperty:destination withJSONValue:json[key]];
+                [ret initProperty:overrides[key] withJSONValue:json[key]];
             }
             @catch (NSException* e) {} /* Should this fail the property is left alone */
-        } else {
-            destination = snakeCaseToCamelCase(key);
-            if ([propertiesToFill[RG_PROPERTY_NAME] indexOfObject:destination] != NSNotFound) { /* try the standard camelCase too */
-                [ret initProperty:destination withJSONValue:json[key]];
+        } else { /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
+            NSUInteger index;
+            if ((index = [propertiesToFill[RG_PROPERTY_CANONICAL_NAME] indexOfObject:canonicalForm(key)]) != NSNotFound) {
+                @try {
+                    [ret initProperty:propertiesToFill[index][RG_PROPERTY_NAME] withJSONValue:json[key]];
+                }
+                @catch (NSException* e) {} /* Should this fail the property is left alone */
             }
         }
     }
@@ -275,6 +282,8 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
  @discussion JSON types when deserialized from NSData are: NSNull, NSNumber (number or boolean), NSString, NSArray, NSDictionary
  */
 - (void) initProperty:(NSString*)key withJSONValue:(id)JSONValue {
+    /* Can't initialize the value of a property if the property doesn't exist */
+    if ([self.__property_list__[RG_PROPERTY_NAME] indexOfObject:key] == NSNotFound) return;
     if (!JSONValue || [JSONValue isKindOfClass:[NSNull class]]) {
         /* We don't care what the receiving type is since it's empty anyway
         The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
