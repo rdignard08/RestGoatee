@@ -35,7 +35,7 @@ static NSURL* _sBaseURL;
     static RGAPIClient* _sManager;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sManager = [[RGAPIClient alloc] initWithBaseURL:_sBaseURL];
+        _sManager = [[self alloc] initWithBaseURL:_sBaseURL];
     });
     return _sManager;
 }
