@@ -34,14 +34,10 @@ Using this framework, Let's look at turning a request to [iTunes Search API](htt
 ## In your API...
 
 ```objc
-void foo (id json, ...) { /* your callback when the API returns */
-  //...
-  for (NSDictionary* dictionary in json) {
-    //...
-    RGBook* book = [RGBook objectFromJSON:dictionary]; //and that's it!
-    //...
-  }
-  //...
+void foo (...) { /* your invocation of the API */
+  [self GET:@"/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGBook class] completion:^(id response, NSError* error) {
+    NSLog([response[0] class]); // outputs RGBook
+  }];
 }
 ```
 
