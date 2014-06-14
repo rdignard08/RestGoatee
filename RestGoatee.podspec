@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "RestGoatee"
-  s.version          = '0.4.0'
+  s.version          = '0.4.1'
   s.summary          = "An Easier dependency-free way to handle ReST objects."
   s.homepage         = "https://github.com/rdignard08/RestGoatee"
   s.license          = 'BSD'
@@ -10,6 +10,5 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '7.0'
   s.requires_arc = true
   s.source_files = 'RestGoatee'
-  s.requires_arc = true
   s.dependency 'AFNetworking'
 end
