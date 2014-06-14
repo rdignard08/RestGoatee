@@ -48,6 +48,8 @@ static NSURL* _sBaseURL;
     if (![response isKindOfClass:[NSDictionary class]] && ![response isKindOfClass:[NSArray class]]) return response;
     if (path && ![path isEqualToString:@""]) {
         target = response[path];
+    } else {
+        target = response;
     }
     if ([target isKindOfClass:[NSArray class]]) {
         NSMutableArray* ret = [NSMutableArray array];
