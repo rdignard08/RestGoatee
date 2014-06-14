@@ -40,22 +40,30 @@ static NSURL* _sBaseURL;
     return _sManager;
 }
 
+- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls {
+    id target;
+    if ([response isKindOfClass:[NSData class]] && [NSJSONSerialization isValidJSONObject:response]) {
+        response = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
+    }
+    if (![response isKindOfClass:[NSDictionary class]] && ![response isKindOfClass:[NSArray class]]) return response;
+    if (path && ![path isEqualToString:@""]) {
+        target = response[path];
+    }
+    if ([target isKindOfClass:[NSArray class]]) {
+        NSMutableArray* ret = [NSMutableArray array];
+        for (NSDictionary* obj in target) {
+            [ret addObject:[cls objectFromJSON:obj inContext:nil]];
+        }
+        response = [ret copy];
+    } else {
+        response = [cls objectFromJSON:target inContext:nil];
+    }
+    return response;
+}
+
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self GET:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        id target;
-        if (path && ![path isEqualToString:@""]) {
-            target = responseObject[path];
-        }
-        if ([target isKindOfClass:[NSArray class]]) {
-            NSMutableArray* ret = [NSMutableArray array];
-            for (NSDictionary* obj in target) {
-                [ret addObject:[cls objectFromJSON:obj inContext:nil]];
-            }
-            responseObject = [ret copy];
-        } else {
-            responseObject = [cls objectFromJSON:target inContext:nil];
-        }
-        if (completion) completion(responseObject, nil);
+        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
         if (completion) completion(nil, error);
     }];
@@ -75,21 +83,8 @@ static NSURL* _sBaseURL;
 
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self POST:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        id target;
-        if (path && ![path isEqualToString:@""]) {
-            target = responseObject[path];
-        }
-        if ([target isKindOfClass:[NSArray class]]) {
-            NSMutableArray* ret = [NSMutableArray array];
-            for (NSDictionary* obj in target) {
-                [ret addObject:[cls objectFromJSON:obj inContext:nil]];
-            }
-            responseObject = [ret copy];
-        } else {
-            responseObject = [cls objectFromJSON:target inContext:nil];
-        }
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion(responseObject, nil);
+            if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
         });
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -108,6 +103,57 @@ static NSURL* _sBaseURL;
 
 - (void) POST:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self POST:url parameters:nil keyPath:nil class:cls completion:completion];
+}
+
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self PUT:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
+        });
+    } failure:^(NSURLSessionDataTask* task, NSError* error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion(nil, error);
+        });
+    }];
+}
+
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self PUT:url parameters:parameters keyPath:nil class:cls completion:completion];
+}
+
+- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self PUT:url parameters:nil keyPath:path class:cls completion:completion];
+}
+
+- (void) PUT:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self PUT:url parameters:nil keyPath:nil class:cls completion:completion];
+}
+
+/**
+ Explicitly specify the destination class and request parameters.
+ */
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self DELETE:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
+        });
+    } failure:^(NSURLSessionDataTask* task, NSError* error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion(nil, error);
+        });
+    }];
+}
+
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self DELETE:url parameters:parameters keyPath:nil class:cls completion:completion];
+}
+
+- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self DELETE:url parameters:nil keyPath:path class:cls completion:completion];
+}
+
+- (void) DELETE:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
+    [self DELETE:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
 @end

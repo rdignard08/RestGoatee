@@ -43,4 +43,20 @@
 - (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
 - (void) POST:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
 
+/**
+ Explicitly specify the destination class and request parameters.
+ */
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) PUT:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
+
+/**
+ Explicitly specify the destination class and request parameters.
+ */
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) DELETE:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
+
 @end
