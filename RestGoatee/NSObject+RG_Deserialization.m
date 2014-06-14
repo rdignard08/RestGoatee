@@ -261,20 +261,25 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         [overrides addEntriesFromDictionary:[(id)ret overrideKeysForMapping]];
     }
     for (NSString* key in json) {
-        if (overrides[key]) { /* The developer provided an override keypath */
+        /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
+        NSUInteger index;
+        if ((index = [propertiesToFill[RG_PROPERTY_CANONICAL_NAME] indexOfObject:canonicalForm(key)]) != NSNotFound) {
             @try {
-                [ret initProperty:overrides[key] withJSONValue:json[key]];
+                [ret initProperty:propertiesToFill[index][RG_PROPERTY_NAME] withJSONValue:json[key]];
             }
             @catch (NSException* e) {} /* Should this fail the property is left alone */
-        } else { /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
-            NSUInteger index;
-            if ((index = [propertiesToFill[RG_PROPERTY_CANONICAL_NAME] indexOfObject:canonicalForm(key)]) != NSNotFound) {
-                @try {
-                    [ret initProperty:propertiesToFill[index][RG_PROPERTY_NAME] withJSONValue:json[key]];
-                }
-                @catch (NSException* e) {} /* Should this fail the property is left alone */
-            }
         }
+    }
+    for (NSString* key in overrides) { /* The developer provided an override keypath */
+        NSArray* keys = [key componentsSeparatedByString:@"."];
+        id jsonValue = json;
+        for (NSString* subkey in keys) {
+            jsonValue = jsonValue[subkey];
+        }
+        @try {
+            [ret initProperty:overrides[key] withJSONValue:jsonValue];
+        }
+        @catch (NSException* e) {} /* Should this fail the property is left alone */
     }
     return ret;
 }
