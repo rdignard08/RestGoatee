@@ -8,7 +8,7 @@ This framework has no dependencies beyond AFNetworking and the objective-C runti
 The optional `RestGoateeSerialization` protocol can be used to provide custom and non-standard mappings and dates from JSON to Objective-C.
 
 # Installation
-Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `bash pod install`
+Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`
 
 Example
 =======
