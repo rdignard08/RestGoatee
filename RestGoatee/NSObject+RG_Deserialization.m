@@ -44,6 +44,7 @@
 #define RG_PROPERTY_NONATOMIC @"nonatomic"
 
 #define DATE_FORMAT_JAVASCRIPT @"yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+#define DATE_FORMAT_ERIC @"yyyy-MM-dd'T'HH:mm:ssz"
 #define DATE_FORMAT_NSDATE @"yyyy-MM-dd HH:mm:ss ZZZZZ"
 #define DATE_FORMAT_SIMPLE @"yyyy-MM-dd"
 
@@ -364,7 +365,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                 return;
             }
         }
-        for (NSString* dateFormat in @[DATE_FORMAT_JAVASCRIPT, DATE_FORMAT_NSDATE, DATE_FORMAT_SIMPLE]) {
+        for (NSString* dateFormat in @[DATE_FORMAT_JAVASCRIPT, DATE_FORMAT_NSDATE, DATE_FORMAT_ERIC, DATE_FORMAT_SIMPLE]) {
             df.dateFormat = dateFormat;
             ret = [df dateFromString:JSONValue];
             if (ret) break;
