@@ -51,8 +51,10 @@
 #define RG_SERIALIZATION_TYPE_KEY @"__class"
 
 //RG_SERVER_TYPING /* Use this to turn on server driven type construction */
-extern NSString* classPrefix() __attribute__ ((weak));
-extern NSString* serverTypeKey() __attribute__ ((weak));
+extern const NSString* classPrefix() WEAK_IMPORT_ATTRIBUTE;
+extern const NSString* serverTypeKey() WEAK_IMPORT_ATTRIBUTE;
+//const NSString* (*_pClassPrefix)(void) = classPrefix;
+//const NSString* (*_pServerTypeKey)(void) = serverTypeKey;
 
 NSString* trimLeadingAndTrailingQuotes(NSString*);
 NSString* stringForTypeEncoding(NSString*);
