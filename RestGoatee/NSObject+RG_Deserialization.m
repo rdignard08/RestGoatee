@@ -165,13 +165,18 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
 @implementation NSObject (RG_Introspection)
 
-- (NSArray*) __property_list__ {
++ (NSArray*) __property_list__ {
     id ret = objc_getAssociatedObject(self, _cmd);
     if(!ret) {
-        objc_setAssociatedObject(self, _cmd, [self verbosePropertyList], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        return objc_getAssociatedObject(self, _cmd);
+        ret = [self verbosePropertyList];
+        objc_setAssociatedObject(self, _cmd, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        return ret;
     }
     return ret;
+}
+
+- (NSArray*) __property_list__ {
+    return [[self class] __property_list__];
 }
 
 + (NSArray*) classStack {
