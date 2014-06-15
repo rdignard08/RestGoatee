@@ -170,7 +170,6 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     if(!ret) {
         ret = [self verbosePropertyList];
         objc_setAssociatedObject(self, _cmd, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        return ret;
     }
     return ret;
 }
