@@ -83,4 +83,14 @@
  */
 + (instancetype) objectFromJSON:(NSDictionary*)json;
 
+/**
+ @abstract returns the receiver represented as a dictionary with its property names as keys and the values are the values of that property.
+ */
+- (NSDictionary*) dictionaryRepresentation;
+
+/**
+ @abstract returns the recevier serialized to JSON.
+ */
+- (NSData*) JsonRepresentation;
+
 @end

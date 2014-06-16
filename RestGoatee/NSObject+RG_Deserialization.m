@@ -81,8 +81,14 @@ NSString* snakeCaseToCamelCase(NSString* snakeString) {
     return ret;
 }
 
+static inline BOOL isInlineObject(Class cls) {
+    return [cls isSubclassOfClass:[NSDate class]] || [cls isSubclassOfClass:[NSString class]] || [cls isSubclassOfClass:[NSData class]] || [cls isSubclassOfClass:[NSNumber class]] || [cls isSubclassOfClass:[NSNull class]] || [cls isSubclassOfClass:[NSValue class]];
+}
 static inline BOOL isCollectionObject(Class cls) {
     return [cls isSubclassOfClass:[NSSet class]] || [cls isSubclassOfClass:[NSArray class]] || [cls isSubclassOfClass:[NSOrderedSet class]];
+}
+static inline BOOL isKeyedCollectionObject(Class cls) {
+    return [cls isSubclassOfClass:[NSDictionary class]];
 }
 
 NSString* trimLeadingAndTrailingQuotes(NSString* str) {
@@ -385,13 +391,43 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         
     /* At this point we've exhausted the supported foundation classes for the LHS... these handle sub-objects */
     } else if ([JSONValue isKindOfClass:[NSDictionary class]]) { /* lhs is some kind of sub object, since the source has keys */
-        [self setValue:[propertyType objectFromJSON:JSONValue] forKey:key];
+        self[key] = [propertyType objectFromJSON:JSONValue];
     } else if ([JSONValue isKindOfClass:[NSArray class]]) { /* single entry arrays are converted to an inplace object */
         id value = [JSONValue count] ? JSONValue[0] : nil;
         if (!value || [value isKindOfClass:propertyType]) {
-            [self setValue:value forKey:key];
+            self[key] = value;
         }
     }
+}
+
+- (NSDictionary*) dictionaryRepresentation {
+    id ret;
+    if (isInlineObject([self class])) {
+        ret = [self description];
+    } else if (isCollectionObject([self class])) {
+        ret = [[NSMutableArray alloc] initWithCapacity:[(id)self count]];
+        for (id object in (id)self) {
+            [ret addObject:[object dictionaryRepresentation]];
+        }
+    } else if (isKeyedCollectionObject([self class])) {
+        ret = [[NSMutableDictionary alloc] initWithCapacity:[(id)self count]];
+        for (id key in (id)self) {
+            ret[key] = self[key];
+        }
+        ret[RG_SERIALIZATION_TYPE_KEY] = NSStringFromClass([self class]);
+    } else {
+        ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
+        for (NSDictionary* property in self.__property_list__) {
+            ret[property[RG_PROPERTY_NAME]] = self[property[RG_PROPERTY_NAME]];
+        }
+        ret[RG_SERIALIZATION_TYPE_KEY] = NSStringFromClass([self class]);
+    }
+    
+    return ret;
+}
+
+- (NSData*) JsonRepresentation {
+    return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:0 error:nil];
 }
 
 @end
