@@ -419,7 +419,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
         for (NSDictionary* property in self.__property_list__) {
             if (self[property[RG_PROPERTY_NAME]]) {
-                ret[property[RG_PROPERTY_NAME]] = self[property[RG_PROPERTY_NAME]];
+                ret[property[RG_PROPERTY_NAME]] = [self[property[RG_PROPERTY_NAME]] dictionaryRepresentation];
             }
         }
         ret[RG_SERIALIZATION_TYPE_KEY] = NSStringFromClass([self class]);
@@ -437,7 +437,11 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         object = [object dictionaryRepresentation];
     }
     for (NSString* propertyName in object) {
-        [self initProperty:propertyName withJSONValue:object[propertyName]];
+        if ([propertyName isEqualToString:@"__property_list__"]) continue;
+        @try {
+            [self initProperty:propertyName withJSONValue:object[propertyName]];
+        }
+        @catch (NSException* e) {}
     }
     return self;
 }
