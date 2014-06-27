@@ -418,7 +418,9 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     } else {
         ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
         for (NSDictionary* property in self.__property_list__) {
-            ret[property[RG_PROPERTY_NAME]] = self[property[RG_PROPERTY_NAME]];
+            if (self[property[RG_PROPERTY_NAME]]) {
+                ret[property[RG_PROPERTY_NAME]] = self[property[RG_PROPERTY_NAME]];
+            }
         }
         ret[RG_SERIALIZATION_TYPE_KEY] = NSStringFromClass([self class]);
     }
