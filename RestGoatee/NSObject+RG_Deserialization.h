@@ -23,6 +23,10 @@
 
 #import <Foundation/Foundation.h>
 
+#ifdef _COREDATADEFINES_H
+    #import <CoreData/CoreData.h>
+#endif
+
 @protocol RestGoateeSerialization <NSObject>
 
 @optional
