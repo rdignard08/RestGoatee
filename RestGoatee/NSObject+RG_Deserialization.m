@@ -430,4 +430,14 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:0 error:nil];
 }
 
+- (id) extendWith:(id)object {
+    if (![object isKindOfClass:[NSDictionary class]]) {
+        object = [object dictionaryRepresentation];
+    }
+    for (NSString* propertyName in object) {
+        [self initProperty:propertyName withJSONValue:object[propertyName]];
+    }
+    return self;
+}
+
 @end

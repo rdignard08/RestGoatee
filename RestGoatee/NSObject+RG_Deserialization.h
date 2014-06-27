@@ -93,4 +93,10 @@
  */
 - (NSData*) JsonRepresentation;
 
+/**
+ @abstract merges two objects into a single object.  The return value is not a new object, but rather is the receiver augmented with the values in `object`.  
+ @return the receiving object extended with `object`; any conflicts will take `object`'s value as precedent.
+ */
+- (id) extendWith:(id)object;
+
 @end
