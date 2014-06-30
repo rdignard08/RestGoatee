@@ -24,37 +24,38 @@
 #import "NSObject+RG_Deserialization.h"
 #import <objc/runtime.h>
 
-#define RG_PROPERTY_NAME @"name"
-#define RG_PROPERTY_CANONICAL_NAME @"canonically"
-#define RG_PROPERTY_STORAGE @"storage"
-#define RG_PROPERTY_ATOMIC_TYPE @"atomicity"
-#define RG_PROPERTY_ACCESS @"access"
-#define RG_PROPERTY_BACKING @"ivar"
-#define RG_PROPERTY_GETTER @"getter"
-#define RG_PROPERTY_SETTER @"setter"
-#define RG_PROPERTY_READWRITE @"readwrite"
-#define RG_PROPERTY_READONLY @"readonly"
-#define RG_PROPERTY_ASSIGN @"assign"
-#define RG_PROPERTY_STRONG @"retain"
-#define RG_PROPERTY_COPY @"copy"
-#define RG_PROPERTY_WEAK @"weak"
-#define RG_PROPERTY_CLASS @"type"
-#define RG_PROPERTY_DYNAMIC @"__dynamic__"
-#define RG_PROPERTY_ATOMIC @"atomic"
-#define RG_PROPERTY_NONATOMIC @"nonatomic"
+const NSString* kRGPropertyName = @"name";
+const NSString* kRGPropertyCanonicalName = @"canonically";
+const NSString* kRGPropertyStorage = @"storage";
+const NSString* kRGPropertyAtomicType = @"atomicity";
+const NSString* kRGPropertyAccess = @"access";
+const NSString* kRGPropertyBacking = @"ivar";
+const NSString* kRGPropertyGetter = @"getter";
+const NSString* kRGPropertySetter = @"setter";
+const NSString* kRGPropertyReadwrite = @"readwrite";
+const NSString* kRGPropertyReadonly = @"readonly";
+const NSString* kRGPropertyAssign = @"assign";
+const NSString* kRGPropertyStrong = @"retain";
+const NSString* kRGPropertyCopy = @"copy";
+const NSString* kRGPropertyWeak = @"weak";
+const NSString* kRGPropertyClass = @"type";
+const NSString* kRGPropertyDynamic = @"__dynamic__";
+const NSString* kRGPropertyAtomic = @"atomic";
+const NSString* kRGPropertyNonatomic = @"nonatomic";
+
+const NSString* kRGSerializationKey = @"__class";
+const NSString* kRGPropertyListProperty = @"__property_list__";
 
 #define DATE_FORMAT_JAVASCRIPT @"yyyy-MM-dd'T'HH:mm:ssZZZZZ"
 #define DATE_FORMAT_ERIC @"yyyy-MM-dd'T'HH:mm:ssz"
 #define DATE_FORMAT_NSDATE @"yyyy-MM-dd HH:mm:ss ZZZZZ"
 #define DATE_FORMAT_SIMPLE @"yyyy-MM-dd"
 
-#define RG_SERIALIZATION_TYPE_KEY @"__class"
+const NSString* classPrefix(void) WEAK_IMPORT_ATTRIBUTE;
+const NSString* serverTypeKey(void) WEAK_IMPORT_ATTRIBUTE;
 
-//RG_SERVER_TYPING /* Use this to turn on server driven type construction */
-extern const NSString* classPrefix() WEAK_IMPORT_ATTRIBUTE;
-extern const NSString* serverTypeKey() WEAK_IMPORT_ATTRIBUTE;
-//const NSString* (*_pClassPrefix)(void) = classPrefix;
-//const NSString* (*_pServerTypeKey)(void) = serverTypeKey;
+const NSString* (*_pClassPrefix)(void) = classPrefix;
+const NSString* (*_pServerTypeKey)(void) = serverTypeKey;
 
 NSString* trimLeadingAndTrailingQuotes(NSString*);
 NSString* stringForTypeEncoding(NSString*);
@@ -108,11 +109,11 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     
     /* These are default values if there is no specification */
     NSMutableDictionary* propertyDict = [@{
-                                           RG_PROPERTY_NAME : name,
-                                           RG_PROPERTY_CANONICAL_NAME : canonicalForm(name),
-                                           RG_PROPERTY_STORAGE : RG_PROPERTY_ASSIGN,
-                                           RG_PROPERTY_ATOMIC_TYPE : RG_PROPERTY_ATOMIC,
-                                           RG_PROPERTY_ACCESS : RG_PROPERTY_READWRITE } mutableCopy];
+                                           kRGPropertyName : name,
+                                           kRGPropertyCanonicalName : canonicalForm(name),
+                                           kRGPropertyStorage : kRGPropertyAssign,
+                                           kRGPropertyAtomicType : kRGPropertyAtomic,
+                                           kRGPropertyAccess : kRGPropertyReadwrite } mutableCopy];
     /* Property attributes are exported as a raw char* separated by ',' */
     NSArray* attributes = [[NSString stringWithUTF8String:property_getAttributes(property)] componentsSeparatedByString:@","];
     /* The first character is the type encoding; the remaining is a value of some kind (if anything)
@@ -122,37 +123,37 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         NSString* value = [attribute substringWithRange:NSMakeRange(1, attribute.length - 1)];
         switch (heading) {
             case '&':
-                propertyDict[RG_PROPERTY_STORAGE] = RG_PROPERTY_STRONG;
+                propertyDict[kRGPropertyStorage] = kRGPropertyStrong;
                 break;
             case 'C':
-                propertyDict[RG_PROPERTY_STORAGE] = RG_PROPERTY_COPY;
+                propertyDict[kRGPropertyStorage] = kRGPropertyCopy;
                 break;
             case 'W':
-                propertyDict[RG_PROPERTY_STORAGE] = RG_PROPERTY_WEAK;
+                propertyDict[kRGPropertyStorage] = kRGPropertyWeak;
                 break;
             case 'V':
-                propertyDict[RG_PROPERTY_BACKING] = value;
+                propertyDict[kRGPropertyBacking] = value;
                 break;
             case 'D':
-                propertyDict[RG_PROPERTY_BACKING] = RG_PROPERTY_DYNAMIC;
+                propertyDict[kRGPropertyBacking] = kRGPropertyDynamic;
                 break;
             case 'N':
-                propertyDict[RG_PROPERTY_ATOMIC_TYPE] = RG_PROPERTY_NONATOMIC;
+                propertyDict[kRGPropertyAtomicType] = kRGPropertyNonatomic;
                 break;
             case 'T':
-                propertyDict[RG_PROPERTY_CLASS] = stringForTypeEncoding(value);
+                propertyDict[kRGPropertyClass] = stringForTypeEncoding(value);
                 break;
             case 't': /* TODO: I have no fucking idea what 'old-style' typing looks like */
-                propertyDict[RG_PROPERTY_CLASS] = value;
+                propertyDict[kRGPropertyClass] = value;
                 break;
             case 'R':
-                propertyDict[RG_PROPERTY_ACCESS] = RG_PROPERTY_READONLY;
+                propertyDict[kRGPropertyAccess] = kRGPropertyReadonly;
                 break;
             case 'G':
-                propertyDict[RG_PROPERTY_GETTER] = value;
+                propertyDict[kRGPropertyGetter] = value;
                 break;
             case 'S':
-                propertyDict[RG_PROPERTY_SETTER] = value;
+                propertyDict[kRGPropertySetter] = value;
         }
     }
     return propertyDict;
@@ -209,7 +210,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 - (NSArray*) writableProperties {
     NSMutableArray* ret = [NSMutableArray array];
     for (NSDictionary* property in self.__property_list__) {
-        if ([property[RG_PROPERTY_ACCESS] isEqual:RG_PROPERTY_READWRITE]) {
+        if (property[kRGPropertyAccess] == kRGPropertyReadwrite) {
             [ret addObject:property];
         }
     }
@@ -217,8 +218,8 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 }
 
 - (NSString*) classStringForProperty:(NSString*)propertyName {
-    NSUInteger index = [self.__property_list__[RG_PROPERTY_NAME] indexOfObject:propertyName];
-    return index == NSNotFound ? nil : self.__property_list__[index][RG_PROPERTY_CLASS];
+    NSUInteger index = [self.__property_list__[kRGPropertyName] indexOfObject:propertyName];
+    return index == NSNotFound ? nil : self.__property_list__[index][kRGPropertyClass];
 }
 
 @end
@@ -273,9 +274,9 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     for (NSString* key in json) {
         /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
         NSUInteger index;
-        if ((index = [propertiesToFill[RG_PROPERTY_CANONICAL_NAME] indexOfObject:canonicalForm(key)]) != NSNotFound) {
+        if ((index = [propertiesToFill[kRGPropertyCanonicalName] indexOfObject:canonicalForm(key)]) != NSNotFound) {
             @try {
-                [ret initProperty:propertiesToFill[index][RG_PROPERTY_NAME] withJSONValue:json[key]];
+                [ret initProperty:propertiesToFill[index][kRGPropertyName] withJSONValue:json[key]];
             }
             @catch (NSException* e) {} /* Should this fail the property is left alone */
         }
@@ -301,7 +302,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
  */
 - (void) initProperty:(NSString*)key withJSONValue:(id)JSONValue {
     /* Can't initialize the value of a property if the property doesn't exist */
-    if ([self.__property_list__[RG_PROPERTY_NAME] indexOfObject:key] == NSNotFound) return;
+    if ([self.__property_list__[kRGPropertyName] indexOfObject:key] == NSNotFound) return;
     if (!JSONValue || [JSONValue isKindOfClass:[NSNull class]]) {
         /* We don't care what the receiving type is since it's empty anyway
         The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
@@ -319,15 +320,10 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
             if ([obj isKindOfClass:[NSDictionary class]]) {
                 NSString* classString;
                 
-                #ifdef RG_SERVER_TYPING
-                if (&serverTypeKey != NULL && &classPrefix != NULL && serverTypeKey()) {
-                    classString = [(classPrefix() ?: @"") stringByAppendingString:[obj[serverTypeKey()] capitalizedString]];
-                } else
-                #endif
-                if (obj[RG_SERIALIZATION_TYPE_KEY]) {
-                    classString = obj[RG_SERIALIZATION_TYPE_KEY];
+                if (_pServerTypeKey != NULL && _pClassPrefix != NULL && _pServerTypeKey()) {
+                    classString = [(_pClassPrefix() ?: @"") stringByAppendingString:[obj[_pServerTypeKey()] capitalizedString]];
                 } else {
-                    continue; /* can't parse this entry in the array */
+                    classString = obj[kRGSerializationKey];
                 }
 
                 Class objectClass = NSClassFromString(classString);
@@ -414,15 +410,15 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         for (id key in (id)self) {
             ret[key] = self[key];
         }
-        ret[RG_SERIALIZATION_TYPE_KEY] = NSStringFromClass([self class]);
+        ret[kRGSerializationKey] = NSStringFromClass([self class]);
     } else {
         ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
         for (NSDictionary* property in self.__property_list__) {
-            if (self[property[RG_PROPERTY_NAME]]) {
-                ret[property[RG_PROPERTY_NAME]] = [self[property[RG_PROPERTY_NAME]] dictionaryRepresentation];
+            if (self[property[kRGPropertyName]]) {
+                ret[property[kRGPropertyName]] = [self[property[kRGPropertyName]] dictionaryRepresentation];
             }
         }
-        ret[RG_SERIALIZATION_TYPE_KEY] = NSStringFromClass([self class]);
+        ret[kRGSerializationKey] = NSStringFromClass([self class]);
     }
     
     return ret;
@@ -437,7 +433,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         object = [object dictionaryRepresentation];
     }
     for (NSString* propertyName in object) {
-        if ([propertyName isEqualToString:@"__property_list__"]) continue;
+        if ([propertyName isEqualToString:(NSString*)kRGPropertyListProperty]) continue;
         @try {
             [self initProperty:propertyName withJSONValue:object[propertyName]];
         }
