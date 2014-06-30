@@ -54,11 +54,19 @@ static NSURL* _sBaseURL;
     if ([target isKindOfClass:[NSArray class]]) {
         NSMutableArray* ret = [NSMutableArray array];
         for (NSDictionary* obj in target) {
-            [ret addObject:[cls objectFromJSON:obj inContext:nil]];
+            if (cls) {
+                [ret addObject:[cls objectFromJSON:obj inContext:nil]];
+            } else {
+                [ret addObject:obj];
+            }
         }
         response = [ret copy];
     } else {
-        response = [cls objectFromJSON:target inContext:nil];
+        if (cls) {
+            response = [cls objectFromJSON:target inContext:nil];
+        } else {
+            response = target;
+        }
     }
     return response;
 }
