@@ -51,11 +51,8 @@ const NSString* kRGPropertyListProperty = @"__property_list__";
 #define DATE_FORMAT_NSDATE @"yyyy-MM-dd HH:mm:ss ZZZZZ"
 #define DATE_FORMAT_SIMPLE @"yyyy-MM-dd"
 
-const NSString* classPrefix(void) WEAK_IMPORT_ATTRIBUTE;
-const NSString* serverTypeKey(void) WEAK_IMPORT_ATTRIBUTE;
-
-const NSString* (*_pClassPrefix)(void) = classPrefix;
-const NSString* (*_pServerTypeKey)(void) = serverTypeKey;
+const NSString* const (*_pClassPrefix)(void) = &classPrefix;
+const NSString* const (*_pServerTypeKey)(void) = &serverTypeKey;
 
 NSString* trimLeadingAndTrailingQuotes(NSString*);
 NSString* stringForTypeEncoding(NSString*);

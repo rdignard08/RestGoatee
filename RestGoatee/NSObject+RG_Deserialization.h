@@ -27,6 +27,24 @@
     #import <CoreData/CoreData.h>
 #endif
 
+/**
+ Optionally use this function to provide your project's class prefix.
+ 
+ XYZMyClass -> return @"XYZ"
+ 
+ */
+extern const NSString* const classPrefix() __attribute__((weak));
+
+/**
+ Optionally use this function to provide your server's type keyPath.
+ 
+ {
+ "type" : "message"
+ "message" : "hello!"
+ }
+ */
+extern const NSString* const serverTypeKey() __attribute__((weak));
+
 @protocol RestGoateeSerialization <NSObject>
 
 @optional

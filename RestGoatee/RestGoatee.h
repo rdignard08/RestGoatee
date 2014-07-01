@@ -21,23 +21,5 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-/**
- Optionally use this function to provide your project's class prefix.
- 
- XYZMyClass -> return @"XYZ"
- 
- */
-extern const NSString* classPrefix() WEAK_IMPORT_ATTRIBUTE;
-
-/**
- Optionally use this function to provide your server's type keyPath.
- 
- {
- "type" : "message"
- "message" : "hello!"
- }
- */
-extern const NSString* serverTypeKey() WEAK_IMPORT_ATTRIBUTE;
-
 #import "NSObject+RG_Deserialization.h"
 #import "RGAPIClient.h"
