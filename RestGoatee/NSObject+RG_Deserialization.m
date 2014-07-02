@@ -240,26 +240,23 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 }
 
 + (instancetype) objectFromJSON:(NSDictionary*)json {
-#ifdef _COREDATADEFINES_H
-    if ([self isSubclassOfClass:[NSManagedObject class]]) {
+    if ([self isSubclassOfClass:[NSClassFromString(@"NSManagedObject") class]]) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Managed object subclasses must be initialized within a managed object context.  Use +objectFromJSON:inContext:" userInfo:nil];
     }
-#endif
     return [self objectFromJSON:json inContext:nil];
 }
 
 + (instancetype) objectFromJSON:(NSDictionary*)json inContext:(id)context {
     NSObject* ret;
-#ifdef _COREDATADEFINES_H
-    if ([self isSubclassOfClass:[NSManagedObject class]]) {
+    if ([self isSubclassOfClass:[NSClassFromString(@"NSManagedObject") class]]) {
         NSAssert(context, @"A subclass of NSManagedObject must be created within a valid NSManagedObjectContext.");
-        ret = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass(self) inManagedObjectContext:context];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+        ret = [NSClassFromString(@"NSEntityDescription") performSelector:@selector(insertNewObjectForEntityForName:inManagedObjectContext:) withObject:NSStringFromClass(self) withObject:context];
+#pragma clang diagnostic pop
     } else {
         ret = [[self alloc] init];
     }
-#else
-    ret = [[self alloc] init];
-#endif
     NSArray* propertiesToFill = [ret __property_list__];
     NSMutableDictionary* overrides = [NSMutableDictionary dictionary];
     if ([(id)[ret class] respondsToSelector:@selector(overrideKeysForMapping)]) {

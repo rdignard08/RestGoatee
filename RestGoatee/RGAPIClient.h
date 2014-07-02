@@ -22,6 +22,17 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <AFNetworking/AFNetworking.h>
 
+/**
+ Use this function to provide an NSManagedObjectContext for the given object to be inserted into of the given type `cls`.
+ 
+ @note You are allowed to return nil to not use coredata.
+ */
+#ifdef _COREDATADEFINES_H
+extern NSManagedObjectContext* contextForManagedObject(NSDictionary* object, Class cls) __attribute__((weak));
+#else
+extern id contextForManagedObject(NSDictionary* object, Class cls) __attribute__((weak));
+#endif
+
 @interface RGAPIClient : AFHTTPSessionManager
 
 + (void) setDefaultBaseURL:(NSURL*)url;

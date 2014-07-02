@@ -23,10 +23,6 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef _COREDATADEFINES_H
-    #import <CoreData/CoreData.h>
-#endif
-
 /**
  Optionally use this function to provide your project's class prefix.
  
