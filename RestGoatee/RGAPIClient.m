@@ -24,11 +24,11 @@
 #import "RGAPIClient.h"
 #import "NSObject+RG_Deserialization.h"
 
-id(*__getContext)(NSDictionary*, Class) = &contextForManagedObject;
-
-id __noContextFallBack (NSDictionary* d, Class c) { return nil; }
-
 @implementation RGAPIClient
+
++ (NSManagedObjectContext*) contextForManagedObject:(NSDictionary*)object ofType:(Class)cls {
+    return nil;
+}
 
 static NSURL* _sBaseURL;
 + (void) setDefaultBaseURL:(NSURL*)url {
@@ -39,9 +39,6 @@ static NSURL* _sBaseURL;
     static RGAPIClient* _sManager;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if (!__getContext) {
-            __getContext = &__noContextFallBack;
-        }
         _sManager = [[self alloc] initWithBaseURL:_sBaseURL];
     });
     return _sManager;
@@ -62,7 +59,11 @@ static NSURL* _sBaseURL;
         NSMutableArray* ret = [NSMutableArray array];
         for (NSDictionary* obj in target) {
             if (cls) {
-                [ret addObject:[cls objectFromJSON:obj inContext:contextForManagedObject(obj, cls)]];
+                if ([cls isSubclassOfClass:NSClassFromString(@"NSManagedObject")]) {
+                     [ret addObject:[cls objectFromJSON:obj inContext:nil]];
+                } else {
+                    [ret addObject:[cls objectFromJSON:obj inContext:[[self class] contextForManagedObject:obj ofType:cls]]];
+                }
             } else {
                 [ret addObject:obj];
             }
@@ -70,7 +71,11 @@ static NSURL* _sBaseURL;
         response = [ret copy];
     } else {
         if (cls) {
-            response = [cls objectFromJSON:target inContext:__getContext(target, cls)];
+            if ([cls isSubclassOfClass:NSClassFromString(@"NSManagedObject")]) {
+                response = [cls objectFromJSON:target inContext:nil];
+            } else {
+                response = [cls objectFromJSON:target inContext:[[self class] contextForManagedObject:target ofType:cls]];
+            }
         } else {
             response = target;
         }

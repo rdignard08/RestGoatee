@@ -41,6 +41,8 @@ extern const NSString* const classPrefix() __attribute__((weak));
  */
 extern const NSString* const serverTypeKey() __attribute__((weak));
 
+@class NSManagedObjectContext;
+
 @protocol RestGoateeSerialization <NSObject>
 
 @optional
@@ -90,11 +92,7 @@ extern const NSString* const serverTypeKey() __attribute__((weak));
 /**
  @abstract subclasses of `NSManagedObject` must use this method since they cannot be initialized without a context.
  */
-#ifdef _COREDATADEFINES_H
 + (instancetype) objectFromJSON:(NSDictionary*)json inContext:(NSManagedObjectContext*)context;
-#else
-+ (instancetype) objectFromJSON:(NSDictionary*)json inContext:(id)context;
-#endif
 
 /**
  @abstract the receiver (the Class object) which receives this method will attempt to initialize an instance of this class with properties assigned from json.
