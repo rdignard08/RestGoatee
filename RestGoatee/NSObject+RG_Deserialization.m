@@ -185,6 +185,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
 @property (nonatomic, strong, readonly) NSArray* __property_list__;
 
+- (NSArray*) keys;
 - (NSArray*) verbosePropertyList;
 - (NSArray*) writableProperties;
 - (NSString*) classStringForProperty:(NSString*)propertyName;
@@ -339,10 +340,15 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
             if ([obj isKindOfClass:[NSDictionary class]]) {
                 NSString* classString;
                 
-                if (_pServerTypeKey != NULL && _pClassPrefix != NULL && _pServerTypeKey()) {
-                    classString = [(_pClassPrefix() ?: @"") stringByAppendingString:[obj[_pServerTypeKey()] capitalizedString]];
-                } else {
-                    classString = obj[kRGSerializationKey];
+                if (_pServerTypeKey != NULL && _pClassPrefix != NULL) {
+                    const NSString* prefix = _pClassPrefix() ?: @"";
+                    const NSString* typeKey = _pServerTypeKey() ?: @"";
+                    const NSString* serverType = [obj[typeKey] capitalizedString] ?: @"";
+                    classString = [prefix stringByAppendingString:(NSString*)serverType];
+                } else if (!classString) {
+                    if ([[obj keys] indexOfObject:kRGSerializationKey] != NSNotFound) {
+                        classString = obj[kRGSerializationKey];
+                    }
                 }
 
                 Class objectClass = NSClassFromString(classString);
