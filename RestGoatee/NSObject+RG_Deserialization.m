@@ -62,11 +62,11 @@ NSString* canonicalForm(NSString*);
 
 NSString* canonicalForm(NSString* input) {
     NSString* output;
-    uint32_t inputLength = input.length + 1; /* +1 for the char* nul terminator */
+    size_t inputLength = input.length + 1; /* +1 for the char* nul terminator */
     char* inBuffer = calloc(inputLength, 1);
     [input getCString:inBuffer maxLength:inputLength encoding:NSUTF8StringEncoding];
     char* outBuffer = calloc(inputLength, 1);
-    uint32_t i = 0, j = 0;
+    size_t i = 0, j = 0;
     for (; i != inputLength; i++) {
         char c = inBuffer[i];
         if (c > 47 && c < 58) { /* a digit; no change */
@@ -193,6 +193,16 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 @end
 
 @implementation NSObject (RG_Introspection)
+
+/**
+ @return a list of the keys/properties of the receiving object.
+ */
+- (NSArray*) keys {
+    if ([self isKindOfClass:[NSDictionary class]]) {
+        return [(id)self allKeys];
+    }
+    return self.__property_list__[kRGPropertyName];
+}
 
 + (NSArray*) __property_list__ {
     id ret = objc_getAssociatedObject(self, _cmd);
@@ -421,14 +431,16 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     }
 }
 
-- (NSDictionary*) dictionaryRepresentation {
+- (id) __dictionaryHelper:(NSMutableArray*)pointersSeen {
+    if ([pointersSeen indexOfObject:self] != NSNotFound) return nil;
+    [pointersSeen addObject:self];
     id ret;
     if (isInlineObject([self class])) {
         ret = [self description];
     } else if (isCollectionObject([self class])) {
         ret = [[NSMutableArray alloc] initWithCapacity:[(id)self count]];
         for (id object in (id)self) {
-            [ret addObject:[object dictionaryRepresentation]];
+            [ret addObject:[object __dictionaryHelper:pointersSeen]];
         }
     } else if (isKeyedCollectionObject([self class])) {
         ret = [[NSMutableDictionary alloc] initWithCapacity:[(id)self count]];
@@ -440,27 +452,21 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
         for (NSDictionary* property in self.__property_list__) {
             if (self[property[kRGPropertyName]]) {
-                ret[property[kRGPropertyName]] = [self[property[kRGPropertyName]] dictionaryRepresentation];
+                ret[property[kRGPropertyName]] = [self[property[kRGPropertyName]] __dictionaryHelper:pointersSeen];
             }
         }
         ret[kRGSerializationKey] = NSStringFromClass([self class]);
     }
-    
     return ret;
+}
+
+- (NSDictionary*) dictionaryRepresentation {
+    NSMutableArray* pointersSeen = [NSMutableArray array];
+    return [self __dictionaryHelper:pointersSeen];
 }
 
 - (NSData*) JsonRepresentation {
     return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:0 error:nil];
-}
-
-/**
- @return a list of the keys/properties of the receiving object.
- */
-- (NSArray*) keys {
-    if ([self isKindOfClass:[NSDictionary class]]) {
-        return [(id)self allKeys];
-    }
-    return self.__property_list__[kRGPropertyName];
 }
 
 - (id) extendWith:(id)object {
