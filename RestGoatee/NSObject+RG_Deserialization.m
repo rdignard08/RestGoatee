@@ -432,8 +432,8 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 }
 
 - (id) __dictionaryHelper:(NSMutableArray*)pointersSeen {
-    if ([pointersSeen indexOfObject:self] != NSNotFound) return nil;
-    [pointersSeen addObject:self];
+    if ([pointersSeen indexOfObject:self] != NSNotFound) return [NSNull null];
+    /* [pointersSeen addObject:self]; // disable DAG for now */
     id ret;
     if (isInlineObject([self class])) {
         ret = [self description];
