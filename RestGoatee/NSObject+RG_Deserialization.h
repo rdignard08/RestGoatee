@@ -29,7 +29,7 @@
  XYZMyClass -> return @"XYZ"
  
  */
-extern const NSString* const classPrefix() __attribute__((weak));
+extern const NSString* const classPrefix(void) __attribute__((weak));
 
 /**
  Optionally use this function to provide your server's type keyPath.
@@ -39,7 +39,7 @@ extern const NSString* const classPrefix() __attribute__((weak));
  "message" : "hello!"
  }
  */
-extern const NSString* const serverTypeKey() __attribute__((weak));
+extern const NSString* const serverTypeKey(void) __attribute__((weak));
 
 @class NSManagedObjectContext;
 
