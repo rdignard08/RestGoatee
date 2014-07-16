@@ -59,11 +59,7 @@ static NSURL* _sBaseURL;
         NSMutableArray* ret = [NSMutableArray array];
         for (NSDictionary* obj in target) {
             if (cls) {
-                if ([cls isSubclassOfClass:NSClassFromString(@"NSManagedObject")]) {
-                     [ret addObject:[cls objectFromJSON:obj inContext:nil]];
-                } else {
-                    [ret addObject:[cls objectFromJSON:obj inContext:[[self class] contextForManagedObject:obj ofType:cls]]];
-                }
+                [ret addObject:[cls objectFromJSON:obj inContext:[[self class] contextForManagedObject:obj ofType:cls]]];
             } else {
                 [ret addObject:obj];
             }
@@ -71,11 +67,7 @@ static NSURL* _sBaseURL;
         response = [ret copy];
     } else {
         if (cls) {
-            if ([cls isSubclassOfClass:NSClassFromString(@"NSManagedObject")]) {
-                response = [cls objectFromJSON:target inContext:nil];
-            } else {
-                response = [cls objectFromJSON:target inContext:[[self class] contextForManagedObject:target ofType:cls]];
-            }
+            response = [cls objectFromJSON:target inContext:[[self class] contextForManagedObject:target ofType:cls]];
         } else {
             response = target;
         }
