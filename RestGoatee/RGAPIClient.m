@@ -24,6 +24,18 @@
 #import "RGAPIClient.h"
 #import "NSObject+RG_Deserialization.h"
 
+const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
+
+static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask* task) {
+    NSError* modifiedError = error;
+    if ([[task response] respondsToSelector:@selector(statusCode)]) {
+        NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
+        userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
+        modifiedError = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:userInfo];
+    }
+    return modifiedError;
+}
+
 @implementation RGAPIClient
 
 + (NSManagedObjectContext*) contextForManagedObject:(NSDictionary*)object ofType:(Class)cls {
@@ -79,7 +91,7 @@ static NSURL* _sBaseURL;
     [self GET:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
         if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion(nil, error);
+        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
     }];
 }
 
@@ -97,13 +109,9 @@ static NSURL* _sBaseURL;
 
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self POST:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
-        });
+        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion(nil, error);
-        });
+        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
     }];
 }
 
@@ -121,13 +129,9 @@ static NSURL* _sBaseURL;
 
 - (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self PUT:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
-        });
+        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion(nil, error);
-        });
+        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
     }];
 }
 
@@ -148,13 +152,9 @@ static NSURL* _sBaseURL;
  */
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
     [self DELETE:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
-        });
+        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) completion(nil, error);
-        });
+        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
     }];
 }
 
