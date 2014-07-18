@@ -103,6 +103,10 @@ NSString* snakeCaseToCamelCase(NSString* snakeString) {
     return ret;
 }
 
+static inline BOOL isClassObject(id object) {
+    return object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
+}
+
 static inline BOOL isInlineObject(Class cls) {
     return [cls isSubclassOfClass:[NSDate class]] || [cls isSubclassOfClass:[NSString class]] || [cls isSubclassOfClass:[NSData class]] || [cls isSubclassOfClass:[NSNumber class]] || [cls isSubclassOfClass:[NSNull class]] || [cls isSubclassOfClass:[NSValue class]];
 }
@@ -435,7 +439,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     if ([pointersSeen indexOfObject:self] != NSNotFound) return [NSNull null];
     /* [pointersSeen addObject:self]; // disable DAG for now */
     id ret;
-    if (isInlineObject([self class]) || [NSStringFromClass(NSClassFromString([self description])) isEqualToString:NSStringFromClass([self class])]) {
+    if (isInlineObject([self class]) || isClassObject(self)) {
         ret = [self description];
     } else if (isCollectionObject([self class])) {
         ret = [[NSMutableArray alloc] initWithCapacity:[(id)self count]];
