@@ -1,4 +1,4 @@
-/* Copyright (c) 6/10/14, Ryan Dignard
+/* Copyright (c) 7/7/14, Ryan Dignard
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -20,9 +20,13 @@
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-
-extern const NSString* const kRGHTTPStatusCode; /* Key returned as part of HTTP related errors */
-
-#import "NSObject+RG_Deserialization.h"
+#import "RestGoatee.h"
 #import "NSError+RG_HTTPStatusCode.h"
-#import "RGAPIClient.h"
+
+@implementation NSError (RG_HTTPStatusCode)
+
+- (NSUInteger) HTTPStatusCode {
+    return [self.userInfo[kRGHTTPStatusCode] unsignedIntegerValue];
+}
+
+@end

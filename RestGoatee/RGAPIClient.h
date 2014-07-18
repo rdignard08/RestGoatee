@@ -22,8 +22,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <AFNetworking/AFNetworking.h>
 
-extern const NSString* const kRGHTTPStatusCode;
-
 @class NSManagedObjectContext;
 @interface RGAPIClient : AFHTTPSessionManager
 
