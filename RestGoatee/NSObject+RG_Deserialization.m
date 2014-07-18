@@ -435,6 +435,37 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     }
 }
 
+/** Certain classes are too difficult to serialize in a straight-forward manner, so we skip the properties on those classes.  Pretty much any class with cyclical references is gonna suck. */
++ (NSArray*) rg_propertyListsToSkip {
+    static NSArray* _classes;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _classes = @[
+                    [NSObject class],
+                    [NSClassFromString(@"NSManagedObject") class] ?: [NSNull class],
+                    [NSClassFromString(@"NSManagedObjectContext") class] ?: [NSNull class],
+                    [NSClassFromString(@"NSManagedObjectModel") class] ?: [NSNull class],
+                    [NSClassFromString(@"NSPersistentStoreCoordinator") class] ?: [NSNull class],
+                ];
+    });
+    return _classes;
+}
+
++ (BOOL) rg_isPropertyToBeAvoided:(NSString*)propertyName {
+    for (Class cls in [self rg_propertyListsToSkip]) {
+        if ([self isSubclassOfClass:cls]) {
+            if ([[cls __property_list__][kRGPropertyName] indexOfObject:propertyName] != NSNotFound) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+- (BOOL) rg_isPropertyToBeAvoided:(NSString*)propertyName {
+    return [[self class] rg_isPropertyToBeAvoided:propertyName];
+}
+
 - (id) __dictionaryHelper:(NSMutableArray*)pointersSeen {
     if ([pointersSeen indexOfObject:self] != NSNotFound) return [NSNull null];
     /* [pointersSeen addObject:self]; // disable DAG for now */
@@ -455,8 +486,9 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     } else {
         ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
         for (NSDictionary* property in self.__property_list__) {
-            if (self[property[kRGPropertyName]] && ![property[kRGPropertyName] isEqualToString:(NSString*)kRGPropertyListProperty]) {
-                ret[property[kRGPropertyName]] = [self[property[kRGPropertyName]] __dictionaryHelper:pointersSeen];
+            NSString* propertyName = property[kRGPropertyName];
+            if (![ret rg_isPropertyToBeAvoided:propertyName] && ![propertyName isEqual:kRGPropertyListProperty]) {
+                ret[propertyName] = [(self[propertyName] ?: [NSNull null]) __dictionaryHelper:pointersSeen];
             }
         }
         ret[kRGSerializationKey] = NSStringFromClass([self class]);
