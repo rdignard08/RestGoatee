@@ -28,7 +28,12 @@
 /**
  Implement this method if you wish to provide a context for response objects which are subclasses of NSManagedObject.  Types other than NSManagedObject are not queried.
  */
-+ (NSManagedObjectContext*) contextForManagedObject:(NSDictionary*)object ofType:(Class)cls;
++ (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls;
+
+/**
+ Return a non-`nil` key to have managed objects be reconciled to an existing object if the value of this key matches.
+ */
++ (NSString*) keyForReconciliationOfType:(Class)cls;
 
 + (void) setDefaultBaseURL:(NSURL*)url;
 + (instancetype) manager;

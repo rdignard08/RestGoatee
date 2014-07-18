@@ -38,7 +38,11 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask
 
 @implementation RGAPIClient
 
-+ (NSManagedObjectContext*) contextForManagedObject:(NSDictionary*)object ofType:(Class)cls {
++ (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls {
+    return nil;
+}
+
++ (NSString*) keyForReconciliationOfType:(Class)cls {
     return nil;
 }
 
@@ -57,7 +61,10 @@ static NSURL* _sBaseURL;
 }
 
 - (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls {
-    id target;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    /* cls* | NSArray<cls*>* */ id target;
+    /* NSManagedObjectContext* */ id context = [[self class] contextForManagedObjectType:cls];
     if ([response isKindOfClass:[NSData class]] && [NSJSONSerialization isValidJSONObject:response]) {
         response = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
     }
@@ -67,23 +74,55 @@ static NSURL* _sBaseURL;
     } else {
         target = response;
     }
+    NSString* primaryKey = [[self class] keyForReconciliationOfType:cls];
+    NSArray* allObjects;
+    if (primaryKey) {
+        id fetch = [NSClassFromString(@"NSFetchRequest") performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
+        [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
+        allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch];
+    }
+    
     if ([target isKindOfClass:[NSArray class]]) {
         NSMutableArray* ret = [NSMutableArray array];
         for (NSDictionary* obj in target) {
-            if (cls) {
-                [ret addObject:[cls objectFromJSON:obj inContext:[[self class] contextForManagedObject:obj ofType:cls]]];
-            } else {
-                [ret addObject:obj];
+            NSUInteger index;
+            @try {
+                index = [allObjects[primaryKey] indexOfObject:obj[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
+                    return [[obj1 description] compare:[obj2 description]];
+                }];
+            }
+            @catch (NSException* e) {
+                index = NSNotFound;
+            }
+            if (index != NSNotFound) { /* Existing Object */
+                [ret addObject:[allObjects[index] extendWith:obj]];
+            } else { /* New Object */
+                [ret addObject:(cls ? [cls objectFromJSON:obj inContext:context] : obj)];
             }
         }
         response = [ret copy];
-    } else {
-        if (cls) {
-            response = [cls objectFromJSON:target inContext:[[self class] contextForManagedObject:target ofType:cls]];
+    } else { /* NSDictionary */
+        NSUInteger index;
+        @try {
+            index = [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
+                return [[obj1 description] compare:[obj2 description]];
+            }];
+        }
+        @catch (NSException* e) {
+            index = NSNotFound;
+        }
+        if (index != NSNotFound) {
+            response = [allObjects[index] extendWith:target];
         } else {
-            response = target;
+            response = cls ? [cls objectFromJSON:target inContext:context] : target;
         }
     }
+    @try {
+        [context performSelector:@selector(save:)];
+    }
+    @catch (NSException* e) {}
+    
+#pragma clang diagnostic pop
     return response;
 }
 
