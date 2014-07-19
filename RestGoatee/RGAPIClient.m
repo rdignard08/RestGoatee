@@ -60,11 +60,33 @@ static NSURL* _sBaseURL;
     return _sManager;
 }
 
+/**
+ Because of the annoying way that NSManagedObjects are implemented they need their context to live in memory for as long as
+ */
+- (void) pushContextStrongReference:(id)context {
+    static NSMutableArray* _sReferences = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sReferences = [NSMutableArray array];
+    });
+    if (!context) {
+        onceToken = 0;
+    } else {
+        [_sReferences addObject:context];
+    }
+}
+
 - (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
     /* cls* | NSArray<cls*>* */ id target;
-    /* NSManagedObjectContext* */ id context = [[self class] contextForManagedObjectType:cls];
+    /* NSManagedObjectContext* */ id context;
+    if ([cls isSubclassOfClass:NSClassFromString(@"NSManagedObject")]) {
+        context = [[self class] contextForManagedObjectType:cls];
+        if (context) {
+            [self pushContextStrongReference:context];
+        }
+    }
     if ([response isKindOfClass:[NSData class]] && [NSJSONSerialization isValidJSONObject:response]) {
         response = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
     }
