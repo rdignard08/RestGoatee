@@ -60,32 +60,16 @@ static NSURL* _sBaseURL;
     return _sManager;
 }
 
-/**
- Because of the annoying way that NSManagedObjects are implemented they need their context to live in memory for as long as
- */
-- (void) pushContextStrongReference:(id)context {
-    static NSMutableArray* _sReferences = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sReferences = [NSMutableArray array];
-    });
-    if (!context) {
-        onceToken = 0;
-    } else {
-        [_sReferences addObject:context];
-    }
-}
-
 - (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
     /* cls* | NSArray<cls*>* */ id target;
     /* NSManagedObjectContext* */ id context;
-    if ([cls isSubclassOfClass:NSClassFromString(@"NSManagedObject")]) {
+    NSString* primaryKey;
+    NSArray* allObjects;
+    if ([cls isSubclassOfClass:rg_sNSManagedObject]) {
+        primaryKey = [[self class] keyForReconciliationOfType:cls];
         context = [[self class] contextForManagedObjectType:cls];
-        if (context) {
-            [self pushContextStrongReference:context];
-        }
     }
     if ([response isKindOfClass:[NSData class]] && [NSJSONSerialization isValidJSONObject:response]) {
         response = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
@@ -96,10 +80,8 @@ static NSURL* _sBaseURL;
     } else {
         target = response;
     }
-    NSString* primaryKey = [[self class] keyForReconciliationOfType:cls];
-    NSArray* allObjects;
     if (primaryKey) {
-        id fetch = [NSClassFromString(@"NSFetchRequest") performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
+        id fetch = [rg_sNSFetchRequest performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
         [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
         allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch];
     }
@@ -109,9 +91,9 @@ static NSURL* _sBaseURL;
         for (NSDictionary* obj in target) {
             NSUInteger index;
             @try {
-                index = [allObjects[primaryKey] indexOfObject:obj[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
+                index = allObjects[primaryKey] ? [allObjects[primaryKey] indexOfObject:obj[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
                     return [[obj1 description] compare:[obj2 description]];
-                }];
+                }] : NSNotFound;
             }
             @catch (NSException* e) {
                 index = NSNotFound;
@@ -126,9 +108,9 @@ static NSURL* _sBaseURL;
     } else { /* NSDictionary */
         NSUInteger index;
         @try {
-            index = [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
+            index = allObjects[primaryKey] ? [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
                 return [[obj1 description] compare:[obj2 description]];
-            }];
+            }] : NSNotFound;
         }
         @catch (NSException* e) {
             index = NSNotFound;

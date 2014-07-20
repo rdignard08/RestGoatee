@@ -41,6 +41,16 @@ extern const NSString* const classPrefix(void) __attribute__((weak));
  */
 extern const NSString* const serverTypeKey(void) __attribute__((weak));
 
+/**
+ These classes are used to dynamically link into coredata if present.
+ */
+Class rg_sNSManagedObjectContext;
+Class rg_sNSManagedObject;
+Class rg_sNSManagedObjectModel;
+Class rg_sNSPersistentStoreCoordinator;
+Class rg_sNSEntityDescription;
+Class rg_sNSFetchRequest;
+
 @class NSManagedObjectContext;
 
 @protocol RestGoateeSerialization <NSObject>

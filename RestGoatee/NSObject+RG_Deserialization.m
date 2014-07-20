@@ -262,6 +262,18 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
 @implementation NSObject (RG_Deserialization)
 
++ (void) load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        rg_sNSManagedObjectContext = NSClassFromString(@"NSManagedObjectContext");
+        rg_sNSManagedObject = NSClassFromString(@"NSManagedObject");
+        rg_sNSManagedObjectModel = NSClassFromString(@"NSManagedObjectModel");
+        rg_sNSPersistentStoreCoordinator = NSClassFromString(@"NSPersistentStoreCoordinator");
+        rg_sNSEntityDescription = NSClassFromString(@"NSEntityDescription");
+        rg_sNSFetchRequest = NSClassFromString(@"NSFetchRequest");
+    });
+}
+
 - (id) objectForKeyedSubscript:(id<NSCopying, NSObject>)key {
     @try {
         return [self valueForKey:[key description]];
@@ -279,7 +291,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 }
 
 + (instancetype) objectFromJSON:(NSDictionary*)json {
-    if ([self isSubclassOfClass:[NSClassFromString(@"NSManagedObject") class]]) {
+    if ([self isSubclassOfClass:[rg_sNSManagedObject class]]) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Managed object subclasses must be initialized within a managed object context.  Use +objectFromJSON:inContext:" userInfo:nil];
     }
     return [self objectFromJSON:json inContext:nil];
@@ -287,11 +299,11 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
 + (instancetype) objectFromJSON:(NSDictionary*)json inContext:(id)context {
     NSObject* ret;
-    if ([self isSubclassOfClass:[NSClassFromString(@"NSManagedObject") class]]) {
+    if ([self isSubclassOfClass:[rg_sNSManagedObject class]]) {
         NSAssert(context, @"A subclass of NSManagedObject must be created within a valid NSManagedObjectContext.");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
-        ret = [NSClassFromString(@"NSEntityDescription") performSelector:@selector(insertNewObjectForEntityForName:inManagedObjectContext:) withObject:NSStringFromClass(self) withObject:context];
+        ret = [rg_sNSEntityDescription performSelector:@selector(insertNewObjectForEntityForName:inManagedObjectContext:) withObject:NSStringFromClass(self) withObject:context];
 #pragma clang diagnostic pop
     } else {
         ret = [[self alloc] init];
@@ -442,10 +454,10 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     dispatch_once(&onceToken, ^{
         _classes = @[
                     [NSObject class],
-                    [NSClassFromString(@"NSManagedObject") class] ?: [NSNull class],
-                    [NSClassFromString(@"NSManagedObjectContext") class] ?: [NSNull class],
-                    [NSClassFromString(@"NSManagedObjectModel") class] ?: [NSNull class],
-                    [NSClassFromString(@"NSPersistentStoreCoordinator") class] ?: [NSNull class],
+                    rg_sNSManagedObject ?: [NSNull class],
+                    rg_sNSManagedObjectContext ?: [NSNull class],
+                    rg_sNSManagedObjectModel ?: [NSNull class],
+                    rg_sNSPersistentStoreCoordinator ?: [NSNull class],
                 ];
     });
     return _classes;
