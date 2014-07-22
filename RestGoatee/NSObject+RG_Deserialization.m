@@ -375,13 +375,11 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                     objectClass = NSClassFromString(classString);
                 }
                 if (!objectClass) { /* although we might have a string, it might not be a valid class */
-                    if ([[obj keys] indexOfObject:kRGSerializationKey] != NSNotFound) {
-                        classString = obj[kRGSerializationKey];
-                    }
+                    classString = obj[kRGSerializationKey];
+                    objectClass = NSClassFromString(classString);
                 }
 
-                objectClass = NSClassFromString(classString);
-                parseBuffer[idx] = objectClass ? [objectClass objectFromJSON:obj] : obj;
+                parseBuffer[idx] = objectClass && [objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj] : obj;
                 idx++;
             }
         }
