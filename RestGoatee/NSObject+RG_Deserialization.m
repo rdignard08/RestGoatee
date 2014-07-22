@@ -379,7 +379,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                     objectClass = NSClassFromString(classString);
                 }
 
-                parseBuffer[idx] = objectClass && [objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj] : obj;
+                parseBuffer[idx] = objectClass && ![objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj] : obj;
                 idx++;
             }
         }
@@ -504,7 +504,9 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                 ret[propertyName] = [(self[propertyName] ?: [NSNull null]) __dictionaryHelper:pointersSeen];
             }
         }
-        ret[kRGSerializationKey] = NSStringFromClass([self class]);
+        if (![[self class] isSubclassOfClass:[NSDictionary class]]) { /* only include the class key if the object _wasn't_ a dictionary */
+            ret[kRGSerializationKey] = NSStringFromClass([self class]);
+        }
     }
     return ret;
 }
