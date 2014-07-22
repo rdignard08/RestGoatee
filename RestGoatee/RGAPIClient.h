@@ -41,7 +41,7 @@
 /**
  Explicitly specify the destination class and request parameters.
  */
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls  completion:(void(^)(id, NSError*))completion; /* This is the full variant */
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
 - (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
 - (void) GET:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
