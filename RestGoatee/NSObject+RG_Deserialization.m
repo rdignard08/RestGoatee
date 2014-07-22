@@ -373,7 +373,8 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                     const NSString* serverType = [obj[typeKey] capitalizedString] ?: @"";
                     classString = [prefix stringByAppendingString:(NSString*)serverType];
                     objectClass = NSClassFromString(classString);
-                } else if (!objectClass) { /* although we might have a string, it might not be a valid class */
+                }
+                if (!objectClass) { /* although we might have a string, it might not be a valid class */
                     if ([[obj keys] indexOfObject:kRGSerializationKey] != NSNotFound) {
                         classString = obj[kRGSerializationKey];
                     }
