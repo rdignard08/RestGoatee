@@ -365,19 +365,21 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         for (id obj in JSONValue) {
             if ([obj isKindOfClass:[NSDictionary class]]) {
                 NSString* classString;
+                Class objectClass;
                 
                 if (_pServerTypeKey != NULL && _pClassPrefix != NULL) {
                     const NSString* prefix = _pClassPrefix() ?: @"";
                     const NSString* typeKey = _pServerTypeKey() ?: @"";
                     const NSString* serverType = [obj[typeKey] capitalizedString] ?: @"";
                     classString = [prefix stringByAppendingString:(NSString*)serverType];
-                } else if (!classString) {
+                    objectClass = NSClassFromString(classString);
+                } else if (!objectClass) { /* although we might have a string, it might not be a valid class */
                     if ([[obj keys] indexOfObject:kRGSerializationKey] != NSNotFound) {
                         classString = obj[kRGSerializationKey];
                     }
                 }
 
-                Class objectClass = NSClassFromString(classString);
+                objectClass = NSClassFromString(classString);
                 parseBuffer[idx] = objectClass ? [objectClass objectFromJSON:obj] : obj;
                 idx++;
             }
