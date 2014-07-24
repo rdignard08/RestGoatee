@@ -381,6 +381,9 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
                 parseBuffer[idx] = objectClass && ![objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj] : obj;
                 idx++;
+            } else {
+                parseBuffer[idx] = obj;
+                idx++;
             }
         }
         JSONValue = [NSArray arrayWithObjects:parseBuffer count:idx];
@@ -522,6 +525,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
 - (id) extendWith:(id)object {
     for (NSString* propertyName in [object keys]) {
+        if ([propertyName isEqualToString:(NSString*)kRGPropertyListProperty]) continue;
         @try {
             [self initProperty:propertyName withJSONValue:object[propertyName]];
         }
