@@ -60,7 +60,7 @@ static NSURL* _sBaseURL;
     return _sManager;
 }
 
-- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls {
+- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(NSManagedObjectContext**)outCountext {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
     /* cls* | NSArray<cls*>* */ id target;
@@ -127,89 +127,104 @@ static NSURL* _sBaseURL;
     @catch (NSException* e) {}
     
 #pragma clang diagnostic pop
+    if (context) {
+        *outCountext = context;
+    }
     return response;
 }
 
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self GET:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
+- (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keypath class:(Class)cls error:(NSError*)error {
+    RGResponseObject* ret = [[RGResponseObject alloc] init];
+    NSManagedObjectContext* context;
+    if (error) {
+        ret.error = error;
+    }
+    if (body) {
+        ret.responseBody = [self parseResponse:body atPath:keypath intoClass:cls context:&context];
+    }
+    if (context) {
+        ret.context = context;
+    }
+    return ret;
+}
+
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self GET:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
+        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
+        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
     }];
 }
 
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
     [self GET:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
 
-- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self GET:url parameters:nil keyPath:path class:cls completion:completion];
 }
 
-- (void) GET:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) GET:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
     [self GET:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self POST:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self POST:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
+        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
+        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
     }];
 }
 
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
     [self POST:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
 
-- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self POST:url parameters:nil keyPath:path class:cls completion:completion];
 }
 
-- (void) POST:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) POST:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
     [self POST:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self PUT:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self PUT:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
+        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
+        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
     }];
 }
 
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
     [self PUT:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
 
-- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self PUT:url parameters:nil keyPath:path class:cls completion:completion];
 }
 
-- (void) PUT:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) PUT:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
     [self PUT:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
-/**
- Explicitly specify the destination class and request parameters.
- */
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
-    [self DELETE:url parameters:parameters success:^(NSURLSessionDataTask* task, id responseObject) {
-        if (completion) completion([self parseResponse:responseObject atPath:path intoClass:cls], nil);
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self DELETE:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
+        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion(nil, errorWithStatusCodeFromTask(error, task));
+        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
     }];
 }
 
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
     [self DELETE:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
 
-- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self DELETE:url parameters:nil keyPath:path class:cls completion:completion];
 }
 
-- (void) DELETE:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion {
+- (void) DELETE:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
     [self DELETE:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 

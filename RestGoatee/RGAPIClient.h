@@ -21,6 +21,9 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <AFNetworking/AFNetworking.h>
+#import "RGResponseObject.h"
+
+typedef void(^RGResponseBlock)(RGResponseObject*);
 
 @class NSManagedObjectContext;
 @interface RGAPIClient : AFHTTPSessionManager
@@ -41,33 +44,33 @@
 /**
  Explicitly specify the destination class and request parameters.
  */
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) GET:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) GET:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) POST:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) POST:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) PUT:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) PUT:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion; /* This is the full variant */
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(void(^)(id, NSError*))completion;
-- (void) DELETE:(NSString*)url class:(Class)cls completion:(void(^)(id, NSError*))completion;
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) DELETE:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 @end
