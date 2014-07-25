@@ -83,7 +83,7 @@ static NSURL* _sBaseURL;
     if (primaryKey) {
         id fetch = [rg_sNSFetchRequest performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
         [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
-        allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch];
+        allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch withObject:nil];
     }
     
     if ([target isKindOfClass:[NSArray class]]) {
@@ -122,7 +122,7 @@ static NSURL* _sBaseURL;
         }
     }
     @try {
-        [context performSelector:@selector(save:)];
+        [context performSelector:@selector(save:) withObject:nil];
     }
     @catch (NSException* e) {}
     

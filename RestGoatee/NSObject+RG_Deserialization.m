@@ -57,7 +57,6 @@ const NSString* const (*_pServerTypeKey)(void) = &serverTypeKey;
 NSString* trimLeadingAndTrailingQuotes(NSString*);
 NSString* stringForTypeEncoding(NSString*);
 NSDictionary* parsePropertyStruct(objc_property_t);
-NSString* snakeCaseToCamelCase(NSString*);
 NSString* canonicalForm(NSString*);
 
 NSString* canonicalForm(NSString* input) {
@@ -86,21 +85,6 @@ NSString* canonicalForm(NSString* input) {
     free(inBuffer);
     free(outBuffer);
     return output;
-}
-
-NSString* snakeCaseToCamelCase(NSString* snakeString) {
-    NSMutableString* ret = [NSMutableString string];
-    NSArray* substrings = [snakeString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"-_"]];
-    BOOL first = YES;
-    for (__strong NSString* substring in substrings) {
-        if (first) {
-            first = NO;
-        } else {
-            substring = [substring capitalizedString];
-        }
-        [ret appendString:substring];
-    }
-    return ret;
 }
 
 static inline BOOL isClassObject(id object) {
