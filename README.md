@@ -2,15 +2,19 @@ RestGoatee
 ==========
 
 Deserialize objects without the fluff.  No Mappings! No Mindless Repetition! Only Simple!
-
-This framework has no dependencies beyond AFNetworking and the objective-C runtime; it has support for CoreData which can be enabled by importing the CoreData header before (or within) RestGoatee.h; this will expose a new public method: `-[NSObject objectFromJSON:inContext:]` where the `inContext` parameter is a `managedObjectContext` or `nil`.
-
+This framework has no dependencies beyond AFNetworking and the objective-C runtime, and it supports CoreData out of the box.  Whether you use CoreData or not it will simply work.
 The optional `RestGoateeSerialization` protocol can be used to provide custom and non-standard mappings and dates from JSON to Objective-C.
-
 By default, a key in the json of `foo_bar` will be automatically mapped to a property of name `fooBar`.  You only need to provide mappings for keys which don't match in "canonical form".
 
 # Installation
 Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`
+
+Depending on your version of the Objective-C runtime you may have to implement the functions:
+```objc
+const NSString* const classPrefix();
+const NSString* const serverTypeKey();
+```
+returning `nil` is sufficient if you don't wish to enable type detection.
 
 Example
 =======
