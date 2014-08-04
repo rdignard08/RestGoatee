@@ -42,29 +42,40 @@ const NSString* const kRGPropertyClass = @"type";
 const NSString* const kRGPropertyDynamic = @"__dynamic__";
 const NSString* const kRGPropertyAtomic = @"atomic";
 const NSString* const kRGPropertyNonatomic = @"nonatomic";
-
 const NSString* const kRGSerializationKey = @"__class";
 const NSString* const kRGPropertyListProperty = @"__property_list__";
 
-#define DATE_FORMAT_JAVASCRIPT @"yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-#define DATE_FORMAT_ERIC @"yyyy-MM-dd'T'HH:mm:ssz"
-#define DATE_FORMAT_NSDATE @"yyyy-MM-dd HH:mm:ss ZZZZZ"
-#define DATE_FORMAT_SIMPLE @"yyyy-MM-dd"
+NSString* trimLeadingAndTrailingQuotes(NSString*) __attribute__((pure));
+NSString* stringForTypeEncoding(NSString*) __attribute__((pure));
+NSDictionary* parsePropertyStruct(objc_property_t) __attribute__((pure));
+NSString* canonicalForm(NSString*) __attribute__((pure));
 
-const NSString* const (*_pClassPrefix)(void) = &classPrefix;
-const NSString* const (*_pServerTypeKey)(void) = &serverTypeKey;
+#ifndef __SERVER_TYPING_
+const NSString* const classPrefix() {
+    return nil;
+}
 
-NSString* trimLeadingAndTrailingQuotes(NSString*);
-NSString* stringForTypeEncoding(NSString*);
-NSDictionary* parsePropertyStruct(objc_property_t);
-NSString* canonicalForm(NSString*);
+const NSString* const serverTypeKey() {
+    return nil;
+}
+#endif
+
+NSArray* const rg_dateFormats() {
+    static dispatch_once_t onceToken;
+    static NSArray* _sDateFormats;
+    dispatch_once(&onceToken, ^{
+        _sDateFormats = @[ @"yyyy-MM-dd'T'HH:mm:ssZZZZZ", @"yyyy-MM-dd HH:mm:ss ZZZZZ", @"yyyy-MM-dd'T'HH:mm:ssz", @"yyyy-MM-dd" ];
+    });
+    return _sDateFormats;
+}
 
 NSString* canonicalForm(NSString* input) {
     NSString* output;
-    size_t inputLength = input.length + 1; /* +1 for the char* nul terminator */
-    char* inBuffer = calloc(inputLength, 1);
+    const size_t inputLength = input.length + 1; /* +1 for the nul terminator */
+    char* inBuffer, * outBuffer;
+    inBuffer = malloc(inputLength << 1);
+    outBuffer = inBuffer + inputLength;
     [input getCString:inBuffer maxLength:inputLength encoding:NSUTF8StringEncoding];
-    char* outBuffer = calloc(inputLength, 1);
     size_t i = 0, j = 0;
     for (; i != inputLength; i++) {
         char c = inBuffer[i];
@@ -78,19 +89,19 @@ NSString* canonicalForm(NSString* input) {
             outBuffer[j] = c - 32;
             j++;
         } else {
-            continue;
+            continue; /* unicodes, symbols, spaces, etc. are completely skipped */
         }
     }
+    outBuffer[j] = '\0';
     output = [NSString stringWithUTF8String:outBuffer];
     free(inBuffer);
-    free(outBuffer);
     return output;
 }
 
 static inline BOOL isClassObject(id object) {
     return object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
+    /* if the class of the meta-class == NSObject's meta-class; object was itself a Class object */
 }
-
 static inline BOOL isInlineObject(Class cls) {
     return [cls isSubclassOfClass:[NSDate class]] || [cls isSubclassOfClass:[NSString class]] || [cls isSubclassOfClass:[NSData class]] || [cls isSubclassOfClass:[NSNumber class]] || [cls isSubclassOfClass:[NSNull class]] || [cls isSubclassOfClass:[NSValue class]];
 }
@@ -103,7 +114,7 @@ static inline BOOL isKeyedCollectionObject(Class cls) {
 
 NSString* trimLeadingAndTrailingQuotes(NSString* str) {
     NSArray* substrs = [str componentsSeparatedByString:@"\""];
-    if (!substrs.count || substrs.count != 3) return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
+    if (substrs.count != 3) return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
     return substrs[1];
 }
 
@@ -171,16 +182,47 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 
 @interface NSObject (RG_Introspection)
 
-@property (nonatomic, strong, readonly) NSArray* __property_list__;
-
+- (NSArray*) __property_list__;
 - (NSArray*) keys;
-- (NSArray*) verbosePropertyList;
-- (NSArray*) writableProperties;
 - (NSString*) classStringForProperty:(NSString*)propertyName;
 
 @end
 
 @implementation NSObject (RG_Introspection)
+
++ (NSArray*) classStack {
+    static dispatch_once_t onceToken;
+    static NSArray* _sClassStack;
+    dispatch_once(&onceToken, ^{
+        NSMutableArray* stack = [NSMutableArray array];
+        for (Class superClass = self; superClass; superClass = [superClass superclass]) {
+            [stack insertObject:superClass atIndex:0]; /* we want superclass properties to be overwritten by subclass properties */
+        }
+        _sClassStack = [stack copy];
+    });
+    return _sClassStack;
+}
+
++ (NSArray*) __property_list__ {
+    static dispatch_once_t onceToken;
+    static NSArray* _s__property_list__;
+    dispatch_once(&onceToken, ^{
+        NSMutableArray* propertyStructure = [NSMutableArray array];
+        for (Class cls in [self classStack]) {
+            objc_property_t* properties = class_copyPropertyList(cls, NULL);
+            for (uint32_t i = 0; (properties + i) && properties[i]; i++) {
+                [propertyStructure addObject:parsePropertyStruct(properties[i])];
+            }
+            free(properties);
+        }
+        _s__property_list__ = [propertyStructure copy];
+    });
+    return _s__property_list__;
+}
+
+- (NSArray*) __property_list__ {
+    return [[self class] __property_list__];
+}
 
 /**
  @return a list of the keys/properties of the receiving object.
@@ -190,51 +232,6 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         return [(id)self allKeys];
     }
     return self.__property_list__[kRGPropertyName];
-}
-
-+ (NSArray*) __property_list__ {
-    id ret = objc_getAssociatedObject(self, _cmd);
-    if(!ret) {
-        ret = [self verbosePropertyList];
-        objc_setAssociatedObject(self, _cmd, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    return ret;
-}
-
-- (NSArray*) __property_list__ {
-    return [[self class] __property_list__];
-}
-
-+ (NSArray*) classStack {
-    NSMutableArray* stack = [NSMutableArray array];
-    for (Class superClass = self; superClass; superClass = [superClass superclass]) {
-        [stack addObject:superClass];
-    }
-    return stack;
-}
-
-- (NSArray*) verbosePropertyList {
-    NSMutableArray* ret = [NSMutableArray array];
-    NSMutableArray* stack = [[[self class] classStack] mutableCopy];
-    for (Class cls = [stack lastObject]; cls; cls = [stack lastObject]) {
-        objc_property_t* properties = class_copyPropertyList(cls, NULL);
-        for (uint32_t i = 0; (properties + i) && properties[i]; i++) { /* While properties isn't NULL... */
-            [ret addObject:parsePropertyStruct(properties[i])];
-        }
-        free(properties);
-        [stack removeLastObject];
-    }
-    return ret;
-}
-
-- (NSArray*) writableProperties {
-    NSMutableArray* ret = [NSMutableArray array];
-    for (NSDictionary* property in self.__property_list__) {
-        if (property[kRGPropertyAccess] == kRGPropertyReadwrite) {
-            [ret addObject:property];
-        }
-    }
-    return ret;
 }
 
 - (NSString*) classStringForProperty:(NSString*)propertyName {
@@ -351,13 +348,12 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                 NSString* classString;
                 Class objectClass;
                 
-                if (_pServerTypeKey != NULL && _pClassPrefix != NULL) {
-                    const NSString* prefix = _pClassPrefix() ?: @"";
-                    const NSString* typeKey = _pServerTypeKey() ?: @"";
-                    const NSString* serverType = [obj[typeKey] capitalizedString] ?: @"";
-                    classString = [prefix stringByAppendingString:(NSString*)serverType];
-                    objectClass = NSClassFromString(classString);
-                }
+                const NSString* prefix = classPrefix() ?: @"";
+                const NSString* typeKey = serverTypeKey() ?: @"";
+                NSString* const serverType = [obj[typeKey] capitalizedString] ?: @"";
+                classString = [prefix stringByAppendingString:serverType];
+                objectClass = NSClassFromString(classString);
+                
                 if (!objectClass) { /* although we might have a string, it might not be a valid class */
                     classString = obj[kRGSerializationKey];
                     objectClass = NSClassFromString(classString);
@@ -417,7 +413,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                 return;
             }
         }
-        for (NSString* dateFormat in @[DATE_FORMAT_JAVASCRIPT, DATE_FORMAT_NSDATE, DATE_FORMAT_ERIC, DATE_FORMAT_SIMPLE]) {
+        for (NSString* dateFormat in rg_dateFormats()) {
             df.dateFormat = dateFormat;
             ret = [df dateFromString:JSONValue];
             if (ret) break;

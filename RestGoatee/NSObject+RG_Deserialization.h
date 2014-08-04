@@ -23,13 +23,14 @@
 
 #import <Foundation/Foundation.h>
 
+#ifdef __SERVER_TYPING_
 /**
  Optionally use this function to provide your project's class prefix.
  
  XYZMyClass -> return @"XYZ"
  
  */
-extern const NSString* const classPrefix(void) __attribute__((weak));
+extern const NSString* const classPrefix(void) __attribute__((weak, const));
 
 /**
  Optionally use this function to provide your server's type keyPath.
@@ -39,7 +40,8 @@ extern const NSString* const classPrefix(void) __attribute__((weak));
  "message" : "hello!"
  }
  */
-extern const NSString* const serverTypeKey(void) __attribute__((weak));
+extern const NSString* const serverTypeKey(void) __attribute__((weak, const));
+#endif
 
 /**
  These classes are used to dynamically link into coredata if present.
