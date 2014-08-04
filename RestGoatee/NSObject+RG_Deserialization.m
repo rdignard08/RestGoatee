@@ -191,22 +191,21 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 @implementation NSObject (RG_Introspection)
 
 + (NSArray*) classStack {
-    static dispatch_once_t onceToken;
-    static NSArray* _sClassStack;
-    dispatch_once(&onceToken, ^{
+    id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
+    if (!ret) {
         NSMutableArray* stack = [NSMutableArray array];
         for (Class superClass = self; superClass; superClass = [superClass superclass]) {
             [stack insertObject:superClass atIndex:0]; /* we want superclass properties to be overwritten by subclass properties */
         }
-        _sClassStack = [stack copy];
-    });
-    return _sClassStack;
+        ret = [stack copy];
+        objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return ret;
 }
 
 + (NSArray*) __property_list__ {
-    static dispatch_once_t onceToken;
-    static NSArray* _s__property_list__;
-    dispatch_once(&onceToken, ^{
+    id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
+    if (!ret) {
         NSMutableArray* propertyStructure = [NSMutableArray array];
         for (Class cls in [self classStack]) {
             objc_property_t* properties = class_copyPropertyList(cls, NULL);
@@ -215,9 +214,10 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
             }
             free(properties);
         }
-        _s__property_list__ = [propertyStructure copy];
-    });
-    return _s__property_list__;
+        ret = [propertyStructure copy];
+        objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return ret;
 }
 
 - (NSArray*) __property_list__ {
