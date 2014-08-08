@@ -18,6 +18,8 @@ returning `nil` is sufficient if you don't wish to enable type detection.
 
 Example
 =======
+This example is available in RestGoateeExample; you will need to `pod install` the module.
+
 Using this framework, Let's look at turning a request to [iTunes Search API](https://itunes.apple.com/search?term=pink+floyd) into objects...
 ## Model
 
@@ -41,8 +43,8 @@ Using this framework, Let's look at turning a request to [iTunes Search API](htt
 
 ```objc
 void foo (...) { /* your invocation of the API */
-  [self GET:@"/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGBook class] completion:^(id response, NSError* error) {
-    NSLog([response[0] class]); // outputs RGBook
+  [self GET:@"/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGBook class] completion:^(RGResponseObject* response) {
+    //something...
   }];
 }
 ```
