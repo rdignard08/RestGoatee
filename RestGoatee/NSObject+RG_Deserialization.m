@@ -45,10 +45,10 @@ const NSString* const kRGPropertyNonatomic = @"nonatomic";
 const NSString* const kRGSerializationKey = @"__class";
 const NSString* const kRGPropertyListProperty = @"__property_list__";
 
-NSString* trimLeadingAndTrailingQuotes(NSString*) __attribute__((pure));
-NSString* stringForTypeEncoding(NSString*) __attribute__((pure));
-NSDictionary* parsePropertyStruct(objc_property_t) __attribute__((pure));
-NSString* canonicalForm(NSString*) __attribute__((pure));
+static NSString* rg_trimLeadingAndTrailingQuotes(NSString*) __attribute__((pure));
+static NSString* rg_stringForTypeEncoding(NSString*) __attribute__((pure));
+static NSDictionary* rg_parsePropertyStruct(objc_property_t) __attribute__((pure));
+static NSString* rg_canonicalForm(NSString*) __attribute__((pure));
 
 #ifndef __SERVER_TYPING_
 const NSString* const classPrefix() {
@@ -69,7 +69,7 @@ NSArray* const rg_dateFormats() {
     return _sDateFormats;
 }
 
-NSString* canonicalForm(NSString* input) {
+NSString* rg_canonicalForm(NSString* input) {
     NSString* output;
     const size_t inputLength = input.length + 1; /* +1 for the nul terminator */
     char* inBuffer, * outBuffer;
@@ -106,31 +106,31 @@ static inline BOOL isInlineObject(Class cls) {
     return [cls isSubclassOfClass:[NSDate class]] || [cls isSubclassOfClass:[NSString class]] || [cls isSubclassOfClass:[NSData class]] || [cls isSubclassOfClass:[NSNumber class]] || [cls isSubclassOfClass:[NSNull class]] || [cls isSubclassOfClass:[NSValue class]];
 }
 static inline BOOL isCollectionObject(Class cls) {
-    return [cls isSubclassOfClass:[NSSet class]] || [cls isSubclassOfClass:[NSArray class]] || [cls isSubclassOfClass:[NSOrderedSet class]];
+    return [cls isSubclassOfClass:[NSSet class]] || [cls isSubclassOfClass:[NSArray class]] || [cls isSubclassOfClass:[NSOrderedSet class]] || [cls isSubclassOfClass:[NSCountedSet class]];
 }
 static inline BOOL isKeyedCollectionObject(Class cls) {
     return [cls isSubclassOfClass:[NSDictionary class]];
 }
 
-NSString* trimLeadingAndTrailingQuotes(NSString* str) {
+NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
     NSArray* substrs = [str componentsSeparatedByString:@"\""];
     if (substrs.count != 3) return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
     return substrs[1];
 }
 
-NSString* stringForTypeEncoding(NSString* str) {
-    str = trimLeadingAndTrailingQuotes(str);
+NSString* rg_stringForTypeEncoding(NSString* str) {
+    str = rg_trimLeadingAndTrailingQuotes(str);
     return NSClassFromString(str) ? str : NSStringFromClass([NSNumber class]);
 }
 
-NSDictionary* parsePropertyStruct(objc_property_t property) {
+NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     
     NSString* name = [NSString stringWithUTF8String:property_getName(property)];
     
     /* These are default values if there is no specification */
     NSMutableDictionary* propertyDict = [@{
                                            kRGPropertyName : name,
-                                           kRGPropertyCanonicalName : canonicalForm(name),
+                                           kRGPropertyCanonicalName : rg_canonicalForm(name),
                                            kRGPropertyStorage : kRGPropertyAssign,
                                            kRGPropertyAtomicType : kRGPropertyAtomic,
                                            kRGPropertyAccess : kRGPropertyReadwrite } mutableCopy];
@@ -161,7 +161,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
                 propertyDict[kRGPropertyAtomicType] = kRGPropertyNonatomic;
                 break;
             case 'T':
-                propertyDict[kRGPropertyClass] = stringForTypeEncoding(value);
+                propertyDict[kRGPropertyClass] = rg_stringForTypeEncoding(value);
                 break;
             case 't': /* TODO: I have no fucking idea what 'old-style' typing looks like */
                 propertyDict[kRGPropertyClass] = value;
@@ -183,14 +183,14 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 @interface NSObject (RG_Introspection)
 
 - (NSArray*) __property_list__;
-- (NSArray*) keys;
-- (NSString*) classStringForProperty:(NSString*)propertyName;
+- (NSArray*) rg_keys;
+- (NSString*) rg_classStringForProperty:(NSString*)propertyName;
 
 @end
 
 @implementation NSObject (RG_Introspection)
 
-+ (NSArray*) classStack {
++ (NSArray*) rg_classStack {
     id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
     if (!ret) {
         NSMutableArray* stack = [NSMutableArray array];
@@ -207,10 +207,10 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
     if (!ret) {
         NSMutableArray* propertyStructure = [NSMutableArray array];
-        for (Class cls in [self classStack]) {
+        for (Class cls in [self rg_classStack]) {
             objc_property_t* properties = class_copyPropertyList(cls, NULL);
             for (uint32_t i = 0; (properties + i) && properties[i]; i++) {
-                [propertyStructure addObject:parsePropertyStruct(properties[i])];
+                [propertyStructure addObject:rg_parsePropertyStruct(properties[i])];
             }
             free(properties);
         }
@@ -227,14 +227,14 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 /**
  @return a list of the keys/properties of the receiving object.
  */
-- (NSArray*) keys {
+- (NSArray*) rg_keys {
     if ([self isKindOfClass:[NSDictionary class]]) {
         return [(id)self allKeys];
     }
     return self.__property_list__[kRGPropertyName];
 }
 
-- (NSString*) classStringForProperty:(NSString*)propertyName {
+- (NSString*) rg_classStringForProperty:(NSString*)propertyName {
     NSUInteger index = [self.__property_list__[kRGPropertyName] indexOfObject:propertyName];
     return index == NSNotFound ? nil : self.__property_list__[index][kRGPropertyClass];
 }
@@ -294,15 +294,15 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     if ([(id)[ret class] respondsToSelector:@selector(overrideKeysForMapping)]) {
         [overrides addEntriesFromDictionary:[(id)[ret class] overrideKeysForMapping]];
     }
-    if ([(id)ret respondsToSelector:@selector(overrideKeysForMapping)]) {
+    if ([ret respondsToSelector:@selector(overrideKeysForMapping)]) {
         [overrides addEntriesFromDictionary:[(id)ret overrideKeysForMapping]];
     }
     for (NSString* key in json) {
         /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
         NSUInteger index;
-        if ((index = [propertiesToFill[kRGPropertyCanonicalName] indexOfObject:canonicalForm(key)]) != NSNotFound) {
+        if ((index = [propertiesToFill[kRGPropertyCanonicalName] indexOfObject:rg_canonicalForm(key)]) != NSNotFound) {
             @try {
-                [ret initProperty:propertiesToFill[index][kRGPropertyName] withJSONValue:json[key]];
+                [ret rg_initProperty:propertiesToFill[index][kRGPropertyName] withJSONValue:json[key]];
             }
             @catch (NSException* e) {} /* Should this fail the property is left alone */
         }
@@ -314,7 +314,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
             jsonValue = jsonValue[subkey];
         }
         @try {
-            [ret initProperty:overrides[key] withJSONValue:jsonValue];
+            [ret rg_initProperty:overrides[key] withJSONValue:jsonValue];
         }
         @catch (NSException* e) {} /* Should this fail the property is left alone */
     }
@@ -326,7 +326,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
  
  @discussion JSON types when deserialized from NSData are: NSNull, NSNumber (number or boolean), NSString, NSArray, NSDictionary
  */
-- (void) initProperty:(NSString*)key withJSONValue:(id)JSONValue {
+- (void) rg_initProperty:(NSString*)key withJSONValue:(id)JSONValue {
     /* Can't initialize the value of a property if the property doesn't exist */
     if ([key isEqualToString:(NSString*)kRGPropertyListProperty]) return;
     if ([self.__property_list__[kRGPropertyName] indexOfObject:key] == NSNotFound) return;
@@ -337,7 +337,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         return;
     }
 
-    Class propertyType = NSClassFromString([self classStringForProperty:key]) ?: [NSNumber class]; /* NSClassFromString returns Nil when it can't parse the string; this corresponds to a primitive property */
+    Class propertyType = NSClassFromString([self rg_classStringForProperty:key]) ?: [NSNumber class]; /* NSClassFromString returns Nil when it can't parse the string; this corresponds to a primitive property */
     
     if ([JSONValue isKindOfClass:[NSArray class]]) { /* If the array we're given contains objects which we can create, create those too */
         uint32_t count = (uint32_t)[JSONValue count] ?: 1u;
@@ -369,7 +369,7 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
         JSONValue = [NSArray arrayWithObjects:parseBuffer count:idx];
     }
     
-    if ([propertyType isSubclassOfClass:[JSONValue class]] && [JSONValue respondsToSelector:@selector(mutableCopyWithZone:)] && [[JSONValue mutableCopy] isMemberOfClass:propertyType]) {
+    if ([JSONValue respondsToSelector:@selector(mutableCopyWithZone:)] && [[JSONValue mutableCopy] isMemberOfClass:propertyType]) {
         [self setValue:[JSONValue mutableCopy] forKey:key];
         return;
     } /* This is the one instance where we can quickly cast down the value */
@@ -381,7 +381,9 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
     
     /* Otherwise... this mess */
     
-    if ([propertyType isSubclassOfClass:[NSDictionary class]]) { /* NSDictionary */
+    if (isClassObject(propertyType)) {
+        self[key] = NSClassFromString([JSONValue description]);
+    } else if ([propertyType isSubclassOfClass:[NSDictionary class]]) { /* NSDictionary */
         self[key] = [[propertyType alloc] initWithDictionary:JSONValue];
     } else if (isCollectionObject(propertyType)) { /* NSArray, NSSet, or NSOrderedSet */
         self[key] = [[propertyType alloc] initWithArray:JSONValue];
@@ -504,10 +506,10 @@ NSDictionary* parsePropertyStruct(objc_property_t property) {
 }
 
 - (id) extendWith:(id)object {
-    for (NSString* propertyName in [object keys]) {
+    for (NSString* propertyName in [object rg_keys]) {
         if ([propertyName isEqualToString:(NSString*)kRGPropertyListProperty]) continue;
         @try {
-            [self initProperty:propertyName withJSONValue:object[propertyName]];
+            [self rg_initProperty:propertyName withJSONValue:object[propertyName]];
         }
         @catch (NSException* e) {}
     }

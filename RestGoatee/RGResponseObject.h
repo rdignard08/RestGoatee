@@ -24,7 +24,7 @@
 @class NSManagedObjectContext;
 
 /**
- Encapsulate the complete response from a request to RGAPIClient.  The presence of `error` does not preclude `responseBody` from having a value; rather it will contain whatever data was received, and parsed the best of the ability of AFNetowrking.
+ Encapsulate the complete response from a request to RGAPIClient.  The presence of `error` does not preclude `responseBody` from having a value; rather it will contain whatever data was received, and parsed the best of the ability of AFNetworking.
  */
 @interface RGResponseObject : NSObject
 
