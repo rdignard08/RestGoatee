@@ -88,6 +88,8 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask
             } else {
                 response = cls ? [cls objectFromJSON:target inContext:context] : target; /* New Object */
             }
+        } else {
+            response = cls ? [cls objectFromJSON:target inContext:context] : target; /* New Object */
         }
     }
     @try {
