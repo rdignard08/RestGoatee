@@ -308,11 +308,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         }
     }
     for (NSString* key in overrides) { /* The developer provided an override keypath */
-        NSArray* keys = [key componentsSeparatedByString:@"."];
-        id jsonValue = json;
-        for (NSString* subkey in keys) {
-            jsonValue = jsonValue[subkey];
-        }
+        id jsonValue = [json valueForKeyPath:key];
         @try {
             [ret rg_initProperty:overrides[key] withJSONValue:jsonValue];
         }
@@ -328,8 +324,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
  */
 - (void) rg_initProperty:(NSString*)key withJSONValue:(id)JSONValue {
     /* Can't initialize the value of a property if the property doesn't exist */
-    if ([key isEqualToString:(NSString*)kRGPropertyListProperty]) return;
-    if ([self.__property_list__[kRGPropertyName] indexOfObject:key] == NSNotFound) return;
+    if ([key isKindOfClass:[NSNull class]] || [key isEqualToString:(NSString*)kRGPropertyListProperty] || [self.__property_list__[kRGPropertyName] indexOfObject:key] == NSNotFound) return;
     if (!JSONValue || [JSONValue isKindOfClass:[NSNull class]]) {
         /* We don't care what the receiving type is since it's empty anyway
         The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
