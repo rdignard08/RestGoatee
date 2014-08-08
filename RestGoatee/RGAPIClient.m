@@ -31,7 +31,7 @@ static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, i
 };
 
 static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask* task) {
-    if ([[task response] respondsToSelector:@selector(statusCode)]) {
+    if (error && [[task response] respondsToSelector:@selector(statusCode)]) {
         NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
         userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
         error = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:userInfo];
