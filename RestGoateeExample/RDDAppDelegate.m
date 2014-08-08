@@ -20,6 +20,9 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    [[RDDAPIClient sharedManager] getItunesArtist:@"Pink Floyd"];
+    
     return YES;
 }
 

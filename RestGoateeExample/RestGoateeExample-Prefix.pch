@@ -14,4 +14,8 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
+
+    #import <RestGoatee/RestGoatee.h>
+    #import "RDDAPIClient.h"
+    #import "RDDItunesEntry.h"
 #endif
