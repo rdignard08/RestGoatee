@@ -128,4 +128,6 @@ Class rg_sNSFetchRequest;
  */
 - (instancetype) extendWith:(id)object;
 
+- (instancetype) extendWith:(id)object inContext:(NSManagedObjectContext*)context;
+
 @end

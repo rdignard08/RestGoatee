@@ -71,7 +71,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask
             if (primaryKey && allObjects && entry[primaryKey]) {
                 index = [allObjects[primaryKey] indexOfObject:entry[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
                 if (index != NSNotFound) {
-                    [ret addObject:[allObjects[index] extendWith:entry]]; /* Existing Object */
+                    [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
                 } else {
                     [ret addObject:[cls objectFromJSON:entry inContext:context]]; /* New Object */
                 }
@@ -84,7 +84,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask
         if (primaryKey && allObjects && target[primaryKey]) {
             index = [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
             if (index != NSNotFound) {
-                response = [allObjects[index] extendWith:target]; /* Existing Object */
+                response = [allObjects[index] extendWith:target inContext:context]; /* Existing Object */
             } else {
                 response = cls ? [cls objectFromJSON:target inContext:context] : target; /* New Object */
             }

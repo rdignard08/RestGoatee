@@ -302,7 +302,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         NSUInteger index;
         if ((index = [propertiesToFill[kRGPropertyCanonicalName] indexOfObject:rg_canonicalForm(key)]) != NSNotFound) {
             @try {
-                [ret rg_initProperty:propertiesToFill[index][kRGPropertyName] withJSONValue:json[key]];
+                [ret rg_initProperty:propertiesToFill[index][kRGPropertyName] withJSONValue:json[key] inContext:context];
             }
             @catch (NSException* e) {} /* Should this fail the property is left alone */
         }
@@ -310,11 +310,26 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     for (NSString* key in overrides) { /* The developer provided an override keypath */
         id jsonValue = [json valueForKeyPath:key];
         @try {
-            [ret rg_initProperty:overrides[key] withJSONValue:jsonValue];
+            [ret rg_initProperty:overrides[key] withJSONValue:jsonValue inContext:context];
         }
         @catch (NSException* e) {} /* Should this fail the property is left alone */
     }
     return ret;
+}
+
+NSArray* rg_unpackArray(NSArray* json, id context) {
+    NSMutableArray* ret = [NSMutableArray array];
+    for (__strong id obj in json) {
+        if ([obj isKindOfClass:[NSDictionary class]]) {
+            Class objectClass = NSClassFromString([(classPrefix() ?: @"") stringByAppendingString:([obj[serverTypeKey()] capitalizedString] ?: @"")]);
+            if (!objectClass) {
+                objectClass = NSClassFromString(obj[kRGSerializationKey]);
+            }
+            obj = objectClass && ![objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj inContext:context] : obj;
+        }
+        [ret addObject:obj];
+    }
+    return [ret copy];
 }
 
 /**
@@ -322,7 +337,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
  
  @discussion JSON types when deserialized from NSData are: NSNull, NSNumber (number or boolean), NSString, NSArray, NSDictionary
  */
-- (void) rg_initProperty:(NSString*)key withJSONValue:(id)JSONValue {
+- (void) rg_initProperty:(NSString*)key withJSONValue:(id)JSONValue inContext:(NSManagedObjectContext*)context {
     /* Can't initialize the value of a property if the property doesn't exist */
     if ([key isKindOfClass:[NSNull class]] || [key isEqualToString:(NSString*)kRGPropertyListProperty] || [self.__property_list__[kRGPropertyName] indexOfObject:key] == NSNotFound) return;
     if (!JSONValue || [JSONValue isKindOfClass:[NSNull class]]) {
@@ -332,36 +347,10 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         return;
     }
 
-    Class propertyType = NSClassFromString([self rg_classStringForProperty:key]) ?: [NSNumber class]; /* NSClassFromString returns Nil when it can't parse the string; this corresponds to a primitive property */
+    Class propertyType = NSClassFromString([self rg_classStringForProperty:key]);
     
     if ([JSONValue isKindOfClass:[NSArray class]]) { /* If the array we're given contains objects which we can create, create those too */
-        uint32_t count = (uint32_t)[JSONValue count] ?: 1u;
-        id parseBuffer[count];
-        uint32_t idx = 0;
-        for (id obj in JSONValue) {
-            if ([obj isKindOfClass:[NSDictionary class]]) {
-                NSString* classString;
-                Class objectClass;
-                
-                const NSString* prefix = classPrefix() ?: @"";
-                const NSString* typeKey = serverTypeKey() ?: @"";
-                NSString* const serverType = [obj[typeKey] capitalizedString] ?: @"";
-                classString = [prefix stringByAppendingString:serverType];
-                objectClass = NSClassFromString(classString);
-                
-                if (!objectClass) { /* although we might have a string, it might not be a valid class */
-                    classString = obj[kRGSerializationKey];
-                    objectClass = NSClassFromString(classString);
-                }
-
-                parseBuffer[idx] = objectClass && ![objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj] : obj;
-                idx++;
-            } else {
-                parseBuffer[idx] = obj;
-                idx++;
-            }
-        }
-        JSONValue = [NSArray arrayWithObjects:parseBuffer count:idx];
+        JSONValue = rg_unpackArray(JSONValue, context);
     }
     
     if ([JSONValue respondsToSelector:@selector(mutableCopyWithZone:)] && [[JSONValue mutableCopy] isMemberOfClass:propertyType]) {
@@ -500,15 +489,19 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:0 error:nil];
 }
 
-- (id) extendWith:(id)object {
+- (instancetype) extendWith:(id)object inContext:(NSManagedObjectContext*)context {
     for (NSString* propertyName in [object rg_keys]) {
         if ([propertyName isEqualToString:(NSString*)kRGPropertyListProperty]) continue;
         @try {
-            [self rg_initProperty:propertyName withJSONValue:object[propertyName]];
+            [self rg_initProperty:propertyName withJSONValue:object[propertyName] inContext:context];
         }
         @catch (NSException* e) {}
     }
     return self;
+}
+
+- (instancetype) extendWith:(id)object {
+    return [self extendWith:object inContext:nil];
 }
 
 @end
