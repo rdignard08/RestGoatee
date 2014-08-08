@@ -60,7 +60,7 @@ const NSString* const serverTypeKey() {
 }
 #endif
 
-NSArray* const rg_dateFormats() {
+static NSArray* const rg_dateFormats() {
     static dispatch_once_t onceToken;
     static NSArray* _sDateFormats;
     dispatch_once(&onceToken, ^{
@@ -69,7 +69,7 @@ NSArray* const rg_dateFormats() {
     return _sDateFormats;
 }
 
-NSString* rg_canonicalForm(NSString* input) {
+static NSString* rg_canonicalForm(NSString* input) {
     NSString* output;
     const size_t inputLength = input.length + 1; /* +1 for the nul terminator */
     char* inBuffer, * outBuffer;
@@ -98,6 +98,21 @@ NSString* rg_canonicalForm(NSString* input) {
     return output;
 }
 
+static NSArray* rg_unpackArray(NSArray* json, id context) {
+    NSMutableArray* ret = [NSMutableArray array];
+    for (__strong id obj in json) {
+        if ([obj isKindOfClass:[NSDictionary class]]) {
+            Class objectClass = NSClassFromString([(classPrefix() ?: @"") stringByAppendingString:([obj[serverTypeKey()] capitalizedString] ?: @"")]);
+            if (!objectClass) {
+                objectClass = NSClassFromString(obj[kRGSerializationKey]);
+            }
+            obj = objectClass && ![objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj inContext:context] : obj;
+        }
+        [ret addObject:obj];
+    }
+    return [ret copy];
+}
+
 static inline BOOL isClassObject(id object) {
     return object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
     /* if the class of the meta-class == NSObject's meta-class; object was itself a Class object */
@@ -112,18 +127,18 @@ static inline BOOL isKeyedCollectionObject(Class cls) {
     return [cls isSubclassOfClass:[NSDictionary class]];
 }
 
-NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
+static NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
     NSArray* substrs = [str componentsSeparatedByString:@"\""];
     if (substrs.count != 3) return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
     return substrs[1];
 }
 
-NSString* rg_stringForTypeEncoding(NSString* str) {
+static NSString* rg_stringForTypeEncoding(NSString* str) {
     str = rg_trimLeadingAndTrailingQuotes(str);
     return NSClassFromString(str) ? str : NSStringFromClass([NSNumber class]);
 }
 
-NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
+static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     
     NSString* name = [NSString stringWithUTF8String:property_getName(property)];
     
@@ -190,24 +205,15 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
 
 @implementation NSObject (RG_Introspection)
 
-+ (NSArray*) rg_classStack {
-    id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
-    if (!ret) {
-        NSMutableArray* stack = [NSMutableArray array];
-        for (Class superClass = self; superClass; superClass = [superClass superclass]) {
-            [stack insertObject:superClass atIndex:0]; /* we want superclass properties to be overwritten by subclass properties */
-        }
-        ret = [stack copy];
-        objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    return ret;
-}
-
 + (NSArray*) __property_list__ {
     id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
     if (!ret) {
         NSMutableArray* propertyStructure = [NSMutableArray array];
-        for (Class cls in [self rg_classStack]) {
+        NSMutableArray* stack = [NSMutableArray array];
+        for (Class superClass = self; superClass; superClass = [superClass superclass]) {
+            [stack insertObject:superClass atIndex:0]; /* we want superclass properties to be overwritten by subclass properties so append front */
+        }
+        for (Class cls in stack) {
             objc_property_t* properties = class_copyPropertyList(cls, NULL);
             for (uint32_t i = 0; (properties + i) && properties[i]; i++) {
                 [propertyStructure addObject:rg_parsePropertyStruct(properties[i])];
@@ -315,21 +321,6 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         @catch (NSException* e) {} /* Should this fail the property is left alone */
     }
     return ret;
-}
-
-NSArray* rg_unpackArray(NSArray* json, id context) {
-    NSMutableArray* ret = [NSMutableArray array];
-    for (__strong id obj in json) {
-        if ([obj isKindOfClass:[NSDictionary class]]) {
-            Class objectClass = NSClassFromString([(classPrefix() ?: @"") stringByAppendingString:([obj[serverTypeKey()] capitalizedString] ?: @"")]);
-            if (!objectClass) {
-                objectClass = NSClassFromString(obj[kRGSerializationKey]);
-            }
-            obj = objectClass && ![objectClass isSubclassOfClass:[NSDictionary class]] ? [objectClass objectFromJSON:obj inContext:context] : obj;
-        }
-        [ret addObject:obj];
-    }
-    return [ret copy];
 }
 
 /**
