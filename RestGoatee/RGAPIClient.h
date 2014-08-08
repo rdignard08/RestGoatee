@@ -25,52 +25,78 @@
 
 typedef void(^RGResponseBlock)(RGResponseObject*);
 
+@protocol RGSerializationDelegate, RGResponseDelegate;
 @class NSManagedObjectContext;
+
 @interface RGAPIClient : AFHTTPSessionManager
 
-/**
- Implement this method if you wish to provide a context for response objects which are subclasses of NSManagedObject.  Types other than NSManagedObject are not queried.
- */
-+ (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls;
-
-/**
- Return a non-`nil` key to have managed objects be reconciled to an existing object if the value of this key matches.
- */
-+ (NSString*) keyForReconciliationOfType:(Class)cls;
-
-+ (void) setDefaultBaseURL:(NSURL*)url;
-+ (instancetype) manager;
+@property (nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
+@property (nonatomic, weak) id<RGResponseDelegate> responseDelegate;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
-- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
-- (void) GET:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
-- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
-- (void) POST:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
 - (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
-- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
-- (void) PUT:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
 
 /**
  Explicitly specify the destination class and request parameters.
  */
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
+
+@end
+
+@interface RGAPIClient (RGConvenience)
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) GET:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
+
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) POST:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
+
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
+- (void) PUT:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
+
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
 - (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
 - (void) DELETE:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
+@end
+
+@protocol RGResponseDelegate <NSObject>
+
+/**
+ Called as part of the success procedure after all deserialization has taken place.
+ */
+- (void) response:(RGResponseObject*)response receivedForRequest:(NSURLSessionDataTask*)task;
+
+/**
+ Called when an error occurs, and will attempt to include as much information as possible in `response`.
+ */
+- (void) response:(RGResponseObject*)response failedForRequest:(NSURLSessionDataTask*)task;
+
+@end
+
+@protocol RGSerializationDelegate <NSObject>
+
+/**
+ Implement this method if you wish to provide a context for response objects which are subclasses of NSManagedObject.  Types other than NSManagedObject are not queried.
+ */
+- (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls;
+
+/**
+ Return a non-`nil` key to have managed objects be reconciled to an existing object if the value of this key matches.
+ */
+- (NSString*) keyForReconciliationOfType:(Class)cls;
 
 @end

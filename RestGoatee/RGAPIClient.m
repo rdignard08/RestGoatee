@@ -26,135 +26,124 @@
 
 const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
 
+static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, id obj2) {
+    return [[obj1 description] compare:[obj2 description]];
+};
+
 static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask* task) {
-    NSError* modifiedError = error;
     if ([[task response] respondsToSelector:@selector(statusCode)]) {
         NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
         userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
-        modifiedError = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:userInfo];
+        error = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:userInfo];
     }
-    return modifiedError;
+    return error;
 }
 
 @implementation RGAPIClient
 
-+ (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls {
-    return nil;
-}
-
-+ (NSString*) keyForReconciliationOfType:(Class)cls {
-    return nil;
-}
-
-static NSURL* _sBaseURL;
-+ (void) setDefaultBaseURL:(NSURL*)url {
-    _sBaseURL = url;
-}
-
-+ (instancetype) manager {
-    static RGAPIClient* _sManager;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sManager = [[self alloc] initWithBaseURL:_sBaseURL];
-    });
-    return _sManager;
-}
-
-- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(NSManagedObjectContext**)outCountext {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
+- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(NSManagedObjectContext**)outContext {
     /* cls* | NSArray<cls*>* */ id target;
     /* NSManagedObjectContext* */ id context;
     NSString* primaryKey;
+    NSUInteger index;
     NSArray* allObjects;
     if ([cls isSubclassOfClass:rg_sNSManagedObject]) {
-        primaryKey = [[self class] keyForReconciliationOfType:cls];
-        context = [[self class] contextForManagedObjectType:cls];
+        if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
+            primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
+        }
+        if ([self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)]) {
+            context = [self.serializationDelegate contextForManagedObjectType:cls];
+            *outContext = context;
+        }
+        NSAssert(context, @"Subclasses of NSManagedObject must be created within an NSManagedObjectContext");
     }
-    if ([response isKindOfClass:[NSData class]] && [NSJSONSerialization isValidJSONObject:response]) {
-        response = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
-    }
-    if (![response isKindOfClass:[NSDictionary class]] && ![response isKindOfClass:[NSArray class]]) return response;
-    if (path && ![path isEqualToString:@""]) {
-        target = response[path];
-    } else {
-        target = response;
-    }
-    if (primaryKey) {
+    target = path ? [response valueForKeyPath:path] : response;
+    if (primaryKey && cls) {
         id fetch = [rg_sNSFetchRequest performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
         [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
         allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch withObject:nil];
     }
-    
     if ([target isKindOfClass:[NSArray class]]) {
         NSMutableArray* ret = [NSMutableArray array];
-        for (NSDictionary* obj in target) {
-            NSUInteger index;
-            @try {
-                index = allObjects[primaryKey] ? [allObjects[primaryKey] indexOfObject:obj[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
-                    return [[obj1 description] compare:[obj2 description]];
-                }] : NSNotFound;
-            }
-            @catch (NSException* e) {
-                index = NSNotFound;
-            }
-            if (index != NSNotFound) { /* Existing Object */
-                [ret addObject:[allObjects[index] extendWith:obj]];
-            } else { /* New Object */
-                [ret addObject:(cls ? [cls objectFromJSON:obj inContext:context] : obj)];
+        for (id entry in target) {
+            if (primaryKey && allObjects && entry[primaryKey]) {
+                index = [allObjects[primaryKey] indexOfObject:entry[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
+                if (index != NSNotFound) {
+                    [ret addObject:[allObjects[index] extendWith:entry]]; /* Existing Object */
+                } else {
+                    [ret addObject:[cls objectFromJSON:entry inContext:context]]; /* New Object */
+                }
+            } else {
+                [ret addObject:(cls ? [cls objectFromJSON:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
             }
         }
-        response = [ret copy];
-    } else { /* NSDictionary */
-        NSUInteger index;
-        @try {
-            index = allObjects[primaryKey] ? [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:^NSComparisonResult (id obj1, id obj2) {
-                return [[obj1 description] compare:[obj2 description]];
-            }] : NSNotFound;
-        }
-        @catch (NSException* e) {
-            index = NSNotFound;
-        }
-        if (index != NSNotFound) {
-            response = [allObjects[index] extendWith:target];
-        } else {
-            response = cls ? [cls objectFromJSON:target inContext:context] : target;
+        response = ret;
+    } else if ([target isKindOfClass:[NSDictionary class]]) {
+        if (primaryKey && allObjects && target[primaryKey]) {
+            index = [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
+            if (index != NSNotFound) {
+                response = [allObjects[index] extendWith:target]; /* Existing Object */
+            } else {
+                response = cls ? [cls objectFromJSON:target inContext:context] : target; /* New Object */
+            }
         }
     }
     @try {
         [context performSelector:@selector(save:) withObject:nil];
     }
     @catch (NSException* e) {}
-    
-#pragma clang diagnostic pop
-    if (context) {
-        *outCountext = context;
-    }
     return response;
 }
+#pragma clang diagnostic pop
 
 - (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keypath class:(Class)cls error:(NSError*)error {
     RGResponseObject* ret = [[RGResponseObject alloc] init];
     NSManagedObjectContext* context;
-    if (error) {
-        ret.error = error;
-    }
-    if (body) {
+    if (!error && body) {
         ret.responseBody = [self parseResponse:body atPath:keypath intoClass:cls context:&context];
+    } else {
+        ret.responseBody = body;
     }
-    if (context) {
-        ret.context = context;
-    }
+    ret.error = error;
+    ret.context = context;
     return ret;
 }
 
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self GET:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
-        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
+- (void) request:(NSString*)method url:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    NSMutableURLRequest* request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    __block NSURLSessionDataTask* task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
+        RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, task)];
+        if (!error && [self.responseDelegate respondsToSelector:@selector(response:receivedForRequest:)]) {
+            [self.responseDelegate response:responseObject receivedForRequest:task];
+        } else if (error && [self.responseDelegate respondsToSelector:@selector(response:failedForRequest:)]) {
+            [self.responseDelegate response:responseObject failedForRequest:task];
+        }
+        if (completion) completion(responseObject);
     }];
+    [task resume];
 }
+
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion];
+}
+
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:completion];
+}
+
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:completion];
+}
+
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+    [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:completion];
+}
+
+@end
+
+@implementation RGAPIClient (RGConvenience)
 
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
     [self GET:url parameters:parameters keyPath:nil class:cls completion:completion];
@@ -166,14 +155,6 @@ static NSURL* _sBaseURL;
 
 - (void) GET:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
     [self GET:url parameters:nil keyPath:nil class:cls completion:completion];
-}
-
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self POST:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
-        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
-    }];
 }
 
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
@@ -188,14 +169,6 @@ static NSURL* _sBaseURL;
     [self POST:url parameters:nil keyPath:nil class:cls completion:completion];
 }
 
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self PUT:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
-        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
-    }];
-}
-
 - (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
     [self PUT:url parameters:parameters keyPath:nil class:cls completion:completion];
 }
@@ -206,14 +179,6 @@ static NSURL* _sBaseURL;
 
 - (void) PUT:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
     [self PUT:url parameters:nil keyPath:nil class:cls completion:completion];
-}
-
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self DELETE:url parameters:parameters success:^(NSURLSessionDataTask* task, id body) {
-        if (completion) completion([self responseObjectFromBody:body keypath:path class:cls error:nil]);
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        if (completion) completion([self responseObjectFromBody:nil keypath:nil class:Nil error:errorWithStatusCodeFromTask(error, task)]);
-    }];
 }
 
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
