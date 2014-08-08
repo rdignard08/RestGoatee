@@ -46,7 +46,7 @@ const NSString* const kRGSerializationKey = @"__class";
 const NSString* const kRGPropertyListProperty = @"__property_list__";
 
 static NSString* rg_trimLeadingAndTrailingQuotes(NSString*) __attribute__((pure));
-static NSString* rg_stringForTypeEncoding(NSString*) __attribute__((pure));
+static Class rg_classForTypeString(NSString*) __attribute__((pure));
 static NSDictionary* rg_parsePropertyStruct(objc_property_t) __attribute__((pure));
 static NSString* rg_canonicalForm(NSString*) __attribute__((pure));
 
@@ -117,6 +117,11 @@ static inline BOOL isClassObject(id object) {
     return object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
     /* if the class of the meta-class == NSObject's meta-class; object was itself a Class object */
 }
+
+static inline BOOL isMetaClassObject(id object) {
+    return isClassObject(object) && object_getClass(object) == objc_getMetaClass("NSObject");
+}
+
 static inline BOOL isInlineObject(Class cls) {
     return [cls isSubclassOfClass:[NSDate class]] || [cls isSubclassOfClass:[NSString class]] || [cls isSubclassOfClass:[NSData class]] || [cls isSubclassOfClass:[NSNumber class]] || [cls isSubclassOfClass:[NSNull class]] || [cls isSubclassOfClass:[NSValue class]];
 }
@@ -133,9 +138,10 @@ static NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
     return substrs[1];
 }
 
-static NSString* rg_stringForTypeEncoding(NSString* str) {
+static Class rg_classForTypeString(NSString* str) {
+    if ([str isEqualToString:@"#"]) return objc_getMetaClass("NSObject");
     str = rg_trimLeadingAndTrailingQuotes(str);
-    return NSClassFromString(str) ? str : NSStringFromClass([NSNumber class]);
+    return NSClassFromString(str) ?: [NSNumber class];
 }
 
 static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
@@ -176,7 +182,7 @@ static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
                 propertyDict[kRGPropertyAtomicType] = kRGPropertyNonatomic;
                 break;
             case 'T':
-                propertyDict[kRGPropertyClass] = rg_stringForTypeEncoding(value);
+                propertyDict[kRGPropertyClass] = rg_classForTypeString(value);
                 break;
             case 't': /* TODO: I have no fucking idea what 'old-style' typing looks like */
                 propertyDict[kRGPropertyClass] = value;
@@ -199,7 +205,7 @@ static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
 
 - (NSArray*) __property_list__;
 - (NSArray*) rg_keys;
-- (NSString*) rg_classStringForProperty:(NSString*)propertyName;
+- (Class) rg_classForProperty:(NSString*)propertyName;
 
 @end
 
@@ -240,7 +246,7 @@ static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     return self.__property_list__[kRGPropertyName];
 }
 
-- (NSString*) rg_classStringForProperty:(NSString*)propertyName {
+- (Class) rg_classForProperty:(NSString*)propertyName {
     NSUInteger index = [self.__property_list__[kRGPropertyName] indexOfObject:propertyName];
     return index == NSNotFound ? nil : self.__property_list__[index][kRGPropertyClass];
 }
@@ -338,7 +344,7 @@ static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         return;
     }
 
-    Class propertyType = NSClassFromString([self rg_classStringForProperty:key]);
+    Class propertyType = [self rg_classForProperty:key];
     
     if ([JSONValue isKindOfClass:[NSArray class]]) { /* If the array we're given contains objects which we can create, create those too */
         JSONValue = rg_unpackArray(JSONValue, context);
@@ -356,7 +362,7 @@ static NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     
     /* Otherwise... this mess */
     
-    if (isClassObject(propertyType)) {
+    if (isMetaClassObject(propertyType)) { /* the properties type is Meta-class so its a reference to Class */
         self[key] = NSClassFromString([JSONValue description]);
     } else if ([propertyType isSubclassOfClass:[NSDictionary class]]) { /* NSDictionary */
         self[key] = [[propertyType alloc] initWithDictionary:JSONValue];
