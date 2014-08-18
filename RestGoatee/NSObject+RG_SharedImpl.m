@@ -30,7 +30,19 @@ const NSString* const kRGSerializationKey = @"__class";
 const NSString* const kRGPropertyListProperty = @"__property_list__";
 
 const NSString* const rg_classPrefix() {
-    return nil;
+    static dispatch_once_t onceToken;
+    static NSString* _sClassPrefix;
+    dispatch_once(&onceToken, ^{
+        NSString* appDelegateName = [[[UIApplication sharedApplication].delegate class] description];
+        for (NSUInteger i = 0; i < appDelegateName.length; i++) {
+            unichar c = [appDelegateName characterAtIndex:i];
+            if (c < 'A' || c > 'Z') { /* if it's not a capital letter, we've found the end of the prefix */
+                _sClassPrefix = [appDelegateName stringByReplacingCharactersInRange:NSMakeRange(i == 0 ?: i - 1, i == 0 ? appDelegateName.length : appDelegateName.length - i + 1) withString:@""]; /* the last capital character is not part of the prefix since it's the class name */
+                break;
+            }
+        }
+    });
+    return _sClassPrefix;
 }
 
 const NSString* const rg_serverTypeKey() {
@@ -106,7 +118,6 @@ Class rg_classForTypeString(NSString* str) {
 }
 
 NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
-    
     NSString* name = [NSString stringWithUTF8String:property_getName(property)];
     
     /* These are default values if there is no specification */
@@ -176,6 +187,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
 }
 
 + (NSArray*) __property_list__ {
+    rg_classPrefix();
     id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
     if (!ret) {
         NSMutableArray* propertyStructure = [NSMutableArray array];
