@@ -22,6 +22,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <Foundation/Foundation.h>
 
-@interface NSNull (LessShitty)
+@interface NSNull (Niller)
 
 @end

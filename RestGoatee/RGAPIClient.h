@@ -31,27 +31,94 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 @interface RGAPIClient : AFHTTPSessionManager
 
 @property (nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
-@property (nonatomic, weak) id<RGResponseDelegate> responseDelegate;
 
 /**
- Explicitly specify the destination class and request parameters.
+ @abstract GET the specified relative endpoint.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which GET is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
 
 /**
- Explicitly specify the destination class and request parameters.
+ @abstract Provide a delegate object which will be called when a success or failure occured.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which GET is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param delegate the object which will be called in the event of success or failure.
+ */
+- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate;
+
+/**
+ @abstract POST to the specified relative endpoint.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which POST is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
 
 /**
- Explicitly specify the destination class and request parameters.
+ @abstract Provide a delegate object which will be called when a success or failure occured.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which POST is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param delegate the object which will be called in the event of success or failure.
+ */
+- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate;
+
+/**
+ @abstract PUT to the specified relative endpoint.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which PUT is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
 - (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
 
 /**
- Explicitly specify the destination class and request parameters.
+ @abstract Provide a delegate object which will be called when a success or failure occured.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which PUT is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param delegate the object which will be called in the event of success or failure.
+ */
+- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate;
+
+/**
+ @abstract DELETE the specified relative endpoint.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which DELETE is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion; /* This is the full variant */
+
+/**
+ @abstract Provide a delegate object which will be called when a success or failure occured.
+ 
+ @param url a string relative to the base url which specifies the desired endpoint on which DELETE is to be performed.
+ @param parameters a dictionary of key-value pairs (the values need not be strings) to append to the url.
+ @param path specify where in the response JSON to find the desired objects to be deserialized.  Unspecified will try to use the entire JSON response.
+ @param cls the class into which the response should be deserialized.  Do not specify a foundation class (NSArray/NSDictionary); omit this argument if this is the desired behavior.
+ @param delegate the object which will be called in the event of success or failure.
+ */
+- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate;
 
 @end
 
@@ -71,9 +138,24 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion;
 - (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion;
 - (void) DELETE:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion;
+
+
+/* No frills methods... */
+
+- (void) GET:(NSString*)url completion:(RGResponseBlock)completion;
+- (void) GET:(NSString*)url delegate:(id<RGResponseDelegate>)delegate;
+- (void) POST:(NSString*)url completion:(RGResponseBlock)completion;
+- (void) POST:(NSString*)url delegate:(id<RGResponseDelegate>)delegate;
+- (void) PUT:(NSString*)url completion:(RGResponseBlock)completion;
+- (void) PUT:(NSString*)url delegate:(id<RGResponseDelegate>)delegate;
+- (void) DELETE:(NSString*)url completion:(RGResponseBlock)completion;
+- (void) DELETE:(NSString*)url delegate:(id<RGResponseDelegate>)delegate;
+
 @end
 
 @protocol RGResponseDelegate <NSObject>
+
+@required
 
 /**
  Called as part of the success procedure after all deserialization has taken place.
