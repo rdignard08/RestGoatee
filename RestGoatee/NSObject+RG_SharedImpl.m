@@ -187,7 +187,6 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
 }
 
 + (NSArray*) __property_list__ {
-    rg_classPrefix();
     id ret = objc_getAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty);
     if (!ret) {
         NSMutableArray* propertyStructure = [NSMutableArray array];
