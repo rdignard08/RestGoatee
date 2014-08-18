@@ -9,12 +9,7 @@ By default, a key in the json of `foo_bar` will be automatically mapped to a pro
 # Installation
 Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`
 
-Depending on your version of the Objective-C runtime you may have to implement the functions:
-```objc
-const NSString* const classPrefix();
-const NSString* const serverTypeKey();
-```
-returning `nil` is sufficient if you don't wish to enable type detection.
+A feature I've called "Server Typing", which gives the server the opportunity to designate what client-side class is suited for a given dictionary, is disabled by default.  You can edit `rg_serverTypeKey()` to return the appropriate key should this behavior be desired.
 
 Example
 =======
