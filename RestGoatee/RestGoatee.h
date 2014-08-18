@@ -23,7 +23,12 @@
 
 extern const NSString* const kRGHTTPStatusCode; /* Key returned as part of HTTP related errors */
 
-#import "RGResponseObject.h"
-#import "NSObject+RG_Deserialization.h"
+#import "NSObject+RG_KeyedSubscripting.h"
 #import "NSError+RG_HTTPStatusCode.h"
+#import "RGResponseObject.h"
+
+
+#import "NSObject+RG_Deserialization.h"
+#import "NSObject+RG_Serialization.h"
+
 #import "RGAPIClient.h"

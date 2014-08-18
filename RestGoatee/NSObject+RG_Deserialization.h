@@ -23,36 +23,6 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef __SERVER_TYPING_
-/**
- Optionally use this function to provide your project's class prefix.
- 
- XYZMyClass -> return @"XYZ"
- 
- */
-extern const NSString* const classPrefix(void) __attribute__((weak, const));
-
-/**
- Optionally use this function to provide your server's type keyPath.
- 
- {
- "type" : "message"
- "message" : "hello!"
- }
- */
-extern const NSString* const serverTypeKey(void) __attribute__((weak, const));
-#endif
-
-/**
- These classes are used to dynamically link into coredata if present.
- */
-Class rg_sNSManagedObjectContext;
-Class rg_sNSManagedObject;
-Class rg_sNSManagedObjectModel;
-Class rg_sNSPersistentStoreCoordinator;
-Class rg_sNSEntityDescription;
-Class rg_sNSFetchRequest;
-
 @class NSManagedObjectContext;
 
 @protocol RestGoateeSerialization <NSObject>
@@ -91,17 +61,6 @@ Class rg_sNSFetchRequest;
 @interface NSObject (RG_Deserialization)
 
 /**
- @abstract returns the property or instance variable of the name given by `key`.
- */
-- (id) objectForKeyedSubscript:(id<NSCopying, NSObject>)key;
-
-/**
- @abstract set the value of the particular property or instance variable specified by `key`.
- */
-- (void) setObject:(id)obj forKeyedSubscript:(id<NSCopying, NSObject>)key;
-
-
-/**
  @abstract subclasses of `NSManagedObject` must use this method since they cannot be initialized without a context.
  */
 + (instancetype) objectFromJSON:(NSDictionary*)json inContext:(NSManagedObjectContext*)context;
@@ -110,16 +69,6 @@ Class rg_sNSFetchRequest;
  @abstract the receiver (the Class object) which receives this method will attempt to initialize an instance of this class with properties assigned from json.
  */
 + (instancetype) objectFromJSON:(NSDictionary*)json;
-
-/**
- @abstract returns the receiver represented as a dictionary with its property names as keys and the values are the values of that property.
- */
-- (NSDictionary*) dictionaryRepresentation;
-
-/**
- @abstract returns the recevier serialized to JSON.
- */
-- (NSData*) JsonRepresentation;
 
 /**
  @abstract merges two objects into a single object.  The return value is not a new object, but rather is the receiver augmented with the values in `object`.
