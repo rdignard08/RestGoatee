@@ -10,10 +10,10 @@ Why _RestGoatee_?
 =================
 Consider your favorite or most popular model framework:
 
-  * Does it require explicit mappings to get even simple objects built?  RestGoatee doesn't
-  * Does it support `NSManagedObject` subclasses? RestGoatee does
-  * Does it intelligently map between snake case (foo-bar) or C case (foo_bar) or camel case (fooBar)? RestGoatee does
-  * Does it intelligently detect the best `NSDate` format to capture information? RestGoatee does
+  * Does it require explicit mappings to get even simple objects built?  this doesn't
+  * Does it support `NSManagedObject` subclasses? this does
+  * Does it intelligently map between snake case (foo-bar) or C case (foo_bar) or camel case (fooBar)? this does
+  * Does it intelligently detect the best `NSDate` format to capture the most information? this does
 
 # Installation
 Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`
