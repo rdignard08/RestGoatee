@@ -6,6 +6,15 @@ This framework has no dependencies beyond AFNetworking and the objective-C runti
 The optional `RestGoateeSerialization` protocol can be used to provide custom and non-standard mappings and dates from JSON to Objective-C.
 By default, a key in the json of `foo_bar` will be automatically mapped to a property of name `fooBar`.  You only need to provide mappings for keys which don't match in "canonical form".
 
+Why _RestGoatee_?
+=================
+Consider your favorite or most popular model framework:
+
+  * Does it require explicit mappings to get even simple objects built?  RestGoatee doesn't
+  * Does it support `NSManagedObject` subclasses? RestGoatee does
+  * Does it intelligently map between snake case (foo-bar) or C case (foo_bar) or camel case (fooBar)? RestGoatee does
+  * Does it intelligently detect the best `NSDate` format to capture information? RestGoatee does
+
 # Installation
 Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`
 
