@@ -31,7 +31,7 @@ const NSString* const kRGPropertyListProperty = @"__property_list__";
 
 const NSString* const rg_classPrefix() {
     static dispatch_once_t onceToken;
-    static NSString* _sClassPrefix;
+    static NSString* _sClassPrefix = @""; /* In case nothing is found, we still want to return some string */
     dispatch_once(&onceToken, ^{
         NSString* appDelegateName = [[[UIApplication sharedApplication].delegate class] description];
         for (NSUInteger i = 0; i < appDelegateName.length; i++) {
