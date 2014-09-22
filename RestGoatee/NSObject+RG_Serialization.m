@@ -62,7 +62,7 @@
         ret = [[NSMutableDictionary alloc] initWithCapacity:self.__property_list__.count];
         for (NSDictionary* property in self.__property_list__) {
             NSString* propertyName = property[kRGPropertyName];
-            if (![ret rg_isPropertyToBeAvoided:propertyName] && ![propertyName isEqual:kRGPropertyListProperty]) {
+            if (![self rg_isPropertyToBeAvoided:propertyName] && ![propertyName isEqual:kRGPropertyListProperty]) {
                 ret[propertyName] = [(self[propertyName] ?: [NSNull null]) __dictionaryHelper:pointersSeen];
             }
         }
