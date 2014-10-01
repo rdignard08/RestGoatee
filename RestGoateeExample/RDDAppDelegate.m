@@ -7,6 +7,7 @@
 //
 
 #import "RDDAppDelegate.h"
+#import "RDDViewController.h"
 
 @implementation RDDAppDelegate
 
@@ -14,14 +15,11 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    RDDViewController* vc = [[RDDViewController alloc] initWithNibName:NSStringFromClass([RDDViewController class]) bundle:nil];
+    self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
-    
-    [[RDDAPIClient sharedManager] getItunesArtist:@"Pink Floyd"];
     
     return YES;
 }

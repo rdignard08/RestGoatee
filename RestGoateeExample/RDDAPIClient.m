@@ -22,6 +22,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RDDAPIClient.h"
+#import <objc/runtime.h>
 
 @implementation RDDAPIClient
 
@@ -35,9 +36,9 @@
 }
 
 - (void) getItunesArtist:(NSString*)artist {
-    [self GET:@"/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RDDItunesEntry class] completion:^(RGResponseObject* response) {
+    [self GET:@"/search" parameters:@{ @"term" : artist ?: @"" } keyPath:@"results" class:[RDDItunesEntry class] completion:^(RGResponseObject* response) {
         for (RDDItunesEntry* entry in [response responseBody]) {
-            NSLog(@"%@", entry);
+            [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)] object:[response responseBody]];
         }
     }];
 }

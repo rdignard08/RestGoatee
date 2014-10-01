@@ -24,6 +24,7 @@
 #import "RDDItunesEntry.h"
 
 @implementation RDDItunesEntry
+@synthesize description = _description;
 
 - (NSString*) description {
     return [NSString stringWithFormat:@"%@, %@, %@", [super description], self.artistName, self.trackName];

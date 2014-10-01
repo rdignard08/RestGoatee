@@ -27,21 +27,15 @@
 		A4482019199580B100214EB0 /* RDDAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A4482017199580B100214EB0 /* RDDAPIClient.m */; };
 		A448201C199580D800214EB0 /* RDDItunesEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A448201B199580D800214EB0 /* RDDItunesEntry.m */; };
 		A448201D199580D800214EB0 /* RDDItunesEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A448201B199580D800214EB0 /* RDDItunesEntry.m */; };
+		BE7ECF1019DCA35C008820A1 /* RDDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7ECF0E19DCA35C008820A1 /* RDDViewController.m */; };
+		BE7ECF1119DCA35C008820A1 /* RDDViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE7ECF0F19DCA35C008820A1 /* RDDViewController.xib */; };
+		BE7ECF1519DCA4D6008820A1 /* RDDTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7ECF1319DCA4D6008820A1 /* RDDTableCell.m */; };
+		BE7ECF1619DCA4D6008820A1 /* RDDTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE7ECF1419DCA4D6008820A1 /* RDDTableCell.xib */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		A448200419957CDB00214EB0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A4481FD619957CDB00214EB0 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A4481FDD19957CDB00214EB0;
-			remoteInfo = RestGoateeExample;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		26D10FE45716488DA2AAE938 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DDB0AD762D74AA8A38598A4 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		7F3B9E15915A109CEC4BDEC3 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A4481FDE19957CDB00214EB0 /* RestGoateeExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RestGoateeExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4481FE119957CDB00214EB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A4481FE319957CDB00214EB0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -64,6 +58,13 @@
 		A4482017199580B100214EB0 /* RDDAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDAPIClient.m; sourceTree = "<group>"; };
 		A448201A199580D800214EB0 /* RDDItunesEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDItunesEntry.h; sourceTree = "<group>"; };
 		A448201B199580D800214EB0 /* RDDItunesEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDItunesEntry.m; sourceTree = "<group>"; };
+		BE7ECF0D19DCA35C008820A1 /* RDDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDViewController.h; sourceTree = "<group>"; };
+		BE7ECF0E19DCA35C008820A1 /* RDDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDViewController.m; sourceTree = "<group>"; };
+		BE7ECF0F19DCA35C008820A1 /* RDDViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RDDViewController.xib; sourceTree = "<group>"; };
+		BE7ECF1219DCA4D6008820A1 /* RDDTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDTableCell.h; sourceTree = "<group>"; };
+		BE7ECF1319DCA4D6008820A1 /* RDDTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDTableCell.m; sourceTree = "<group>"; };
+		BE7ECF1419DCA4D6008820A1 /* RDDTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RDDTableCell.xib; sourceTree = "<group>"; };
+		CB51A6E35E2A969C8BE33329 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +101,7 @@
 				A448200619957CDB00214EB0 /* RestGoateeExampleTests */,
 				A4481FE019957CDB00214EB0 /* Frameworks */,
 				A4481FDF19957CDB00214EB0 /* Products */,
-				6DDB0AD762D74AA8A38598A4 /* Pods.xcconfig */,
+				BAEBF0C0284051644B570844 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,6 +139,12 @@
 				A4482017199580B100214EB0 /* RDDAPIClient.m */,
 				A448201A199580D800214EB0 /* RDDItunesEntry.h */,
 				A448201B199580D800214EB0 /* RDDItunesEntry.m */,
+				BE7ECF0D19DCA35C008820A1 /* RDDViewController.h */,
+				BE7ECF0E19DCA35C008820A1 /* RDDViewController.m */,
+				BE7ECF0F19DCA35C008820A1 /* RDDViewController.xib */,
+				BE7ECF1219DCA4D6008820A1 /* RDDTableCell.h */,
+				BE7ECF1319DCA4D6008820A1 /* RDDTableCell.m */,
+				BE7ECF1419DCA4D6008820A1 /* RDDTableCell.xib */,
 			);
 			path = RestGoateeExample;
 			sourceTree = "<group>";
@@ -169,6 +176,15 @@
 				A448200919957CDB00214EB0 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BAEBF0C0284051644B570844 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7F3B9E15915A109CEC4BDEC3 /* Pods.debug.xcconfig */,
+				CB51A6E35E2A969C8BE33329 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,7 +220,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A448200519957CDB00214EB0 /* PBXTargetDependency */,
 			);
 			name = RestGoateeExampleTests;
 			productName = RestGoateeExampleTests;
@@ -250,7 +265,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A4481FEE19957CDB00214EB0 /* InfoPlist.strings in Resources */,
+				BE7ECF1119DCA35C008820A1 /* RDDViewController.xib in Resources */,
 				A4481FF919957CDB00214EB0 /* Images.xcassets in Resources */,
+				BE7ECF1619DCA4D6008820A1 /* RDDTableCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,7 +309,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -302,11 +319,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE7ECF1519DCA4D6008820A1 /* RDDTableCell.m in Sources */,
 				A4482018199580B100214EB0 /* RDDAPIClient.m in Sources */,
 				A4481FF719957CDB00214EB0 /* RestGoateeExample.xcdatamodeld in Sources */,
 				A4481FF019957CDB00214EB0 /* main.m in Sources */,
 				A448201C199580D800214EB0 /* RDDItunesEntry.m in Sources */,
 				A4481FF419957CDB00214EB0 /* RDDAppDelegate.m in Sources */,
+				BE7ECF1019DCA35C008820A1 /* RDDViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,14 +340,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		A448200519957CDB00214EB0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A4481FDD19957CDB00214EB0 /* RestGoateeExample */;
-			targetProxy = A448200419957CDB00214EB0 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		A4481FEC19957CDB00214EB0 /* InfoPlist.strings */ = {
@@ -422,7 +433,7 @@
 		};
 		A448201119957CDB00214EB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6DDB0AD762D74AA8A38598A4 /* Pods.xcconfig */;
+			baseConfigurationReference = 7F3B9E15915A109CEC4BDEC3 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -436,7 +447,7 @@
 		};
 		A448201219957CDB00214EB0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6DDB0AD762D74AA8A38598A4 /* Pods.xcconfig */;
+			baseConfigurationReference = CB51A6E35E2A969C8BE33329 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
