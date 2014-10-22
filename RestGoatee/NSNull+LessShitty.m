@@ -49,8 +49,9 @@
     * "@" is the receiver (self), object type; ":" is the selector of the current method (_cmd);
     * and each "@" after corresponds to an object argument
     */
+    static const NSString* const base = @"@@:";
     return [NSMethodSignature signatureWithObjCTypes:
-            [[@"@@:" stringByPaddingToLength:numArgs+3 withString:@"@" startingAtIndex:0] UTF8String]];
+            [[base stringByPaddingToLength:numArgs + base.length withString:@"@" startingAtIndex:0] UTF8String]];
 }
 
 @end
