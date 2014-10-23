@@ -30,7 +30,7 @@ static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, i
     return [[obj1 description] compare:[obj2 description]];
 };
 
-static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask* task) {
+static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     if (error && [[task response] respondsToSelector:@selector(statusCode)]) {
         NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
         userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
@@ -118,8 +118,10 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask
     dispatch_once(&onceToken, ^{
         key = _cmd;
     });
+    __block __strong id task;
     NSMutableURLRequest* request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
-    __block NSURLSessionDataTask* task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
+    task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, task)];
         id<RGResponseDelegate> del = objc_getAssociatedObject(task, key);
         if (del) {
@@ -132,8 +134,36 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, NSURLSessionDataTask
             completion(responseObject);
         }
     }];
+#else
+    void(^callback)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
+        NSError* error;
+        id body;
+        if ([response isKindOfClass:[NSError class]]) {
+            error = response;
+        } else {
+            body = response;
+        }
+        RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, op)];
+        if (del) {
+            if (error) {
+                [del response:responseObject failedForRequest:op];
+            } else {
+                [del response:responseObject receivedForRequest:op];
+            }
+        } else if (completion) {
+            completion(responseObject);
+        }
+    };
+    task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
+#endif
+
     objc_setAssociatedObject(task, key, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
     [task resume];
+#else
+    [self.operationQueue addOperation:task];
+#endif
 }
 
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {

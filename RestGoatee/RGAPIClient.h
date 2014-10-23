@@ -28,7 +28,11 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 @protocol RGSerializationDelegate, RGResponseDelegate;
 @class NSManagedObjectContext;
 
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 @interface RGAPIClient : AFHTTPSessionManager
+#else
+@interface RGAPIClient : AFHTTPRequestOperationManager
+#endif
 
 @property (nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
 
@@ -159,13 +163,17 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 
 /**
  Called as part of the success procedure after all deserialization has taken place.
+
+ @param task For deployment targets at iOS 7 and above, the type is `NSURLSessionDataTask*`.  For earlier versions the type is `AFHTTPRequestOperation*`.
  */
-- (void) response:(RGResponseObject*)response receivedForRequest:(NSURLSessionDataTask*)task;
+- (void) response:(RGResponseObject*)response receivedForRequest:(id)task;
 
 /**
  Called when an error occurs, and will attempt to include as much information as possible in `response`.
+
+ @param task For deployment targets at iOS 7 and above, the type is `NSURLSessionDataTask*`.  For earlier versions the type is `AFHTTPRequestOperation*`.
  */
-- (void) response:(RGResponseObject*)response failedForRequest:(NSURLSessionDataTask*)task;
+- (void) response:(RGResponseObject*)response failedForRequest:(id)task;
 
 @end
 
