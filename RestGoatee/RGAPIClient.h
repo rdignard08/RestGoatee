@@ -28,7 +28,7 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 @protocol RGSerializationDelegate, RGResponseDelegate;
 @class NSManagedObjectContext;
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
 @interface RGAPIClient : AFHTTPSessionManager
 #else
 @interface RGAPIClient : AFHTTPRequestOperationManager
