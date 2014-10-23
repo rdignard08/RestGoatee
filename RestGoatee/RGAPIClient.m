@@ -144,6 +144,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
             body = response;
         }
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, op)];
+        id<RGResponseDelegate> del = objc_getAssociatedObject(op, key);
         if (del) {
             if (error) {
                 [del response:responseObject failedForRequest:op];
