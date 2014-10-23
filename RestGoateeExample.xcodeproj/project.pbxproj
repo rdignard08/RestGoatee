@@ -937,6 +937,8 @@ fi
 				<string>RestGoateeExample/RestGoateeExample-Prefix.pch</string>
 				<key>INFOPLIST_FILE</key>
 				<string>RestGoateeExample/RestGoateeExample-Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>6.0</string>
 				<key>PRODUCT_NAME</key>
 				<string>$(TARGET_NAME)</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -963,6 +965,8 @@ fi
 				<string>RestGoateeExample/RestGoateeExample-Prefix.pch</string>
 				<key>INFOPLIST_FILE</key>
 				<string>RestGoateeExample/RestGoateeExample-Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>6.0</string>
 				<key>PRODUCT_NAME</key>
 				<string>$(TARGET_NAME)</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -1010,6 +1014,8 @@ fi
 				</array>
 				<key>INFOPLIST_FILE</key>
 				<string>RestGoateeExampleTests/RestGoateeExampleTests-Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>6.0</string>
 				<key>PRODUCT_NAME</key>
 				<string>$(TARGET_NAME)</string>
 				<key>TEST_HOST</key>
@@ -1040,6 +1046,8 @@ fi
 				<string>RestGoateeExample/RestGoateeExample-Prefix.pch</string>
 				<key>INFOPLIST_FILE</key>
 				<string>RestGoateeExampleTests/RestGoateeExampleTests-Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>6.0</string>
 				<key>PRODUCT_NAME</key>
 				<string>$(TARGET_NAME)</string>
 				<key>TEST_HOST</key>
