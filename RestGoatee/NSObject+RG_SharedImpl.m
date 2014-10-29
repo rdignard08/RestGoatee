@@ -234,8 +234,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
 }
 
 - (Class) rg_classForProperty:(NSString*)propertyName {
-    NSUInteger index = [self.__property_list__[kRGPropertyName] indexOfObject:propertyName];
-    return index == NSNotFound ? nil : self.__property_list__[index][kRGPropertyClass];
+    return [self rg_declarationForProperty:propertyName][kRGPropertyClass];
 }
 
 @end
