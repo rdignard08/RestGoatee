@@ -7,6 +7,7 @@
 //
 #import "NSObject+RG_SharedImpl.h"
 #import "RestGoatee.h"
+#import <libkern/OSAtomic.h>
 
 const NSString* const kRGPropertyName = @"name";
 const NSString* const kRGPropertyCanonicalName = @"canonically";
@@ -30,24 +31,43 @@ const NSString* const kRGPropertyNonatomic = @"nonatomic";
 const NSString* const kRGSerializationKey = @"__class";
 const NSString* const kRGPropertyListProperty = @"__property_list__";
 
+static const NSString* _sClassPrefix;
 const NSString* const rg_classPrefix() {
-    static dispatch_once_t onceToken;
-    static NSString* _sClassPrefix = @""; /* In case nothing is found, we still want to return some string */
-    dispatch_once(&onceToken, ^{
-        NSString* appDelegateName = [[[UIApplication sharedApplication].delegate class] description];
-        for (NSUInteger i = 0; i < appDelegateName.length; i++) {
-            unichar c = [appDelegateName characterAtIndex:i];
-            if (c < 'A' || c > 'Z') { /* if it's not a capital letter, we've found the end of the prefix */
-                _sClassPrefix = [appDelegateName stringByReplacingCharactersInRange:NSMakeRange(i == 0 ?: i - 1, i == 0 ? appDelegateName.length : appDelegateName.length - i + 1) withString:@""]; /* the last capital character is not part of the prefix since it's the class name */
-                break;
+    @synchronized ([NSObject class]) {
+        if (!_sClassPrefix) {
+            NSString* appDelegateName = [[[UIApplication sharedApplication].delegate class] description];
+            for (NSUInteger i = 0; i < appDelegateName.length; i++) {
+                unichar c = [appDelegateName characterAtIndex:i];
+                if (c < 'A' || c > 'Z') { /* if it's not a capital letter, we've found the end of the prefix */
+                    _sClassPrefix = [appDelegateName stringByReplacingCharactersInRange:NSMakeRange(i == 0 ?: i - 1, i == 0 ? appDelegateName.length : appDelegateName.length - i + 1) withString:@""]; /* the last capital character is not part of the prefix since it's the class name */
+                    break;
+                }
+            }
+            if (!_sClassPrefix) {
+                _sClassPrefix = @""; /* In case nothing is found, we still want to return some string */
             }
         }
-    });
+    }
     return _sClassPrefix;
 }
 
+void rg_setClassPrefix(const NSString* const prefix) {
+    @synchronized ([NSObject class]) {
+        _sClassPrefix = prefix;
+    }
+}
+
+static const NSString* _sServerTypeKey;
+void rg_setServerTypeKey(const NSString* const typeKey) {
+    @synchronized ([NSObject class]) {
+        _sServerTypeKey = typeKey;
+    }
+}
+
 const NSString* const rg_serverTypeKey() {
-    return nil;
+    @synchronized ([NSObject class]) {
+        return _sServerTypeKey;
+    }
 }
 
 NSArray* const rg_dateFormats() {

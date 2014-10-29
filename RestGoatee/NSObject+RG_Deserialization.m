@@ -27,7 +27,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     NSMutableArray* ret = [NSMutableArray array];
     for (__strong id obj in json) {
         if ([obj isKindOfClass:[NSDictionary class]]) {
-            Class objectClass = NSClassFromString([(rg_classPrefix() ?: @"") stringByAppendingString:([obj[rg_serverTypeKey()] capitalizedString] ?: @"")]);
+            Class objectClass = NSClassFromString([rg_classPrefix() stringByAppendingString:([obj[rg_serverTypeKey()] capitalizedString] ?: @"")]);
             if (!objectClass) {
                 objectClass = NSClassFromString(obj[kRGSerializationKey]);
             }
