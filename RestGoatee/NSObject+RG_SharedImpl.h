@@ -47,6 +47,7 @@ extern const NSString* const kRGPropertyStrong;
 extern const NSString* const kRGPropertyCopy;
 extern const NSString* const kRGPropertyWeak;
 extern const NSString* const kRGPropertyClass;
+extern const NSString* const kRGPropertyRawType;
 extern const NSString* const kRGPropertyDynamic;
 extern const NSString* const kRGPropertyAtomic;
 extern const NSString* const kRGPropertyNonatomic;
@@ -79,5 +80,7 @@ NSString* rg_trimLeadingAndTrailingQuotes(NSString* str);
 - (NSArray*) __property_list__;
 - (NSArray*) rg_keys;
 - (Class) rg_classForProperty:(NSString*)propertyName;
++ (NSDictionary*) rg_declarationForProperty:(NSString*)propertyName;
+- (NSDictionary*) rg_declarationForProperty:(NSString*)propertyName;
 
 @end

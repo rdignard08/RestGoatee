@@ -23,6 +23,7 @@ const NSString* const kRGPropertyStrong = @"retain";
 const NSString* const kRGPropertyCopy = @"copy";
 const NSString* const kRGPropertyWeak = @"weak";
 const NSString* const kRGPropertyClass = @"type";
+const NSString* const kRGPropertyRawType = @"raw_type";
 const NSString* const kRGPropertyDynamic = @"__dynamic__";
 const NSString* const kRGPropertyAtomic = @"atomic";
 const NSString* const kRGPropertyNonatomic = @"nonatomic";
@@ -154,9 +155,11 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
                 propertyDict[kRGPropertyAtomicType] = kRGPropertyNonatomic;
                 break;
             case 'T':
+                propertyDict[kRGPropertyRawType] = rg_trimLeadingAndTrailingQuotes(value);
                 propertyDict[kRGPropertyClass] = rg_classForTypeString(value);
                 break;
             case 't': /* TODO: I have no fucking idea what 'old-style' typing looks like */
+                propertyDict[kRGPropertyRawType] = rg_trimLeadingAndTrailingQuotes(value);
                 propertyDict[kRGPropertyClass] = value;
                 break;
             case 'R':
@@ -205,6 +208,15 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return ret;
+}
+
++ (NSDictionary*) rg_declarationForProperty:(NSString*)propertyName {
+    NSUInteger index = [[self __property_list__][kRGPropertyName] indexOfObject:propertyName];
+    return index == NSNotFound ? nil : [self __property_list__][index];
+}
+
+- (NSDictionary*) rg_declarationForProperty:(NSString*)propertyName {
+    return [[self class] rg_declarationForProperty:propertyName];
 }
 
 - (NSArray*) __property_list__ {
