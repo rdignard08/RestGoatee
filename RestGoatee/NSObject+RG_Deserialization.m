@@ -93,7 +93,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
  */
 - (void) rg_initProperty:(NSString*)key withJSONValue:(id)JSONValue inContext:(NSManagedObjectContext*)context {
     /* Can't initialize the value of a property if the property doesn't exist */
-    if ([key isKindOfClass:[NSNull class]] || [key isEqualToString:(NSString*)kRGPropertyListProperty] || [self.__property_list__[kRGPropertyName] indexOfObject:key] == NSNotFound) return;
+    if ([key isKindOfClass:[NSNull class]] || [key isEqualToString:(NSString*)kRGPropertyListProperty] || ![self rg_declarationForProperty:key]) return;
     if (!JSONValue || [JSONValue isKindOfClass:[NSNull class]]) {
         /* We don't care what the receiving type is since it's empty anyway
         The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
