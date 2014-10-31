@@ -40,7 +40,37 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     return error;
 }
 
+@interface RGAPIClient ()
+
+@property (nonatomic, strong) id super_;
+
+@end
+
 @implementation RGAPIClient
+
+- (instancetype) init {
+    return [self initWithBaseURL:nil sessionConfiguration:nil];
+}
+
+- (instancetype) initWithBaseURL:(NSURL*)baseURL {
+    return [self initWithBaseURL:baseURL sessionConfiguration:nil];
+}
+
+- (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration {
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+    Class super_class = NSClassFromString(@"AFHTTPSessionManager") ?: NSClassFromString(@"AFHTTPClient");
+#else
+    Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager") ?: NSClassFromString(@"AFHTTPClient");
+#endif
+    if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
+        _super_ = [[super_class alloc] initWithBaseURL:url sessionConfiguration:configuration];
+    } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
+        _super_ = [[super_class alloc] initWithBaseURL:url];
+    } else {
+        _super_ = [super_class new];
+    }
+    return self;
+}
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
@@ -118,7 +148,6 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    
     static SEL _sKey, _sSerializer, _sRequest, _sOldRequest;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -217,6 +246,39 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate {
     [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:NULL delegate:delegate];
+}
+
+#pragma mark - NSProxy
+- (void) forwardInvocation:(NSInvocation*)invocation {
+    [invocation invokeWithTarget:self.super_];
+}
+
+- (NSMethodSignature*) methodSignatureForSelector:(SEL)sel {
+    return [self.super_ methodSignatureForSelector:sel];
+}
+
+- (void) finalize {
+    [self.super_ finalize];
+}
+
+- (void) setDescription:(NSString*)description {
+    [self.super_ setDescription:description];
+}
+
+- (NSString*) description {
+    return [self.super_ description];
+}
+
+- (void) setDebugDescription:(NSString*)debugDescription {
+    [self.super_ setDebugDescription:debugDescription];
+}
+
+- (NSString*) debugDescription {
+    return [self.super_ debugDescription];
+}
+
++ (BOOL) respondsToSelector:(SEL __unused)aSelector {
+    return YES;
 }
 
 @end
