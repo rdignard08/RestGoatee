@@ -37,9 +37,7 @@
 
 - (void) getItunesArtist:(NSString*)artist {
     [self GET:@"/search" parameters:@{ @"term" : artist ?: @"" } keyPath:@"results" class:[RDDItunesEntry class] completion:^(RGResponseObject* response) {
-        for (RDDItunesEntry* entry in [response responseBody]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)] object:[response responseBody]];
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)] object:[response responseBody]];
     }];
 }
 
