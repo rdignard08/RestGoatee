@@ -23,6 +23,7 @@
 #import "RestGoatee.h"
 #import "NSObject+RG_SharedImpl.h"
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
 
@@ -113,13 +114,31 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 }
 
 - (void) request:(NSString*)method url:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion delegate:(id<RGResponseDelegate>)delegate {
-    static SEL key;
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    
+    static SEL _sKey, _sSerializer, _sRequest, _sOldRequest;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        key = _cmd;
+        _sKey = _cmd;
+        _sSerializer = @selector(requestSerializer);
+        _sRequest = @selector(requestWithMethod:URLString:parameters:error:);
+        _sOldRequest = @selector(requestWithMethod:path:parameters:);
     });
     __block __strong id task;
-    NSMutableURLRequest* request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    NSMutableURLRequest* request;
+    NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
+    
+    if ([self respondsToSelector:_sSerializer]) { /* "Modern" style */
+        id requestSerializer = [self performSelector:_sSerializer];
+        /* using `objc_msgSend` because the number of parameters is too large for a conventional -performSelector */
+        request = objc_msgSend(requestSerializer, _sRequest, method, fullPath, parameters, nil);
+    } else { /* "Old" style: this version of AFNetworking predates the AFHTTPSessionManager / AFHTTPRequestOperationManager split */
+        request = objc_msgSend(self, _sOldRequest, method, fullPath, parameters);
+    }
+    
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, task)];
@@ -144,7 +163,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
             body = response;
         }
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, op)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(op, key);
+        id<RGResponseDelegate> del = objc_getAssociatedObject(op, _sKey);
         if (del) {
             if (error) {
                 [del response:responseObject failedForRequest:op];
@@ -157,14 +176,15 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     };
     task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
 #endif
-
-    objc_setAssociatedObject(task, key, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
+    
+    objc_setAssociatedObject(task, _sKey, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     [task resume];
 #else
     [self.operationQueue addOperation:task];
 #endif
+#pragma clang diagnostic pop
 }
 
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {

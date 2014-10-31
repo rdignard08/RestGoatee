@@ -31,6 +31,10 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
 @interface RGAPIClient : AFHTTPSessionManager
 #else
+
+@class AFHTTPRequestOperationManager;
+@compatibility_alias AFAPIClient AFHTTPRequestOperationManager;
+
 @interface RGAPIClient : AFHTTPRequestOperationManager
 #endif
 
