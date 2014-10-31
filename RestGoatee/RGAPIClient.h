@@ -32,8 +32,8 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 @interface RGAPIClient : AFHTTPSessionManager
 #else
 
-@class AFHTTPRequestOperationManager;
-@compatibility_alias AFAPIClient AFHTTPRequestOperationManager;
+@class AFHTTPClient;
+@compatibility_alias AFHTTPRequestOperationManager AFHTTPClient;
 
 @interface RGAPIClient : AFHTTPRequestOperationManager
 #endif
