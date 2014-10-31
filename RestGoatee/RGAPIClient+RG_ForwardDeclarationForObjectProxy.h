@@ -4,7 +4,8 @@
 
 #import "RGAPIClient.h"
 
-@class NSURLSessionDataTask, NSURLSessionConfiguration, NSProgress;
+@class NSURLSessionDataTask, NSURLSessionConfiguration, NSProgress, AFHTTPRequestSerializer, AFSecurityPolicy, AFNetworkReachabilityManager;
+@protocol AFURLRequestSerialization, AFURLResponseSerialization;
 
 @interface RGAPIClient (RG_ForwardDeclarationForObjectProxy) <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
 
