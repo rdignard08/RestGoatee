@@ -48,6 +48,10 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 
 @implementation RGAPIClient
 
++ (RGAPIClient*) alloc {
+    return [super alloc];
+}
+
 - (instancetype) init {
     return [self initWithBaseURL:nil sessionConfiguration:nil];
 }

@@ -30,6 +30,8 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 
 @interface RGAPIClient : NSProxy /* fuck it, full on proxy the bastard */
 
++ (RGAPIClient*) alloc;
+
 @property (nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
 
 /**
