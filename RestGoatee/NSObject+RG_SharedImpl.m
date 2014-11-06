@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Ryan Dignard. All rights reserved.
 //
 #import "NSObject+RG_SharedImpl.h"
+#import <objc/runtime.h>
 #import "RestGoatee.h"
 #import <libkern/OSAtomic.h>
 
