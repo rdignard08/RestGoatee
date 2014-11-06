@@ -52,6 +52,18 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     return [super alloc];
 }
 
+- (NSUInteger) hash {
+    return (NSUInteger)self;
+}
+
+- (BOOL) isEqual:(id)object {
+    return [self hash] == [object hash];
+}
+
+- (BOOL) isKindOfClass:(Class)aClass {
+    return [aClass isSubclassOfClass:[self.super_ class]] ?: [super isKindOfClass:aClass];
+}
+
 - (instancetype) init {
     return [self initWithBaseURL:nil sessionConfiguration:nil];
 }
@@ -113,7 +125,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
                 [ret addObject:(cls ? [cls objectFromJSON:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
             }
         }
-        response = ret;
+        response = [ret copy];
     } else if ([target isKindOfClass:[NSDictionary class]]) {
         if (primaryKey && allObjects && target[primaryKey]) {
             index = [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
