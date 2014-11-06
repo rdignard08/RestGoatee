@@ -46,6 +46,9 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 
 @end
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 @implementation RGAPIClient
 
 + (RGAPIClient*) alloc {
@@ -88,8 +91,6 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     return self;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
 - (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(out NSManagedObjectContext**)outContext {
     /* cls* | NSArray<cls*>* */ id target;
     /* NSManagedObjectContext* */ id context;
@@ -134,10 +135,9 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     @catch (NSException* e) {}
     return response;
 }
-#pragma clang diagnostic pop
 
 - (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keypath class:(Class)cls error:(NSError*)error {
-    RGResponseObject* ret = [[RGResponseObject alloc] init];
+    RGResponseObject* ret = [RGResponseObject new];
     NSManagedObjectContext* context;
     if (!error && body) {
         ret.responseBody = [self parseResponse:body atPath:keypath intoClass:cls context:&context];
@@ -150,76 +150,44 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 }
 
 - (void) request:(NSString*)method url:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion delegate:(id<RGResponseDelegate>)delegate {
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    static SEL _sKey, _sSerializer, _sRequest, _sOldRequest;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sKey = _cmd;
-        _sSerializer = @selector(requestSerializer);
-        _sRequest = @selector(requestWithMethod:URLString:parameters:error:);
-        _sOldRequest = @selector(requestWithMethod:path:parameters:);
-    });
     __block __strong id task;
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
-    
-    if ([self respondsToSelector:_sSerializer]) { /* "Modern" style */
-        id requestSerializer = [self performSelector:_sSerializer];
-        /* using `objc_msgSend` because the number of parameters is too large for a conventional -performSelector */
-        request = objc_msgSend(requestSerializer, _sRequest, method, fullPath, parameters, nil);
+    if ([self respondsToSelector:@selector(requestSerializer)]) { /* "Modern" style */
+        request = objc_msgSend([self performSelector:@selector(requestSerializer)], @selector(requestWithMethod:URLString:parameters:error:), method, fullPath, parameters, nil); /* too many parameters for `performSelector:...` */
     } else { /* "Old" style: this version of AFNetworking predates the AFHTTPSessionManager / AFHTTPRequestOperationManager split */
-        request = objc_msgSend(self, _sOldRequest, method, fullPath, parameters);
+        request = objc_msgSend(self, @selector(requestWithMethod:path:parameters:), method, fullPath, parameters);
     }
-    
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, task)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(task, key);
+        id<RGResponseDelegate> del = objc_getAssociatedObject(task, @selector(request:url:parameters:keyPath:class:completion:delegate:));
         if (del) {
-            if (error) {
-                [del response:responseObject failedForRequest:task];
-            } else {
-                [del response:responseObject receivedForRequest:task];
-            }
+            error ? [del response:responseObject failedForRequest:task] : [del response:responseObject receivedForRequest:task];
         } else if (completion) {
             completion(responseObject);
         }
     }];
 #else
     void(^callback)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
-        NSError* error;
-        id body;
-        if ([response isKindOfClass:[NSError class]]) {
-            error = response;
-        } else {
-            body = response;
-        }
+        id body, /* NSError* */ error;
+        [response isKindOfClass:[NSError class]] ? (error = response) : (body = response);
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls error:errorWithStatusCodeFromTask(error, op)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(op, _sKey);
+        id<RGResponseDelegate> del = objc_getAssociatedObject(op, @selector(request:url:parameters:keyPath:class:completion:delegate:));
         if (del) {
-            if (error) {
-                [del response:responseObject failedForRequest:op];
-            } else {
-                [del response:responseObject receivedForRequest:op];
-            }
+            error ? [del response:responseObject failedForRequest:task] : [del response:responseObject receivedForRequest:task];
         } else if (completion) {
             completion(responseObject);
         }
     };
     task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
 #endif
-    
-    objc_setAssociatedObject(task, _sKey, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    
+    objc_setAssociatedObject(task, @selector(request:url:parameters:keyPath:class:completion:delegate:), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     [task resume];
 #else
     [self.operationQueue addOperation:task];
 #endif
-#pragma clang diagnostic pop
 }
 
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
@@ -288,6 +256,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 }
 
 @end
+#pragma clang diagnostic pop
 
 @implementation RGAPIClient (RGConvenience)
 
