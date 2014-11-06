@@ -1,11 +1,10 @@
-//
 //  NSObject+RG_SharedImpl.h
 //  RestGoatee
 //
 //  Created by Ryan Dignard on 8/17/14.
 //  Copyright (c) 2014 Ryan Dignard. All rights reserved.
-//
-#import <objc/runtime.h>
+
+struct objc_property;
 
 extern const NSString* const kRGPropertyName;
 extern const NSString* const kRGPropertyCanonicalName;
@@ -47,7 +46,7 @@ BOOL rg_isInlineObject(Class cls);
 BOOL rg_isCollectionObject(Class cls);
 BOOL rg_isKeyedCollectionObject(Class cls);
 Class rg_classForTypeString(NSString* str);
-NSDictionary* rg_parsePropertyStruct(objc_property_t property);
+NSDictionary* rg_parsePropertyStruct(struct objc_property* property);
 NSString* rg_trimLeadingAndTrailingQuotes(NSString* str);
 
 @interface NSObject (RG_SharedImpl)
