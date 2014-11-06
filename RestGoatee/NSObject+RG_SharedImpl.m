@@ -157,9 +157,12 @@ NSDictionary* rg_parseIvarStruct(Ivar ivar) {
                                            kRGPropertyCanonicalName : rg_canonicalForm(name),
                                            kRGPropertyStorage : kRGPropertyAssign,
                                            kRGPropertyAccess : kRGIvarProtected,
+                                           kRGPropertyBacking : name,
+                                           kRGIvarOffset : @(ivar_getOffset(ivar))
                                            } mutableCopy];
-    
-    
+    NSString* ivarType = [NSString stringWithUTF8String:ivar_getTypeEncoding(ivar)];
+    propertyDict[kRGPropertyClass] = rg_classForTypeString(ivarType);
+    propertyDict[kRGPropertyRawType] = rg_trimLeadingAndTrailingQuotes(ivarType);
     return [propertyDict copy];
 }
 
@@ -248,13 +251,15 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
             }
             free(properties);
         }
-//        for (Class cls in stack) {
-//            Ivar* ivars = class_copyIvarList(cls, &count);
-//            for (uint32_t i = 0; i < count; i++) {
-//                [propertyStructure addObject:rg_parseIvarStruct(ivars[i])];
-//            }
-//            free(ivars);
-//        }
+        for (Class cls in stack) {
+            Ivar* ivars = class_copyIvarList(cls, &count);
+            for (uint32_t i = 0; i < count; i++) {
+                if ([propertyStructure[kRGPropertyBacking] indexOfObject:[NSString stringWithUTF8String:ivar_getName(ivars[i])]] == NSNotFound) {
+                    [propertyStructure addObject:rg_parseIvarStruct(ivars[i])];
+                }
+            }
+            free(ivars);
+        }
         ret = [propertyStructure copy];
         objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
