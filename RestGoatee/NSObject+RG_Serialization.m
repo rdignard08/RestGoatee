@@ -86,7 +86,7 @@
             ret[kRGSerializationKey] = NSStringFromClass([self class]);
         }
     }
-    return ret;
+    return [ret copy];
 }
 
 @end

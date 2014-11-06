@@ -193,7 +193,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
                 propertyDict[kRGPropertySetter] = value;
         }
     }
-    return propertyDict;
+    return [propertyDict copy];
 }
 
 @implementation NSObject (RG_SharedImpl)

@@ -35,7 +35,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     if (error && [[task response] respondsToSelector:@selector(statusCode)]) {
         NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
         userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
-        error = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:userInfo];
+        error = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:[userInfo copy]];
     }
     return error;
 }
