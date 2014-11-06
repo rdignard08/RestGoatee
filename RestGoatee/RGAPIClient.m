@@ -111,33 +111,23 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
         [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
         allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch withObject:nil];
     }
-    if ([target isKindOfClass:[NSArray class]]) {
-        NSMutableArray* ret = [NSMutableArray array];
-        for (id entry in target) {
-            if (primaryKey && allObjects && entry[primaryKey]) {
-                index = [allObjects[primaryKey] indexOfObject:entry[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
-                if (index != NSNotFound) {
-                    [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
-                } else {
-                    [ret addObject:[cls objectFromJSON:entry inContext:context]]; /* New Object */
-                }
-            } else {
-                [ret addObject:(cls ? [cls objectFromJSON:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
-            }
-        }
-        response = [ret copy];
-    } else if ([target isKindOfClass:[NSDictionary class]]) {
-        if (primaryKey && allObjects && target[primaryKey]) {
-            index = [allObjects[primaryKey] indexOfObject:target[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
+    if (![target isKindOfClass:[NSArray class]]) {
+        target = @[ target ];
+    }
+    NSMutableArray* ret = [NSMutableArray array];
+    for (id entry in target) {
+        if ([entry isKindOfClass:[NSDictionary class]] && primaryKey && allObjects && entry[primaryKey]) {
+            index = [allObjects[primaryKey] indexOfObject:entry[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
             if (index != NSNotFound) {
-                response = [allObjects[index] extendWith:target inContext:context]; /* Existing Object */
+                [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
             } else {
-                response = cls ? [cls objectFromJSON:target inContext:context] : target; /* New Object */
+                [ret addObject:[cls objectFromJSON:entry inContext:context]]; /* New Object */
             }
         } else {
-            response = cls ? [cls objectFromJSON:target inContext:context] : target; /* New Object */
+            [ret addObject:(cls ? [cls objectFromJSON:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
         }
     }
+    response = ret.count == 1 ? ret[0] : [ret copy];
     @try {
         [context performSelector:@selector(save:) withObject:nil];
     }
