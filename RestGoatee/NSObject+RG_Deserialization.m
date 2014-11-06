@@ -173,7 +173,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
 
 - (instancetype) extendWith:(id)object inContext:(NSManagedObjectContext*)context {
     for (NSString* propertyName in [object rg_keys]) {
-        if ([propertyName isEqualToString:(NSString*)kRGPropertyListProperty]) continue;
+        if ([propertyName isEqual:(id)kRGPropertyListProperty]) continue;
         @try {
             [self rg_initProperty:propertyName withJSONValue:object[propertyName] inContext:context];
         }
