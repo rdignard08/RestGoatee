@@ -115,7 +115,7 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     if (![target isKindOfClass:[NSArray class]]) {
         target = @[ target ];
     }
-    NSMutableArray* ret = [NSMutableArray array];
+    NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
         if ([entry isKindOfClass:[NSDictionary class]] && primaryKey && allObjects && entry[primaryKey]) {
             index = [allObjects[primaryKey] indexOfObject:entry[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
