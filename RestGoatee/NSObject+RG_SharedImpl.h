@@ -6,6 +6,14 @@
 
 struct objc_property;
 
+/* Some notes on property attributes, declaration modifiers '
+    assign is exactly the same unsafe_unretained 
+    retain is exactly the same as strong
+    __block implies strong
+    backing ivars are usually `_<propertyName>` however older compilers sometimes named them the same
+ */
+
+/* Property Description Keys */
 extern const NSString* const kRGPropertyName;
 extern const NSString* const kRGPropertyCanonicalName;
 extern const NSString* const kRGPropertyStorage;
@@ -27,6 +35,12 @@ extern const NSString* const kRGPropertyAtomic;
 extern const NSString* const kRGPropertyNonatomic;
 extern const NSString* const kRGSerializationKey;
 extern const NSString* const kRGPropertyListProperty;
+
+/* Ivar Description Keys */
+extern const NSString* const kRGIvarOffset;
+extern const NSString* const kRGIvarPrivate;
+extern const NSString* const kRGIvarProtected;
+extern const NSString* const kRGIvarPublic;
 
 /**
  These classes are used to dynamically link into coredata if present.
