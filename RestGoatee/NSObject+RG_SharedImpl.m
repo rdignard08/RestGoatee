@@ -10,11 +10,8 @@
 #import "RestGoatee.h"
 #import <libkern/OSAtomic.h>
 
-const NSString* const kRGPropertyName = @"name";
-const NSString* const kRGPropertyCanonicalName = @"canonically";
-const NSString* const kRGPropertyStorage = @"storage";
+/* Property Description Keys */
 const NSString* const kRGPropertyAtomicType = @"atomicity";
-const NSString* const kRGPropertyAccess = @"access";
 const NSString* const kRGPropertyBacking = @"ivar";
 const NSString* const kRGPropertyGetter = @"getter";
 const NSString* const kRGPropertySetter = @"setter";
@@ -29,6 +26,18 @@ const NSString* const kRGPropertyRawType = @"raw_type";
 const NSString* const kRGPropertyDynamic = @"__dynamic__";
 const NSString* const kRGPropertyAtomic = @"atomic";
 const NSString* const kRGPropertyNonatomic = @"nonatomic";
+
+/* Ivar Description Keys */
+const NSString* const kRGIvarOffset = @"ivar_offset";
+const NSString* const kRGIvarPrivate = @"private";
+const NSString* const kRGIvarProtected = @"protected";
+const NSString* const kRGIvarPublic = @"public";
+
+/* Keys shared between properties and ivars */
+const NSString* const kRGPropertyName = @"name";
+const NSString* const kRGPropertyCanonicalName = @"canonically";
+const NSString* const kRGPropertyStorage = @"storage";
+const NSString* const kRGPropertyAccess = @"access";
 const NSString* const kRGSerializationKey = @"__class";
 const NSString* const kRGPropertyListProperty = @"__property_list__";
 
@@ -139,23 +148,38 @@ Class rg_classForTypeString(NSString* str) {
     return NSClassFromString(str) ?: [NSNumber class];
 }
 
+NSDictionary* rg_parseIvarStruct(Ivar ivar) {
+    NSString* name = [NSString stringWithUTF8String:ivar_getName(ivar)];
+    
+    /* The default values for ivars are: assign (if primitive) strong (if object), protected */
+    NSMutableDictionary* propertyDict = [@{
+                                           kRGPropertyName : name,
+                                           kRGPropertyCanonicalName : rg_canonicalForm(name),
+                                           kRGPropertyStorage : kRGPropertyAssign,
+                                           kRGPropertyAccess : kRGIvarProtected,
+                                           } mutableCopy];
+    
+    
+    return [propertyDict copy];
+}
+
 NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     NSString* name = [NSString stringWithUTF8String:property_getName(property)];
-    
-    /* These are default values if there is no specification */
+    /* The default values for properties are: if object and ARC compiled: strong (we don't have to check for this, ARC will insert the retain attribute) else assign. atomic. readwrite. */
     NSMutableDictionary* propertyDict = [@{
                                            kRGPropertyName : name,
                                            kRGPropertyCanonicalName : rg_canonicalForm(name),
                                            kRGPropertyStorage : kRGPropertyAssign,
                                            kRGPropertyAtomicType : kRGPropertyAtomic,
                                            kRGPropertyAccess : kRGPropertyReadwrite } mutableCopy];
-    /* Property attributes are exported as a raw char* separated by ',' */
-    NSArray* attributes = [[NSString stringWithUTF8String:property_getAttributes(property)] componentsSeparatedByString:@","];
-    /* The first character is the type encoding; the remaining is a value of some kind (if anything)
-     See: https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html */
-    for (NSString* attribute in attributes) {
-        unichar heading = [attribute characterAtIndex:0];
-        NSString* value = [attribute substringWithRange:NSMakeRange(1, attribute.length - 1)];
+    uint32_t attributeCount = 0;
+    objc_property_attribute_t* attributes = property_copyAttributeList(property, &attributeCount);
+    for (uint32_t i = 0; i < attributeCount; i++) {
+        objc_property_attribute_t attribute = attributes[i];
+        unichar heading = strlen(attribute.name) ? attribute.name[0] : '\0';
+        NSString* value = [NSString stringWithUTF8String:attribute.value];
+        /* The first character is the type encoding; the other field is a value of some kind (if anything)
+         See: https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html */
         switch (heading) {
             case '&':
                 propertyDict[kRGPropertyStorage] = kRGPropertyStrong;
@@ -176,12 +200,9 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
                 propertyDict[kRGPropertyAtomicType] = kRGPropertyNonatomic;
                 break;
             case 'T':
-                propertyDict[kRGPropertyRawType] = rg_trimLeadingAndTrailingQuotes(value);
-                propertyDict[kRGPropertyClass] = rg_classForTypeString(value);
-                break;
             case 't': /* TODO: I have no fucking idea what 'old-style' typing looks like */
                 propertyDict[kRGPropertyRawType] = rg_trimLeadingAndTrailingQuotes(value);
-                propertyDict[kRGPropertyClass] = value;
+                propertyDict[kRGPropertyClass] = rg_classForTypeString(value);
                 break;
             case 'R':
                 propertyDict[kRGPropertyAccess] = kRGPropertyReadonly;
@@ -193,6 +214,7 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
                 propertyDict[kRGPropertySetter] = value;
         }
     }
+    free(attributes);
     return [propertyDict copy];
 }
 
@@ -215,16 +237,24 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
     if (!ret) {
         NSMutableArray* propertyStructure = [NSMutableArray array];
         NSMutableArray* stack = [NSMutableArray array];
+        uint32_t count;
         for (Class superClass = self; superClass; superClass = [superClass superclass]) {
             [stack insertObject:superClass atIndex:0]; /* we want superclass properties to be overwritten by subclass properties so append front */
         }
         for (Class cls in stack) {
-            objc_property_t* properties = class_copyPropertyList(cls, NULL);
-            for (uint32_t i = 0; (properties + i) && properties[i]; i++) {
+            objc_property_t* properties = class_copyPropertyList(cls, &count);
+            for (uint32_t i = 0; i < count; i++) {
                 [propertyStructure addObject:rg_parsePropertyStruct(properties[i])];
             }
             free(properties);
         }
+//        for (Class cls in stack) {
+//            Ivar* ivars = class_copyIvarList(cls, &count);
+//            for (uint32_t i = 0; i < count; i++) {
+//                [propertyStructure addObject:rg_parseIvarStruct(ivars[i])];
+//            }
+//            free(ivars);
+//        }
         ret = [propertyStructure copy];
         objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
