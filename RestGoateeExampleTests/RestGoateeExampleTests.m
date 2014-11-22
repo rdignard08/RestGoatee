@@ -46,9 +46,9 @@
     testObject.number = @2;
     testObject.value = 42;
     
-    NSDictionary* serializedTest = [testObject dictionaryRepresentation];
+    NSDictionary* serializedTest = [testObject performSelector:@selector(dictionaryRepresentation)];
     
-    XCTest([serializedTest[@"string"] isEqual:@"world"], @"string failed");
+    XCTAssert([serializedTest[@"string"] isEqual:@"world"], @"string failed");
 }
 
 - (void) testDeserialization {
@@ -61,9 +61,9 @@
                                @"type" : @"RGTestObject"
                                };
     
-    RGTestObject* test = [RGTestObject objectFromJSON:testJSON];
-    XCTest(test.b == YES, @"__b failed");
-    XCTest([test.string isEqual:testJSON[@"_str_ing"]], @"_str_ing failed");
+    RGTestObject* test = [RGTestObject performSelector:@selector(objectFromJSON:) withObject:testJSON];
+    XCTAssert(test.b == YES, @"__b failed");
+    XCTAssert([test.string isEqual:testJSON[@"_str_ing"]], @"_str_ing failed");
 }
 
 @end
