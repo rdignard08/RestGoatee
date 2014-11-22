@@ -29,7 +29,7 @@
 }
 
 - (void) newAlbums:(NSNotification*)notification {
-    self.albums = notification.object;
+    self.albums = [notification.object isKindOfClass:[NSArray class]] ? notification.object : @[ notification.object ];
     [self.tableView reloadData];
 }
 
