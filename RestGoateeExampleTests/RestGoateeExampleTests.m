@@ -18,6 +18,7 @@
 @property (nonatomic, assign) Class type;
 
 @end
+
 @implementation RGTestObject @end
 
 @interface RestGoateeExampleTests : XCTestCase
@@ -45,10 +46,12 @@
     testObject.array = @[ @"abc" ];
     testObject.number = @2;
     testObject.value = 42;
+    testObject.type = [RGTestObject class];
     
     NSDictionary* serializedTest = [testObject performSelector:@selector(dictionaryRepresentation)];
     
     XCTAssert([serializedTest[@"string"] isEqual:@"world"], @"string failed");
+    XCTAssert([serializedTest[@"type"] isEqual:NSStringFromClass([RGTestObject class])], @"Class failed");
 }
 
 - (void) testDeserialization {
