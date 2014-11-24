@@ -8,7 +8,7 @@
 #import "NSObject+RG_SharedImpl.h"
 #import <objc/runtime.h>
 #import "RestGoatee.h"
-#import <libkern/OSAtomic.h>
+#import <malloc/malloc.h>
 
 /* Property Description Keys */
 const NSString* const kRGPropertyAtomicType = @"atomicity";
@@ -29,6 +29,7 @@ const NSString* const kRGPropertyNonatomic = @"nonatomic";
 
 /* Ivar Description Keys */
 const NSString* const kRGIvarOffset = @"ivar_offset";
+const NSString* const kRGIvarSize = @"ivar_size";
 const NSString* const kRGIvarPrivate = @"private";
 const NSString* const kRGIvarProtected = @"protected";
 const NSString* const kRGIvarPublic = @"public";
@@ -116,8 +117,9 @@ NSString* rg_canonicalForm(NSString* input) {
 }
 
 BOOL rg_isClassObject(id object) {
-    return object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
+    return ![object isKindOfClass:[NSObject class]] && object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
     /* if the class of the meta-class == NSObject's meta-class; object was itself a Class object */
+    /* object_getClass * object_getClass * <plain_nsobject> should not return true */
 }
 
 BOOL rg_isMetaClassObject(id object) {
@@ -148,7 +150,11 @@ Class rg_classForTypeString(NSString* str) {
     return NSClassFromString(str) ?: [NSNumber class];
 }
 
-NSDictionary* rg_parseIvarStruct(Ivar ivar) {
+void rg_parseIvarStructOntoPropertyDeclaration(Ivar ivar, NSMutableDictionary* propertyData) {
+    propertyData[kRGIvarOffset] = @(ivar_getOffset(ivar));
+}
+
+NSMutableDictionary* rg_parseIvarStruct(Ivar ivar) {
     NSString* name = [NSString stringWithUTF8String:ivar_getName(ivar)];
     
     /* The default values for ivars are: assign (if primitive) strong (if object), protected */
@@ -163,10 +169,10 @@ NSDictionary* rg_parseIvarStruct(Ivar ivar) {
     NSString* ivarType = [NSString stringWithUTF8String:ivar_getTypeEncoding(ivar)];
     propertyDict[kRGPropertyClass] = rg_classForTypeString(ivarType);
     propertyDict[kRGPropertyRawType] = rg_trimLeadingAndTrailingQuotes(ivarType);
-    return [propertyDict copy];
+    return propertyDict;
 }
 
-NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
+NSMutableDictionary* rg_parsePropertyStruct(objc_property_t property) {
     NSString* name = [NSString stringWithUTF8String:property_getName(property)];
     /* The default values for properties are: if object and ARC compiled: strong (we don't have to check for this, ARC will insert the retain attribute) else assign. atomic. readwrite. */
     NSMutableDictionary* propertyDict = [@{
@@ -218,7 +224,26 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         }
     }
     free(attributes);
-    return [propertyDict copy];
+    return propertyDict;
+}
+
+void rg_calculateIvarSize(Class object, NSMutableArray/*<NSMutableDictionary>*/* properties) {
+    NSArray* rawOffsets = properties[kRGIvarOffset];
+    NSMutableArray* offsets = [NSMutableArray new];
+    for (NSUInteger i = 0; i < rawOffsets.count; i++) {
+        NSNumber* offset = rawOffsets[i];
+        if (![offset isKindOfClass:[NSNull class]]) {
+            [offsets addObject:@{ @"o" : offset, @"i" : @(i) }];
+        }
+    }
+    [offsets sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1[@"o"] compare:obj2[@"o"]];
+    }];
+    for (NSUInteger i = 0; i < offsets.count; i++) {
+        NSDictionary* obj = offsets[i];
+        NSNumber* nextOffset = (i == (offsets.count - 1)) ? @(class_getInstanceSize(object)) : offsets[i+1][@"o"];
+        properties[[obj[@"i"] unsignedIntegerValue]][kRGIvarSize] = @([nextOffset unsignedIntegerValue] - [obj[@"o"] unsignedIntegerValue]);
+    }
 }
 
 @implementation NSObject (RG_SharedImpl)
@@ -254,11 +279,19 @@ NSDictionary* rg_parsePropertyStruct(objc_property_t property) {
         for (Class cls in stack) {
             Ivar* ivars = class_copyIvarList(cls, &count);
             for (uint32_t i = 0; i < count; i++) {
-                if ([propertyStructure[kRGPropertyBacking] indexOfObject:[NSString stringWithUTF8String:ivar_getName(ivars[i])]] == NSNotFound) {
+                NSString* ivarName = [NSString stringWithUTF8String:ivar_getName(ivars[i])];
+                NSUInteger ivarIndex = [propertyStructure[kRGPropertyBacking] indexOfObject:ivarName];
+                if (ivarIndex == NSNotFound) {
                     [propertyStructure addObject:rg_parseIvarStruct(ivars[i])];
+                } else {
+                    rg_parseIvarStructOntoPropertyDeclaration(ivars[i], propertyStructure[ivarIndex]);
                 }
             }
             free(ivars);
+        }
+        //rg_calculateIvarSize(self, propertyStructure);
+        for (NSUInteger i = 0; i < propertyStructure.count; i++) {
+            propertyStructure[i] = [propertyStructure[i] copy];
         }
         ret = [propertyStructure copy];
         objc_setAssociatedObject(self, (__bridge const void*)kRGPropertyListProperty, ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
