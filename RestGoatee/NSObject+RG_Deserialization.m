@@ -56,7 +56,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         ret = [rg_sNSEntityDescription performSelector:@selector(insertNewObjectForEntityForName:inManagedObjectContext:) withObject:NSStringFromClass(self) withObject:context];
 #pragma clang diagnostic pop
     } else {
-        ret = [[self alloc] init];
+        ret = [self new];
     }
     NSArray* propertiesToFill = [ret __property_list__];
     NSMutableDictionary* overrides = [NSMutableDictionary dictionary];
@@ -143,15 +143,12 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         if ([self respondsToSelector:@selector(dateFormatForKey:)]) {
             providedDateFormat = [(id)self dateFormatForKey:key];
         }
-        NSDateFormatter* df = [[NSDateFormatter alloc] init];
+        NSDateFormatter* df = [NSDateFormatter new];
         NSDate* ret;
         if (providedDateFormat) {
             df.dateFormat = providedDateFormat;
-            ret = [df dateFromString:JSONValue];
-            if (ret) {
-                self[key] = ret;
-                return;
-            }
+            self[key] = [df dateFromString:JSONValue];
+            return; /* Let's not second-guess the developer... */
         }
         for (NSString* dateFormat in rg_dateFormats()) {
             df.dateFormat = dateFormat;
@@ -161,7 +158,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         self[key] = ret;
         
     /* At this point we've exhausted the supported foundation classes for the LHS... these handle sub-objects */
-    } else if ([JSONValue isKindOfClass:[NSDictionary class]]) { /* lhs is some kind of sub object, since the source has keys */
+    } else if ([JSONValue isKindOfClass:[NSDictionary class]]) { /* lhs is some kind of user defined object, since the source has keys */
         self[key] = [propertyType objectFromJSON:JSONValue];
     } else if ([JSONValue isKindOfClass:[NSArray class]]) { /* single entry arrays are converted to an inplace object */
         id value = [JSONValue count] ? JSONValue[0] : nil;
@@ -173,7 +170,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
 
 - (instancetype) extendWith:(id)object inContext:(NSManagedObjectContext*)context {
     for (NSString* propertyName in [object rg_keys]) {
-        if ([propertyName isEqual:(id)kRGPropertyListProperty]) continue;
+        if ([propertyName isEqual:kRGPropertyListProperty]) continue;
         @try {
             [self rg_initProperty:propertyName withJSONValue:object[propertyName] inContext:context];
         }
