@@ -51,10 +51,6 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 @implementation RGAPIClient
 
-+ (RGAPIClient*) alloc {
-    return [super alloc];
-}
-
 - (NSUInteger) hash {
     return (NSUInteger)self;
 }
@@ -81,6 +77,8 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 #else
     Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager") ?: NSClassFromString(@"AFHTTPClient");
 #endif
+    
+    _sessionConfiguration = configuration;
     if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
         _super_ = [[super_class alloc] initWithBaseURL:url sessionConfiguration:configuration];
     } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
