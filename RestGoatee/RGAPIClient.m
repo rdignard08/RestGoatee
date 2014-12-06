@@ -40,28 +40,43 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     return error;
 }
 
+static Class rg_clientSuperClass() {
+    static Class cls;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+        cls = NSClassFromString(@"AFHTTPSessionManager");
+#else
+        cls = NSClassFromString(@"AFHTTPRequestOperationManager");
+#endif
+    });
+    return cls;
+}
+
+
+
 @interface RGAPIClient ()
+#ifdef NSURLSESSION_AVAILABLE
+@property (nonatomic, strong, readwrite) NSURLSessionConfiguration* sessionConfiguration;
+#else
+@property (nonatomic, strong, readwrite) id sessionConfiguration;
+#endif
+@end
 
-@property (nonatomic, strong) id super_;
+@interface _RGForwardDeclarations : NSObject
 
+- (id) initWithBaseURL:(id)url sessionConfiguration:(id)configuration;
+- (id) initWithBaseURL:(id)url;
+- (id) requestSerializer;
+- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
+- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id*)error;
+- (id) requestWithMethod:(id)method path:(id)path parameters:(id)parameters; /* old style */
 @end
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 @implementation RGAPIClient
-
-- (NSUInteger) hash {
-    return (NSUInteger)self;
-}
-
-- (BOOL) isEqual:(id)object {
-    return [self hash] == [object hash];
-}
-
-- (BOOL) isKindOfClass:(Class)aClass {
-    return [aClass isSubclassOfClass:[self.super_ class]] ?: [super isKindOfClass:aClass];
-}
 
 - (instancetype) init {
     return [self initWithBaseURL:nil sessionConfiguration:nil];
@@ -72,20 +87,15 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 }
 
 - (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration {
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
-    Class super_class = NSClassFromString(@"AFHTTPSessionManager") ?: NSClassFromString(@"AFHTTPClient");
-#else
-    Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager") ?: NSClassFromString(@"AFHTTPClient");
-#endif
-    
-    _sessionConfiguration = configuration;
-    if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
-        _super_ = [[super_class alloc] initWithBaseURL:url sessionConfiguration:configuration];
-    } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
-        _super_ = [[super_class alloc] initWithBaseURL:url];
+    struct objc_super superclass = { self , rg_clientSuperClass() };
+    if ([rg_clientSuperClass() instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
+        self = objc_msgSendSuper(&superclass, _cmd, url, configuration);
+    } else if ([rg_clientSuperClass() instancesRespondToSelector:@selector(initWithBaseURL:)]) {
+        self = objc_msgSendSuper(&superclass, @selector(initWithBaseURL:), url);
     } else {
-        _super_ = [super_class new];
+        self = [super init];
     }
+    self.sessionConfiguration = configuration;
     return self;
 }
 
@@ -152,9 +162,10 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
     if ([self respondsToSelector:@selector(requestSerializer)]) { /* "Modern" style */
-        request = objc_msgSend([self performSelector:@selector(requestSerializer)], @selector(requestWithMethod:URLString:parameters:error:), method, fullPath, parameters, nil); /* too many parameters for `performSelector:...` */
-    } else { /* "Old" style: this version of AFNetworking predates the AFHTTPSessionManager / AFHTTPRequestOperationManager split */
-        request = objc_msgSend(self, @selector(requestWithMethod:path:parameters:), method, fullPath, parameters);
+        id requestSerializer = [self performSelector:@selector(requestSerializer)];
+        request = [requestSerializer requestWithMethod:method URLString:fullPath parameters:parameters];
+    } else {
+        request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];
     }
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
@@ -218,39 +229,6 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
 
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate {
     [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:NULL delegate:delegate];
-}
-
-#pragma mark - NSProxy
-- (void) forwardInvocation:(NSInvocation*)invocation {
-    [invocation invokeWithTarget:self.super_];
-}
-
-- (NSMethodSignature*) methodSignatureForSelector:(SEL)sel {
-    return [self.super_ methodSignatureForSelector:sel];
-}
-
-- (void) finalize {
-    [self.super_ finalize];
-}
-
-- (void) setDescription:(NSString*)description {
-    [self.super_ setDescription:description];
-}
-
-- (NSString*) description {
-    return [self.super_ description];
-}
-
-- (void) setDebugDescription:(NSString*)debugDescription {
-    [self.super_ setDebugDescription:debugDescription];
-}
-
-- (NSString*) debugDescription {
-    return [self.super_ debugDescription];
-}
-
-+ (BOOL) respondsToSelector:(SEL __unused)aSelector {
-    return YES;
 }
 
 @end

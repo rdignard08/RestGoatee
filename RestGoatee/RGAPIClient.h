@@ -28,9 +28,17 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 @protocol RGSerializationDelegate, RGResponseDelegate;
 @class NSManagedObjectContext;
 
-@interface RGAPIClient : NSProxy /* fuck it, full on proxy the bastard */
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+@interface RGAPIClient : AFHTTPSessionManager
+#else
+@interface RGAPIClient : AFHTTPRequestOperationManager
+#endif
 
+#ifdef NSURLSESSION_AVAILABLE
 @property (nonatomic, strong, readonly) NSURLSessionConfiguration* sessionConfiguration;
+#else
+@property (nonatomic, strong, readonly) id sessionConfiguration;
+#endif
 
 @property (nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
 
@@ -197,5 +205,3 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 - (NSString*) keyForReconciliationOfType:(Class)cls;
 
 @end
-
-#include "RGAPIClient+RG_ForwardDeclarationForObjectProxy.h"
