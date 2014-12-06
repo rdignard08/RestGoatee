@@ -1,10 +1,10 @@
 RestGoatee
 ==========
 
-Backported to iOS 6.0 and AFNetworking 1.3.3
+Supports: iOS 6.0+ and AFNetworking 2.0.0+
 
 Deserialize objects without the fluff.  No Mappings! No Mindless Repetition! Only Simple!
-This framework has no dependencies beyond AFNetworking (Any version between latest and 1.3.3) and the objective-C runtime, and it supports CoreData out of the box.  Whether you use CoreData or not it will simply work.
+This framework has no dependencies beyond AFNetworking and the objective-C runtime, and it supports CoreData out of the box.  Whether you use CoreData or not it will simply work.
 The optional `RestGoateeSerialization` protocol can be used to provide custom and non-standard mappings and dates from JSON to Objective-C.
 By default, a key in the json of `foo_bar` will be automatically mapped to a property of name `fooBar`.  You only need to provide mappings for keys which don't match in "canonical form".
 
