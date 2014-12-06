@@ -1,7 +1,7 @@
 RestGoatee
 ==========
 
-Supports: iOS 6.0+ and AFNetworking 2.0.0+
+Supports: iOS 6.0+ and AFNetworking 2.0.0+, branch 1.5.4 supports down to AFNetworking 1.3.3
 
 Deserialize objects without the fluff.  No Mappings! No Mindless Repetition! Only Simple!
 This framework has no dependencies beyond AFNetworking and the objective-C runtime, and it supports CoreData out of the box.  Whether you use CoreData or not it will simply work.
