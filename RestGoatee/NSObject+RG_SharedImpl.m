@@ -117,7 +117,7 @@ NSString* rg_canonicalForm(NSString* input) {
 }
 
 BOOL rg_isClassObject(id object) {
-    return ![object isKindOfClass:[NSObject class]] && object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
+    return object_getClass(object) != [NSObject class] && object_getClass(/* the meta-class */object_getClass(object)) == object_getClass([NSObject class]);
     /* if the class of the meta-class == NSObject's meta-class; object was itself a Class object */
     /* object_getClass * object_getClass * <plain_nsobject> should not return true */
 }
