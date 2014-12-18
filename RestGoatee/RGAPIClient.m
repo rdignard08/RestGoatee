@@ -117,6 +117,7 @@ static Class rg_clientSuperClass() {
     target = path ? [response valueForKeyPath:path] : response;
     if (primaryKey && cls) {
         id fetch = [rg_sNSFetchRequest performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"%K in %@", primaryKey, target[primaryKey]]];
         [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
         allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch withObject:nil];
     }
