@@ -57,6 +57,16 @@ void rg_setServerTypeKey(const NSString* const typeKey);
  */
 const NSString* const rg_serverTypeKey(void);
 
+#define RISKY_BUSINESS(statement) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Warc-retain-cycles\"") \
+_Pragma("clang diagnostic ignored \"-Wgnu\"") \
+_Pragma("clang diagnostic ignored \"-Wunreachable-code\"") \
+_Pragma("clang diagnostic ignored \"-Wundeclared-selector\"") \
+_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+statement \
+_Pragma("clang diagnostic pop")
+
 #import "NSObject+RG_KeyedSubscripting.h"
 #import "NSError+RG_HTTPStatusCode.h"
 #import "RGResponseObject.h"
