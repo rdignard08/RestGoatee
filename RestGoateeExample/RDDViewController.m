@@ -38,12 +38,16 @@
     return YES;
 }
 
-- (NSInteger) numberOfSectionsInTableView:(UITableView*)tableView {
+- (NSInteger) numberOfSectionsInTableView:(__unused UITableView*)tableView {
     return 1;
 }
 
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger) tableView:(__unused UITableView*)tableView numberOfRowsInSection:(__unused NSInteger)section {
     return self.albums.count;
+}
+
+- (CGFloat) tableView:(__unused UITableView*)tableView heightForRowAtIndexPath:(__unused NSIndexPath*)indexPath {
+    return 44.0f;
 }
 
 - (UITableViewCell*) tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
