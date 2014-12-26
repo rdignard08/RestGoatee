@@ -26,7 +26,7 @@
 typedef void(^RGResponseBlock)(RGResponseObject*);
 
 @protocol RGSerializationDelegate, RGResponseDelegate;
-@class NSManagedObjectContext;
+@class NSManagedObjectContext, NSURLSessionConfiguration;
 
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
 @interface RGAPIClient : AFHTTPSessionManager
@@ -34,16 +34,12 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 @interface RGAPIClient : AFHTTPRequestOperationManager
 #endif
 
-#ifdef NSURLSESSION_AVAILABLE
 @property (nonatomic, strong, readonly) NSURLSessionConfiguration* sessionConfiguration;
-#else
-@property (nonatomic, strong, readonly) id sessionConfiguration;
-#endif
 
 @property (nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
 
 /**
- designated initializer
+ designated initializer; on systems <= iOS 6 pass `nil` for `configuration` or use `-initWithBaseURL:`.
  */
 - (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration;
 

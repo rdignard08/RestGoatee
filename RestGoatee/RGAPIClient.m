@@ -55,11 +55,7 @@ static Class rg_clientSuperClass() {
 
 
 @interface RGAPIClient ()
-#ifdef NSURLSESSION_AVAILABLE
 @property (nonatomic, strong, readwrite) NSURLSessionConfiguration* sessionConfiguration;
-#else
-@property (nonatomic, strong, readwrite) id sessionConfiguration;
-#endif
 @end
 
 @interface NSObject (_RGForwardDeclarations)
