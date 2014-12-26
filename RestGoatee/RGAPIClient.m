@@ -23,7 +23,6 @@
 #import "RestGoatee.h"
 #import "NSObject+RG_SharedImpl.h"
 #import <objc/runtime.h>
-#import <objc/message.h>
 
 const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
 
@@ -63,7 +62,7 @@ static Class rg_clientSuperClass() {
 #endif
 @end
 
-@interface _RGForwardDeclarations : NSObject
+@interface NSObject (_RGForwardDeclarations)
 
 - (id) initWithBaseURL:(id)url sessionConfiguration:(id)configuration;
 - (id) initWithBaseURL:(id)url;
@@ -73,9 +72,7 @@ static Class rg_clientSuperClass() {
 - (id) requestWithMethod:(id)method path:(id)path parameters:(id)parameters; /* old style */
 @end
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+DO_RISKY_BUSINESS
 @implementation RGAPIClient
 
 - (instancetype) init {
@@ -87,11 +84,11 @@ static Class rg_clientSuperClass() {
 }
 
 - (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration {
-    struct objc_super superclass = { self , rg_clientSuperClass() };
-    if ([rg_clientSuperClass() instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
-        self = objc_msgSendSuper(&superclass, _cmd, url, configuration);
-    } else if ([rg_clientSuperClass() instancesRespondToSelector:@selector(initWithBaseURL:)]) {
-        self = objc_msgSendSuper(&superclass, @selector(initWithBaseURL:), url);
+    Class super_class = rg_clientSuperClass();
+    if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
+        self = [super initWithBaseURL:url sessionConfiguration:configuration];
+    } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
+        self = [super initWithBaseURL:url];
     } else {
         self = [super init];
     }
@@ -233,7 +230,7 @@ static Class rg_clientSuperClass() {
 }
 
 @end
-#pragma clang diagnostic pop
+END_RISKY_BUSINESS
 
 @implementation RGAPIClient (RGConvenience)
 
