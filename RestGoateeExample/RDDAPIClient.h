@@ -28,4 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 - (void) getItunesArtist:(NSString*)artist;
 
+- (void) getStationsWithCompletion:(RGResponseBlock)completion;
+
 @end

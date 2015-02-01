@@ -22,7 +22,31 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RDDAPIClient.h"
-#import <objc/runtime.h>
+
+#define BART_API_BASE @"http://api.bart.gov/api"
+#define BART_API_KEY @"MW9S-E7SL-26DU-VV8V"
+#define API_KEY_PARAMETER @"key"
+#define API_KEY_COMMAND @"cmd"
+#define BART_API_VERSION @"2.0"
+#define BART_API_VERSION_KEY @"apiVersion"
+
+//Station Keys
+#define ALL_STATIONS_COMMAND @"stns"
+
+static inline NSMutableDictionary* basicsForCommand(NSString* command) {
+    static dispatch_once_t onceToken;
+    static NSDictionary* _sCredentials;
+    dispatch_once(&onceToken, ^{
+        _sCredentials = @{ API_KEY_PARAMETER : BART_API_KEY };
+    });
+    NSMutableDictionary* parameters = [_sCredentials mutableCopy];
+    parameters[API_KEY_COMMAND] = command;
+    return parameters;
+}
+
+@interface RDDAPIClient () <RGSerializationDelegate>
+
+@end
 
 @implementation RDDAPIClient
 
@@ -35,10 +59,25 @@
     return _sSharedManaged;
 }
 
+- (instancetype) initWithBaseURL:(NSURL *)baseURL sessionConfiguration:(id)session {
+    self = [super initWithBaseURL:baseURL sessionConfiguration:session];
+    self.serializationDelegate = self;
+    return self;
+}
+
 - (void) getItunesArtist:(NSString*)artist {
     [self GET:@"/search" parameters:@{ @"term" : artist ?: @"" } keyPath:@"results" class:[RDDItunesEntry class] completion:^(RGResponseObject* response) {
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)] object:[response responseBody]];
     }];
+}
+
+- (void) getStationsWithCompletion:(RGResponseBlock)completion {
+    self.responseSerializer = [AFXMLParserResponseSerializer new];
+    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:basicsForCommand(ALL_STATIONS_COMMAND) keyPath:@"root.stations" class:nil completion:completion];
+}
+
+- (BOOL) shouldSerializedXML {
+    return YES;
 }
 
 @end
