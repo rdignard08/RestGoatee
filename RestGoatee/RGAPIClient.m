@@ -149,7 +149,7 @@ DO_RISKY_BUSINESS
                 RGXMLSerializer* serializer = [RGXMLSerializer new];
                 serializer.parser = body;
                 body = [serializer body];
-                ret.responseBody = [self parseResponse:[serializer body] atPath:keyPath intoClass:cls context:&context];
+                ret.responseBody = [self parseResponse:body atPath:keyPath intoClass:cls context:&context];
             } else {
                 ret.responseBody = body;
             }
