@@ -190,6 +190,7 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 
 @protocol RGSerializationDelegate <NSObject>
 
+@optional
 /**
  Implement this method if you wish to provide a context for response objects which are subclasses of NSManagedObject.  Types other than NSManagedObject are not queried.
  */
@@ -199,5 +200,10 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
  Return a non-`nil` key to have managed objects be reconciled to an existing object if the value of this key matches.
  */
 - (NSString*) keyForReconciliationOfType:(Class)cls;
+
+/**
+ Enable basic XML to JSON parsing. If you do not to the `NSXMLParser*` will be passed back as the `responseBody`.  Defaults to `NO`.
+ */
+- (BOOL) shouldSerializedXML;
 
 @end

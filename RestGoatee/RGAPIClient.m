@@ -22,6 +22,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "RestGoatee.h"
 #import "NSObject+RG_SharedImpl.h"
+#import "RGXMLSerializer.h"
 #import <objc/runtime.h>
 
 const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
@@ -138,11 +139,23 @@ DO_RISKY_BUSINESS
     return response;
 }
 
-- (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keypath class:(Class)cls error:(NSError*)error {
+- (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keyPath class:(Class)cls error:(NSError*)error {
     RGResponseObject* ret = [RGResponseObject new];
     NSManagedObjectContext* context;
     if (!error && body) {
-        ret.responseBody = [self parseResponse:body atPath:keypath intoClass:cls context:&context];
+        if ([body isKindOfClass:[NSXMLParser class]]) {
+            BOOL shouldSerializedXML = [self.serializationDelegate respondsToSelector:@selector(shouldSerializedXML)] && [self.serializationDelegate shouldSerializedXML];
+            if (shouldSerializedXML) {
+                RGXMLSerializer* serializer = [RGXMLSerializer new];
+                serializer.parser = body;
+                body = [serializer body];
+                ret.responseBody = [self parseResponse:[serializer body] atPath:keyPath intoClass:cls context:&context];
+            } else {
+                ret.responseBody = body;
+            }
+        } else {
+            ret.responseBody = [self parseResponse:body atPath:keyPath intoClass:cls context:&context];
+        }
     } else {
         ret.responseBody = body;
     }
