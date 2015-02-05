@@ -22,6 +22,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RDDAPIClient.h"
+#import "RDDBartStation.h"
 
 #define BART_API_BASE @"http://api.bart.gov/api"
 #define BART_API_KEY @"MW9S-E7SL-26DU-VV8V"
@@ -66,6 +67,7 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
 }
 
 - (void) getItunesArtist:(NSString*)artist {
+    self.responseSerializer = [AFJSONResponseSerializer new];
     [self GET:@"/search" parameters:@{ @"term" : artist ?: @"" } keyPath:@"results" class:[RDDItunesEntry class] completion:^(RGResponseObject* response) {
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)] object:[response responseBody]];
     }];
@@ -73,10 +75,10 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
 
 - (void) getStationsWithCompletion:(RGResponseBlock)completion {
     self.responseSerializer = [AFXMLParserResponseSerializer new];
-    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:basicsForCommand(ALL_STATIONS_COMMAND) keyPath:@"root.stations" class:nil completion:completion];
+    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:basicsForCommand(ALL_STATIONS_COMMAND) keyPath:@"root.stations.station" class:[RDDBartStation class] completion:completion];
 }
 
-- (BOOL) shouldSerializedXML {
+- (BOOL) shouldSerializeXML {
     return YES;
 }
 

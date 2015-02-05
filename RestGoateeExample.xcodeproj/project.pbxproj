@@ -39,6 +39,7 @@
 		BE7ECF1119DCA35C008820A1 /* RDDViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE7ECF0F19DCA35C008820A1 /* RDDViewController.xib */; };
 		BE7ECF1519DCA4D6008820A1 /* RDDTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7ECF1319DCA4D6008820A1 /* RDDTableCell.m */; };
 		BE7ECF1619DCA4D6008820A1 /* RDDTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE7ECF1419DCA4D6008820A1 /* RDDTableCell.xib */; };
+		BEF4F21B1A841F8D001F4644 /* RDDBartStation.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF4F21A1A841F8D001F4644 /* RDDBartStation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +89,8 @@
 		BE7ECF1219DCA4D6008820A1 /* RDDTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDTableCell.h; sourceTree = "<group>"; };
 		BE7ECF1319DCA4D6008820A1 /* RDDTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDTableCell.m; sourceTree = "<group>"; };
 		BE7ECF1419DCA4D6008820A1 /* RDDTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RDDTableCell.xib; sourceTree = "<group>"; };
+		BEF4F2191A841F8D001F4644 /* RDDBartStation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDBartStation.h; sourceTree = "<group>"; };
+		BEF4F21A1A841F8D001F4644 /* RDDBartStation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDBartStation.m; sourceTree = "<group>"; };
 		CB51A6E35E2A969C8BE33329 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -174,6 +177,8 @@
 				BE74EA3819E3293400B606E1 /* RDDTestObject1.m */,
 				BE74EA3A19E3294D00B606E1 /* RDDTestObject2.h */,
 				BE74EA3B19E3294D00B606E1 /* RDDTestObject2.m */,
+				BEF4F2191A841F8D001F4644 /* RDDBartStation.h */,
+				BEF4F21A1A841F8D001F4644 /* RDDBartStation.m */,
 			);
 			path = RestGoateeExample;
 			sourceTree = "<group>";
@@ -361,6 +366,7 @@
 				BE74EA3919E3293400B606E1 /* RDDTestObject1.m in Sources */,
 				BE74EA3C19E3294D00B606E1 /* RDDTestObject2.m in Sources */,
 				A4481FF419957CDB00214EB0 /* RDDAppDelegate.m in Sources */,
+				BEF4F21B1A841F8D001F4644 /* RDDBartStation.m in Sources */,
 				BE7ECF1019DCA35C008820A1 /* RDDViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
