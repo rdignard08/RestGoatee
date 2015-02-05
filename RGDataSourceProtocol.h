@@ -1,4 +1,4 @@
-/* Copyright (c) 7/7/14, Ryan Dignard
+/* Copyright (c) 2/5/15, Ryan Dignard
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -20,8 +20,24 @@
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-#import <Foundation/Foundation.h>
 
-@interface NSNull (Niller)
+#import "RGXMLNode.h"
+
+/**
+ These are the methods that a data source must implement in order to be consumable by the `+[NSObject objectFromJSON:]` family.
+ 
+ Currently NSDictionary and RGXMLNode (the parsed output from NSXMLParser) are supported implicitly.
+ */
+@protocol RGDataSourceProtocol <NSObject, NSFastEnumeration>
+
+- (id) objectForKeyedSubscript:(id<NSCopying, NSObject>)key;
+
+- (void) setObject:(id)object forKeyedSubscript:(id<NSCopying, NSObject>)key;
+
+- (id) valueForKeyPath:(NSString*)string;
 
 @end
+
+@interface NSDictionary (RGDataSourceProtocol) <RGDataSourceProtocol> @end
+
+@interface RGXMLNode (RGDataSourceProtocol) <RGDataSourceProtocol> @end

@@ -20,6 +20,7 @@
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
+
 #import "RestGoatee.h"
 #import "NSObject+RG_SharedImpl.h"
 #import "RGXMLSerializer.h"
@@ -120,22 +121,24 @@ DO_RISKY_BUSINESS
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
-        if ([entry isKindOfClass:[NSDictionary class]] && primaryKey && allObjects && entry[primaryKey]) {
+        if ([entry conformsToProtocol:@protocol(RGDataSourceProtocol)] && primaryKey && allObjects && entry[primaryKey]) {
             index = [allObjects[primaryKey] indexOfObject:entry[primaryKey] inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
             if (index != NSNotFound) {
                 [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
             } else {
-                [ret addObject:[cls objectFromJSON:entry inContext:context]]; /* New Object */
+                [ret addObject:[cls objectFromDataSource:entry inContext:context]]; /* New Object */
             }
         } else {
-            [ret addObject:(cls ? [cls objectFromJSON:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
+            [ret addObject:(cls ? [cls objectFromDataSource:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
         }
     }
     response = ret.count == 1 ? ret[0] : [ret copy];
     @try {
         [context performSelector:@selector(save:) withObject:nil];
     }
-    @catch (NSException* e) {}
+    @catch (NSException* e) {
+        RGLog(@"Warning, saving context %@ failed: %@", context, e);
+    }
     return response;
 }
 
@@ -144,12 +147,9 @@ DO_RISKY_BUSINESS
     NSManagedObjectContext* context;
     if (!error && body) {
         if ([body isKindOfClass:[NSXMLParser class]]) {
-            BOOL shouldSerializedXML = [self.serializationDelegate respondsToSelector:@selector(shouldSerializedXML)] && [self.serializationDelegate shouldSerializedXML];
-            if (shouldSerializedXML) {
-                RGXMLSerializer* serializer = [RGXMLSerializer new];
-                serializer.parser = body;
-                body = [serializer body];
-                ret.responseBody = [self parseResponse:body atPath:keyPath intoClass:cls context:&context];
+            BOOL shouldSerializeXML = [self.serializationDelegate respondsToSelector:@selector(shouldSerializeXML)] && [self.serializationDelegate shouldSerializeXML];
+            if (shouldSerializeXML) {
+                ret.responseBody = [self parseResponse:[[RGXMLSerializer alloc] initWithParser:body].rootNode atPath:keyPath intoClass:cls context:&context];
             } else {
                 ret.responseBody = body;
             }

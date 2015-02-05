@@ -57,6 +57,15 @@ void rg_setServerTypeKey(const NSString* const typeKey);
  */
 const NSString* const rg_serverTypeKey(void);
 
+#ifdef DEBUG
+    #define __SOURCE_FILE__ ({char* c = strrchr(__FILE__, '/'); c ? c + 1 : __FILE__;})
+    #define RGLog(format, ...) _RGLog(format, __SOURCE_FILE__, (long)__LINE__, ##__VA_ARGS__)
+    extern void _RGLog(NSString* format, ...);
+#else
+    /* we define out with `(void)0` generally this is `NULL` to allow constructs like `condition ?: RGLog(@"Blah")`. */
+    #define RGLog(...) (void)0
+#endif
+
 #define DO_RISKY_BUSINESS \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Warc-retain-cycles\"") \
@@ -73,6 +82,7 @@ DO_RISKY_BUSINESS \
 statement \
 END_RISKY_BUSINESS
 
+#import "RGDataSourceProtocol.h"
 #import "NSObject+RG_KeyedSubscripting.h"
 #import "NSError+RG_HTTPStatusCode.h"
 #import "RGResponseObject.h"

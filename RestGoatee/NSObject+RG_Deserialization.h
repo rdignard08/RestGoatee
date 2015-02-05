@@ -21,8 +21,6 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import <Foundation/Foundation.h>
-
 @class NSManagedObjectContext;
 
 @protocol RestGoateeSerialization <NSObject>
@@ -61,14 +59,26 @@
 @interface NSObject (RG_Deserialization)
 
 /**
+ @deprecated use `+[NSObject objectFromDataSource:inContext]` instead
  @abstract subclasses of `NSManagedObject` must use this method since they cannot be initialized without a context.
  */
-+ (instancetype) objectFromJSON:(NSDictionary*)json inContext:(NSManagedObjectContext*)context;
++ (instancetype) objectFromJSON:(NSDictionary*)json inContext:(NSManagedObjectContext*)context __attribute__((deprecated));
 
 /**
+ @abstract subclasses of `NSManagedObject` must use this method since they cannot be initialized without a context.
+ */
++ (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source inContext:(NSManagedObjectContext*)context;
+
+/**
+ @deprecated use `+[NSObject objectFromDataSource:]` instead
  @abstract the receiver (the Class object) which receives this method will attempt to initialize an instance of this class with properties assigned from json.
  */
-+ (instancetype) objectFromJSON:(NSDictionary*)json;
++ (instancetype) objectFromJSON:(NSDictionary*)json __attribute__((deprecated));
+
+/**
+ @abstract the receiver (the Class object) which receives this method will attempt to initialize an instance of this class with properties assigned from a data source.
+ */
++ (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source;
 
 /**
  @abstract merges two objects into a single object.  The return value is not a new object, but rather is the receiver augmented with the values in `object`.

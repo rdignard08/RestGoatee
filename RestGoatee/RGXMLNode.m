@@ -1,14 +1,33 @@
+/* Copyright (c) 2/5/15, Ryan Dignard
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RGXMLNode.h"
-#import "NSObject+RG_KeyedSubscripting.h"
 
-const NSString* const kRGNameKey = @"__name__";
-const NSString* const kRGTextContentKey = @"__text__";
-const NSString* const kRGChildNodesKey = @"__child_nodes__";
+const NSString* const kRGInnerXMLKey = @"__text__";
 
 @interface RGXMLNode ()
 
-@property (nonatomic, strong) NSMutableArray* childNodes;
+@property (nonatomic, strong, readwrite) NSMutableArray* childNodes;
 
 @end
 
@@ -18,61 +37,29 @@ const NSString* const kRGChildNodesKey = @"__child_nodes__";
     if (!_childNodes) {
         _childNodes = [NSMutableArray new];
     }
-    return _childNodes;
+    return (id)_childNodes;
+}
+
+- (NSMutableDictionary*) attributes {
+    if (!_attributes) {
+        _attributes = [NSMutableDictionary new];
+    }
+    return _attributes;
 }
 
 - (void) addChildNode:(RGXMLNode*)node {
     node.parentNode = self;
-    [self.childNodes addObject:node];
+    [(id)self.childNodes addObject:node];
 }
 
-- (NSMutableDictionary*) asDictionary {
-    const static NSString* propertyNameKey = @"name";
-    NSMutableDictionary* ret = [NSMutableDictionary dictionaryWithDictionary:self.attributes];
-    
-    if (self.text) ret[kRGTextContentKey] = self.text;
-    if (self.name) ret[kRGNameKey] = self.name;
-    
-    BOOL needsArray = NO;
-    NSArray* childrensNames = self.childNodes[propertyNameKey];
-    for (NSUInteger i = 0; i < childrensNames.count; i++) {
-        NSString* name = childrensNames[i];
-        NSInteger index = [childrensNames indexOfObject:name inRange:NSMakeRange(i + 1, childrensNames.count - i - 1)];
-        NSInteger dictionaryIndex = [[ret allKeys] indexOfObject:name];
-        if (index != NSNotFound || dictionaryIndex != NSNotFound) {
-            needsArray = YES;
+- (id) childrenNamed:(NSString*)name {
+    NSMutableArray* ret = [NSMutableArray new];
+    for (RGXMLNode* child in self.childNodes) {
+        if ([child.name isEqualToString:name]) {
+            [ret addObject:child];
         }
     }
-    
-    if (needsArray) {
-        NSMutableArray* array = [NSMutableArray new];
-        for (RGXMLNode* node in self.childNodes) {
-            [array addObject:[node asDictionary:ret]];
-        }
-        if (array.count) ret[kRGChildNodesKey] = array.count == 1 ? [array firstObject] : array;
-    } else {
-        for (RGXMLNode* node in self.childNodes) {
-            ret[node.name] = [node asDictionary:ret];
-        }
-    }
-
-    return ret;
-}
-
-- (NSDictionary*) asDictionary:(NSMutableDictionary*)inDict {
-    NSDictionary* ret = [self asDictionary];
-    
-    if (ret.count == 2 && ret[kRGTextContentKey] && ret[kRGNameKey]) { /* this entry can be inlined */
-        if (!inDict[ret[kRGNameKey]]) {
-            return ret[kRGTextContentKey];
-        }
-    }
-    
-    if (ret[kRGChildNodesKey]) { /* the presence of the kRGChildNodesKey key indicates this needs to be elided */
-        return ret[kRGChildNodesKey];
-    }
-    
-    return ret;
+    return ret.count > 1 ? ret : ret.count == 1 ? [ret lastObject] : nil;
 }
 
 @end
