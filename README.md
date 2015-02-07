@@ -13,13 +13,13 @@ This library's aim is one of simplicity in the common case and extensibility in 
 5) The default mapping behavior should be both generally intuitive (correct 99% of the time) and extensible.<br/>
 6) The default should be the least verbose in terms of complexity and lines of code.  You don't specify mappings for objects that are obviously one-to-one and well-named.
 
-Why _RestGoatee_?
-=================
+Why Use RestGoatee?
+===================
 Consider your favorite or most popular model framework:
 
-  * Does it require explicit mappings to get even simple objects built?  <img src="https://github.com/jloughry/Unicode/raw/master/graphics/red_x.png"/>
+  * Does it require mappings to build simple objects?  <img src="https://github.com/jloughry/Unicode/raw/master/graphics/red_x.png"/>
   * Does it support `NSManagedObject` subclasses? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
-  * Does it understand the keys `foo-bar`, `foo_bar`, and `fooBar` most likely refer to the same value? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
+  * Does it understand the keys `foo-bar` `foo_bar` and `fooBar` are likely the same key? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
   * JSON or XML? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
 
 # Installation
