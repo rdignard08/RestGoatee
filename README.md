@@ -19,7 +19,7 @@ Consider your favorite or most popular model framework:
 
   * Does it require explicit mappings to get even simple objects built?  <img src="https://github.com/jloughry/Unicode/raw/master/graphics/red_x.png"/>
   * Does it support `NSManagedObject` subclasses? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
-  * Does it intelligently map between snake case (foo-bar) or C case (foo_bar) or camel case (fooBar)? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
+  * Does it understand the keys `foo-bar`, `foo_bar`, and `fooBar` most likely refer to the same value? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
   * JSON or XML? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
 
 # Installation
