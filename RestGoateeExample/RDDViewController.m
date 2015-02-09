@@ -60,7 +60,7 @@
 }
 
 - (NSInteger) tableView:(__unused UITableView*)tableView numberOfRowsInSection:(__unused NSInteger)section {
-    return self.albums.count;
+    return (NSInteger)self.albums.count;
 }
 
 - (CGFloat) tableView:(__unused UITableView*)tableView heightForRowAtIndexPath:(__unused NSIndexPath*)indexPath {
@@ -69,7 +69,7 @@
 
 - (UITableViewCell*) tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
     RDDTableCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    RDDItunesEntry* entry = self.albums[indexPath.row];
+    RDDItunesEntry* entry = self.albums[(NSUInteger)indexPath.row];
     
     cell.songName.text = entry.trackName;
     cell.bandName.text = entry.artistName;

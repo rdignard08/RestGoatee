@@ -36,14 +36,14 @@ static NSString* const applicationName = @"RestGoateeExample";
 @synthesize window = _window; //thanks apple.
 
 #pragma mark - UIApplicationDelegate
-- (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions {
+- (BOOL) application:(__unused UIApplication*)application didFinishLaunchingWithOptions:(__unused NSDictionary*)launchOptions {
     RDDViewController* rootViewController = [[RDDViewController alloc] initWithNibName:NSStringFromClass([RDDViewController class]) bundle:nil];
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;
 }
 
-- (void) applicationWillTerminate:(UIApplication*)application {
+- (void) applicationWillTerminate:(__unused UIApplication*)application {
     [self saveContext]; // Saves changes in the application's managed object context before the application terminates.
 }
 
