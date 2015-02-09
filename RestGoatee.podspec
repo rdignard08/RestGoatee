@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "RestGoatee"
-  s.version          = '2.1.1'
+  s.version          = '2.2.0'
   s.summary          = "An Easier dependency-free way to handle ReST objects."
   s.homepage         = "https://github.com/rdignard08/RestGoatee"
   s.license          = 'BSD'
