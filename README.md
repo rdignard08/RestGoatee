@@ -1,7 +1,7 @@
 RestGoatee
 ==========
 
-RestGoatee is an add-on framework to AFNetworking; taking the raw `NSDictionary` and `NSXMLParser` responses and convienently converts them to your own objects.
+RestGoatee is an add-on framework to AFNetworking; taking the raw `NSDictionary` and `NSXMLParser` responses and convienently converts them to your own objects.  If you have AFNetworking 2.0.0+ this library will use that version, otherwise it will be included as part of the [CocoaPods](http://cocoapods.org/) `pod install` process.
 
 Supports: iOS 6.0+ and AFNetworking 2.0.0+, branch v1.5.4 supports down to AFNetworking 1.3.3 (does not have XML support).
 
@@ -23,13 +23,13 @@ Consider your favorite or most popular model framework:
   * JSON or XML? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
 
 # Installation
-Using cocoapods add `pod 'RestGoatee'` (after `pod 'AFNetworking'` if present) to your Podfile and run `pod install`. 
+Using cocoapods add `pod 'RestGoatee'` (after `pod 'AFNetworking'` if present) to your Podfile and run `pod install`.  People without cocoapods can include "RestGoatee" top level folder in their repository.  Include `#import <RestGoatee/RestGoatee.h>` to include all public headers and start using the library. 
 
 A feature I've called "Server Typing" can be enabled by calling `rg_setServerTypeKey` with your desired key before you make the first call to any method on `RGAPIClient`.  You are highly advised not to change this during the operation of your app.  If you do enable it, the key ought to be something generally available on all objects (a unique identifer).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
 
 Example
 =======
-You can clone this repo and run the RestGoateeExample project, but you will need to run `pod install` in your installation directory.  (I am in the not-committing-your-pods camp).
+You can clone this repository and run the RestGoateeExample project, but you will need to run `pod install` in your installation directory.  (I am in the not-committing-your-pods camp).
 
 We will use this example to turn a request to [iTunes Search API](https://itunes.apple.com/search?term=pink+floyd) into objects.
 ## Model
