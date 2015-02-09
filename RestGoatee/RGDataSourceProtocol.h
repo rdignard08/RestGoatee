@@ -49,12 +49,12 @@
 
 @end
 
-/**
+/*
  `NSDictionary` already declares and implements all of these methods.  This allows us to pass an `NSDictionary*` where ever an `id<RGDataSourceProtocol>` is need.
  */
 @interface NSDictionary (RGDataSourceProtocol) <RGDataSourceProtocol> @end
 
-/**
+/*
  `RGXMLNode` does not provide these method implicitly.  They are implemented in the category `RGXMLNode+RGDataSourceProtocol`.
  */
 @interface RGXMLNode (RGDataSourceProtocol) <RGDataSourceProtocol> @end

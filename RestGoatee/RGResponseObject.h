@@ -36,7 +36,7 @@
 @property (nonatomic, strong) id responseBody;
 
 /**
- If there was an error, this will contain the highest level error.  `responseBody` may provide additional information as to what error occured.  The HTTP status code of the response can be found at `-[NSError HTTPStatusCode]` if that was the reason for the error.
+ If there was an error, this will contain the highest level error.  `responseBody` may provide additional information as to what error occured.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
  
  Otherwise `nil`.
  */

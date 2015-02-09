@@ -61,7 +61,7 @@
 
 
 /**
- This category provides generalized constructors for all objects from a response object (these may be `NSDictionary*` from JSON or `NSXMLParser*` from XML.
+ This category provides generalized constructors for all objects from a response object (these may be `NSDictionary*` from JSON or `NSXMLParser*` from XML).
  
  You usually do not need to use these methods directly, since calls through the `RGAPIClient` will call the appropriate family of methods from this category.
  */
