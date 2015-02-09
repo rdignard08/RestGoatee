@@ -27,20 +27,8 @@
 
 @implementation RestGoateeExampleTests
 
-- (void)setUp
-{
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
-
-- (void)tearDown
-{
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
 - (void) testSerialization {
-    RGTestObject* testObject = [[RGTestObject alloc] init];
+    RGTestObject* testObject = [RGTestObject new];
     
     testObject.string = @"world";
     testObject.array = @[ @"abc" ];
@@ -48,7 +36,7 @@
     testObject.value = 42;
     testObject.type = [RGTestObject class];
     
-    NSDictionary* serializedTest = [testObject performSelector:@selector(dictionaryRepresentation)];
+    NSDictionary* serializedTest = [testObject dictionaryRepresentation];
     
     XCTAssert([serializedTest[@"string"] isEqual:@"world"], @"string failed");
     XCTAssert([serializedTest[@"type"] isEqual:NSStringFromClass([RGTestObject class])], @"Class failed");
@@ -64,7 +52,7 @@
                                @"type" : @"RGTestObject"
                                };
     
-    RGTestObject* test = [RGTestObject performSelector:@selector(objectFromJSON:) withObject:testJSON];
+    RGTestObject* test = [RGTestObject objectFromDataSource:testJSON];
     XCTAssert(test.b == YES, @"__b failed");
     XCTAssert([test.string isEqual:testJSON[@"_str_ing"]], @"_str_ing failed");
 }
