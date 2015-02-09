@@ -66,7 +66,7 @@ NSArray* const rg_dateFormats() {
     return _sDateFormats;
 }
 
-NSString* rg_canonicalForm(NSString* input) {
+const NSString* rg_canonicalForm(const NSString* const input) {
     NSString* output;
     const size_t inputLength = input.length + 1; /* +1 for the nul terminator */
     char* inBuffer, * outBuffer;
@@ -76,15 +76,12 @@ NSString* rg_canonicalForm(NSString* input) {
     size_t i = 0, j = 0;
     for (; i != inputLength; i++) {
         char c = inBuffer[i];
-        if (c >= '0' && c <= '9') { /* a digit; no change */
+        if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')) { /* a digit or lowercase character; no change */
             outBuffer[j++] = c;
-        } else if (c >= 'A' && c <= 'Z') { /* an uppercase character; no change */
-            outBuffer[j++] = c;
-        } else if (c >= 'a' && c <= 'z') { /* a lowercase character; to upper */
-            outBuffer[j++] = c - 32;
-        } else {
-            continue; /* unicodes, symbols, spaces, etc. are completely skipped */
+        } else if (c >= 'A' && c <= 'Z') { /* an uppercase character; to lower */
+            outBuffer[j++] = c + 32; /* 'a' - 'A' == 32 */
         }
+        /* unicodes, symbols, spaces, etc. are completely skipped */
     }
     outBuffer[j] = '\0';
     output = [NSString stringWithUTF8String:outBuffer];
@@ -265,7 +262,7 @@ void rg_calculateIvarSize(Class object, NSMutableArray/*<NSMutableDictionary>*/*
             }
             free(ivars);
         }
-        //rg_calculateIvarSize(self, propertyStructure);
+        /* rg_calculateIvarSize(self, propertyStructure); //*/
         for (NSUInteger i = 0; i < propertyStructure.count; i++) {
             propertyStructure[i] = [propertyStructure[i] copy];
         }

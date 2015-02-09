@@ -26,8 +26,8 @@
  
  @example This is valid syntax:
  UITextField* textField = [UITextField new];
- textField[@"text"] = @"foo bar"; //equivalent to `textField.text = @"foo bar";`
- NSString* theText = textField[@"text"]; //equivalent to `NSString* theText = textField.text;`
+ textField[@"text"] = @"foo bar"; // equivalent to `textField.text = @"foo bar";`
+ NSString* theText = textField[@"text"]; // equivalent to `NSString* theText = textField.text;`
  */
 @interface NSObject (RG_KeyedSubscripting)
 

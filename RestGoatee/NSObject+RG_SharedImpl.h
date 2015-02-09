@@ -222,7 +222,7 @@ NSArray* const rg_dateFormats();
 /**
  Returns the property name in as its canonical key.
  */
-NSString* rg_canonicalForm(NSString* input);
+const NSString* rg_canonicalForm(const NSString* const input);
 
 /**
  Returns true if `Class cls = object;` is not a pointer type conversion.
