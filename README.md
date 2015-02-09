@@ -46,6 +46,7 @@ We will use this example to turn a request to [iTunes Search API](https://itunes
 
 @end
 ```
+*** A note on usage: the semantics of the property are fully respected.  A property could be declared `(copy, readonly)` and would be treated correctly.
 ```objc
 @implementation RGBook @end //nothing!
 ```
