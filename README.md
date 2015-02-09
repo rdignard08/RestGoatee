@@ -23,9 +23,9 @@ Consider your favorite or most popular model framework:
   * JSON or XML? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
 
 # Installation
-Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`
+Using cocoapods add `pod 'RestGoatee'` (after `pod 'AFNetworking'` if present) to your Podfile and run `pod install`. 
 
-A feature I've called "Server Typing" can be enabled by calling `rg_setServerTypeKey` with your desired key before you make the first call to any method on `RGAPIClient`.  You are highly advised to not changing this during the operation of your app; if you enable it, it ought to be something generally available on all objects (a unique identifer).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
+A feature I've called "Server Typing" can be enabled by calling `rg_setServerTypeKey` with your desired key before you make the first call to any method on `RGAPIClient`.  You are highly advised not to change this during the operation of your app.  If you do enable it, the key ought to be something generally available on all objects (a unique identifer).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
 
 Example
 =======
