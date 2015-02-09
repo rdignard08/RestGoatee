@@ -60,6 +60,9 @@ static Class rg_clientSuperClass() {
 @property (nonatomic, strong, readwrite) NSURLSessionConfiguration* sessionConfiguration;
 @end
 
+/**
+ Garbage used that may not be present in the super class (since the super class is variable).
+ */
 @interface NSObject (_RGForwardDeclarations)
 
 - (id) initWithBaseURL:(id)url sessionConfiguration:(id)configuration;

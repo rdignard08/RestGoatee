@@ -24,6 +24,9 @@
 #import "RestGoatee.h"
 #import "NSObject+RG_SharedImpl.h"
 
+/**
+ This category is private, and methods defined therein are subject to change (moderately frequently).
+ */
 @implementation NSObject (RG_SerializationPrivate)
 
 /** Certain classes are too difficult to serialize in a straight-forward manner, so we skip the properties on those classes.  Pretty much any class with cyclical references is gonna suck. */
@@ -42,6 +45,9 @@
     return _classes;
 }
 
+/**
+ Is this property bad for serialization?
+ */
 + (BOOL) rg_isPropertyToBeAvoided:(NSString*)propertyName {
     for (Class cls in [self rg_propertyListsToSkip]) {
         if ([self isSubclassOfClass:cls] && [cls rg_declarationForProperty:propertyName]) {
@@ -51,10 +57,16 @@
     return NO;
 }
 
+/**
+ Is this property bad for serialization?
+ */
 - (BOOL) rg_isPropertyToBeAvoided:(NSString*)propertyName {
     return [[self class] rg_isPropertyToBeAvoided:propertyName];
 }
 
+/**
+ Is this property a weak/assign object?
+ */
 + (BOOL) rg_propertyIsWeak:(NSString*)propertyName {
     NSDictionary* declaration;
     if ((declaration = [self rg_declarationForProperty:propertyName])) {
@@ -67,10 +79,16 @@
     return NO;
 }
 
+/**
+ Is this property a weak/assign object?
+ */
 - (BOOL) rg_propertyIsWeak:(NSString*)propertyName {
     return [[self class] rg_propertyIsWeak:propertyName];
 }
 
+/**
+ This is called recursively to build up the response.
+ */
 - (id) rg_dictionaryHelper:(NSMutableArray*)pointersSeen followWeak:(BOOL)followWeak {
     if ([pointersSeen indexOfObject:self] != NSNotFound) return [NSNull null];
     /* [pointersSeen addObject:self]; // disable DAG for now */
@@ -118,7 +136,7 @@
     return [self dictionaryRepresentationShouldFollowWeakReferences:YES];
 }
 
-- (NSData*) JsonRepresentation {
+- (NSData*) JSONRepresentation {
     return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:0 error:nil];
 }
 

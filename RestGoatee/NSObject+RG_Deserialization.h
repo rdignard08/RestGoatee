@@ -23,6 +23,9 @@
 
 @class NSManagedObjectContext;
 
+/**
+ Class objects which are passed to `RGAPIClient` methods may (but are not required) to conform to this protocol.  You may return non-standard data formats for use with `NSDataFormatter` and a dictionary of response keys which map to property names.
+ */
 @protocol RestGoateeSerialization <NSObject>
 
 @optional
@@ -56,6 +59,12 @@
 
 @end
 
+
+/**
+ This category provides generalized constructors for all objects from a response object (these may be `NSDictionary*` from JSON or `NSXMLParser*` from XML.
+ 
+ You usually do not need to use these methods directly, since calls through the `RGAPIClient` will call the appropriate family of methods from this category.
+ */
 @interface NSObject (RG_Deserialization)
 
 /**
@@ -87,6 +96,9 @@
  */
 - (instancetype) extendWith:(id)object;
 
+/**
+ Same as `-extendWith:` but since there may be sub objects which are `NSManagedObject` subclasses, it may be necessary to provide an `NSManagedContext` to contain them.
+ */
 - (instancetype) extendWith:(id)object inContext:(NSManagedObjectContext*)context;
 
 @end

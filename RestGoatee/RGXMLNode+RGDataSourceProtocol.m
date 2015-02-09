@@ -31,7 +31,7 @@
 
 @end
 
-@implementation RGXMLNode (RGDataSourceProtocol)
+@implementation RGXMLNode (_RGDataSourceProtocol)
 
 - (NSArray*) keys {
     id ret = objc_getAssociatedObject(self, @selector(keys));
@@ -49,6 +49,10 @@
 - (void) setKeys:(NSArray*)keys {
     objc_setAssociatedObject(self, @selector(keys), keys, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
+@end
+
+@implementation RGXMLNode (RGDataSourceProtocol)
 
 - (NSUInteger) countByEnumeratingWithState:(NSFastEnumerationState*)state objects:(__unsafe_unretained id[])buffer count:(NSUInteger)len {
     NSUInteger ret = [self.keys countByEnumeratingWithState:state objects:buffer count:len];

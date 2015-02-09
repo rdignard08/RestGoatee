@@ -62,7 +62,7 @@ const NSString* const rg_serverTypeKey() {
     }
 }
 
-extern void _RGLog(NSString* format, ...) {
+void _RGLog(NSString* format, ...) {
     va_list vl;
     va_start(vl, format);
     char* fileName = va_arg(vl, char*);

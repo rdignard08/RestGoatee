@@ -21,6 +21,14 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+/**
+ Provides a default behavior of key based subscripting to all `NSObject` subclasses.
+ 
+ @example This is valid syntax:
+ UITextField* textField = [UITextField new];
+ textField[@"text"] = @"foo bar"; //equivalent to `textField.text = @"foo bar";`
+ NSString* theText = textField[@"text"]; //equivalent to `NSString* theText = textField.text;`
+ */
 @interface NSObject (RG_KeyedSubscripting)
 
 /**

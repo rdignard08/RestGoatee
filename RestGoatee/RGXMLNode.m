@@ -33,6 +33,14 @@ const NSString* const kRGInnerXMLKey = @"__text__";
 
 @implementation RGXMLNode
 
+- (void) setInnerXML:(NSString*)innerXML {
+    self.attributes[kRGInnerXMLKey] = innerXML;
+}
+
+- (NSString*) innerXML {
+    return self.attributes[kRGInnerXMLKey];
+}
+
 - (NSMutableArray*) childNodes {
     if (!_childNodes) {
         _childNodes = [NSMutableArray new];

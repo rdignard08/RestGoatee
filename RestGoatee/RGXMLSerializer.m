@@ -65,8 +65,11 @@
 }
 
 - (void) setParser:(NSXMLParser*)parser {
-    _parser = parser;
-    _parser.delegate = self;
+    if (_parser != parser) {
+        _rootNode = nil;
+        _parser = parser;
+        _parser.delegate = self;
+    }
 }
 
 #pragma mark - NSXMLParserDelegate

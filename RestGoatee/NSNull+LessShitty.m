@@ -23,6 +23,9 @@
 
 #import <objc/runtime.h>
 
+/**
+ This category allows any call to be performed on an instance of `NSNull` without calling `-doesNotRecognizeSelector:`.
+ */
 @implementation NSNull (Niller)
 
 /**

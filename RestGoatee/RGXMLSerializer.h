@@ -22,6 +22,12 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 @class RGXMLNode;
+
+/**
+ This class takes an `NSXMLParser*` and returns a built network of `RGXMLNode*`.
+ 
+ You may reuse an instance of this class by assigning a new `parser`.
+ */
 @interface RGXMLSerializer : NSObject
 
 /**

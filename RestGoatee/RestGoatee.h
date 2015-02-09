@@ -21,7 +21,11 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-extern const NSString* const kRGHTTPStatusCode; /* Key returned as part of HTTP related errors */
+/**
+ Key returned as part of HTTP related errors.  Usage:
+ `error.userInfo[kRGHTTPStatusCode]`
+ */
+extern const NSString* const kRGHTTPStatusCode;
 
 /**
  Optionally use this function to provide your project's class prefix.
@@ -57,6 +61,9 @@ void rg_setServerTypeKey(const NSString* const typeKey);
  */
 const NSString* const rg_serverTypeKey(void);
 
+/**
+ The `RGLog` function is a debug only function (inactive in a live app).  It logs the file name & line number of the call site.
+ */
 #ifdef DEBUG
     #define __SOURCE_FILE__ ({char* c = strrchr(__FILE__, '/'); c ? c + 1 : __FILE__;})
     #define RGLog(format, ...) _RGLog(format, __SOURCE_FILE__, (long)__LINE__, ##__VA_ARGS__)

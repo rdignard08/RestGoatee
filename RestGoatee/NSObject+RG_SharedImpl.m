@@ -288,9 +288,6 @@ void rg_calculateIvarSize(Class object, NSMutableArray/*<NSMutableDictionary>*/*
     return [[self class] __property_list__];
 }
 
-/**
- @return a list of the keys/properties of the receiving object.
- */
 - (NSArray*) rg_keys {
     if ([self isKindOfClass:[NSDictionary class]]) {
         return [(id)self allKeys];

@@ -21,8 +21,14 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+/**
+ This value of this key must not be present as a key in any node's attributes.
+ */
 extern const NSString* const kRGInnerXMLKey;
 
+/**
+ The `RGXMLNode` is the parse result of `NSXMLParser`.
+ */
 @interface RGXMLNode : NSObject
 
 /**
@@ -53,15 +59,21 @@ extern const NSString* const kRGInnerXMLKey;
  
  adjacent open and close tags will be the empty string; <object></object>
  */
-//@property (nonatomic, strong) NSString* text;
+@property (nonatomic, strong) NSString* innerXML;
 
+/**
+ This property is of type `NSArray<RGXMLNode*>*`.  Containing any sub-nodes of this node.  Those sub-nodes have this node as the value of their `parentNode` property.
+ */
 @property (nonatomic, strong, readonly) NSArray* childNodes;
 
 /**
- May be either NSArray<RGXML>* or RGXML*
+ May return either NSArray<RGXML>* or RGXML*.  If there are multiple children with that name, the array is returned; otherwise a single node or `nil`.
  */
 - (id) childrenNamed:(NSString*)name;
 
+/**
+ Call this method to insert a new node into this objects `childNodes` property.
+ */
 - (void) addChildNode:(RGXMLNode*)node;
 
 @end
