@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "RestGoatee"
   s.version          = '2.2.0'
-  s.summary          = "An Easier dependency-free way to handle ReST objects."
+  s.summary          = "An intuitive JSON & XML deserialization library for ReST based client"
   s.homepage         = "https://github.com/rdignard08/RestGoatee"
   s.license          = 'BSD'
   s.author           = { "Ryan Dignard" => "dignard@1debit.com" }
