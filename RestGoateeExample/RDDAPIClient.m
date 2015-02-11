@@ -75,7 +75,17 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
 
 - (void) getStationsWithCompletion:(RGResponseBlock)completion {
     self.responseSerializer = [AFXMLParserResponseSerializer new];
-    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:basicsForCommand(ALL_STATIONS_COMMAND) keyPath:@"root.stations.station" class:[RDDBartStation class] completion:completion];
+    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:basicsForCommand(ALL_STATIONS_COMMAND) keyPath:@"root.stations.station" class:[RDDBartStation class] completion:^(RGResponseObject* response) {
+        if (!response.error) {
+            NSArray* objects = !response.responseBody || [response.responseBody isKindOfClass:[NSArray class]] ? response.responseBody : @[ response.responseBody ];
+            
+            for (id obj in objects) {
+                NSLog(@"%@", [obj dictionaryRepresentation]);
+            }
+        }
+        
+        if (completion) completion(response);
+    }];
 }
 
 - (BOOL) shouldSerializeXML {
