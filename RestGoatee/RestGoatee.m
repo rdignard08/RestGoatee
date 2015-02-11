@@ -23,6 +23,8 @@
 
 #import "RestGoatee.h"
 
+const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
+
 static const NSString* _sClassPrefix;
 const NSString* const rg_classPrefix() {
     @synchronized ([NSObject class]) {

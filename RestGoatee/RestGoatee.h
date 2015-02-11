@@ -75,11 +75,9 @@ const NSString* const rg_serverTypeKey(void);
 
 #define DO_RISKY_BUSINESS \
 _Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Warc-retain-cycles\"") \
 _Pragma("clang diagnostic ignored \"-Wgnu\"") \
-_Pragma("clang diagnostic ignored \"-Wunreachable-code\"") \
-_Pragma("clang diagnostic ignored \"-Wundeclared-selector\"") \
-_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+_Pragma("clang diagnostic ignored \"-Wobjc-designated-initializers\"") \
+_Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"") \
 
 #define END_RISKY_BUSINESS \
 _Pragma("clang diagnostic pop")
@@ -93,9 +91,6 @@ END_RISKY_BUSINESS
 #import "NSObject+RG_KeyedSubscripting.h"
 #import "NSError+RG_HTTPStatusCode.h"
 #import "RGResponseObject.h"
-
-
 #import "NSObject+RG_Deserialization.h"
 #import "NSObject+RG_Serialization.h"
-
 #import "RGAPIClient.h"

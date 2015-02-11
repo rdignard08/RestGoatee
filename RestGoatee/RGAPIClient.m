@@ -26,13 +26,39 @@
 #import "RGXMLSerializer.h"
 #import <objc/runtime.h>
 
-const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
+#pragma mark - Forward Declarations
+/**
+ Garbage used that may not be present in the super class (since the super class is variable).
+ */
+@interface NSObject (_RGForwardDeclarations)
 
+#pragma mark - AFNetworking
+- (id) initWithBaseURL:(id)url sessionConfiguration:(id)configuration;
+- (id) initWithBaseURL:(id)url;
+- (id) requestSerializer;
+- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
+- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id*)error;
+- (id) requestWithMethod:(id)method path:(id)path parameters:(id)parameters; /* old style */
+@property (nonatomic, strong) id requestSerializer;
+
+#pragma mark - NSFetchRequest
++ (id) fetchRequestWithEntityName:(NSString*)entityName;
+@property (nonatomic, strong) NSPredicate *predicate;
+@property (nonatomic, strong) NSArray *sortDescriptors;
+
+#pragma mark - NSManagedObjectContext
+@property (nonatomic, readonly) BOOL hasChanges;
+- (NSArray*) executeFetchRequest:(id)request error:(NSError**)error;
+- (BOOL) save:(NSError**)error;
+
+@end
+
+#pragma mark - Constants
 static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, id obj2) {
     return [[obj1 description] compare:[obj2 description]];
 };
 
-static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
+static inline NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     if (error && [[task response] respondsToSelector:@selector(statusCode)]) {
         NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
         userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
@@ -41,41 +67,10 @@ static NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     return error;
 }
 
-static Class rg_clientSuperClass() {
-    static Class cls;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
-        cls = NSClassFromString(@"AFHTTPSessionManager");
-#else
-        cls = NSClassFromString(@"AFHTTPRequestOperationManager");
-#endif
-    });
-    return cls;
-}
-
-
-
-@interface RGAPIClient ()
-@property (nonatomic, strong, readwrite) NSURLSessionConfiguration* sessionConfiguration;
-@end
-
-/**
- Garbage used that may not be present in the super class (since the super class is variable).
- */
-@interface NSObject (_RGForwardDeclarations)
-
-- (id) initWithBaseURL:(id)url sessionConfiguration:(id)configuration;
-- (id) initWithBaseURL:(id)url;
-- (id) requestSerializer;
-- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
-- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id*)error;
-- (id) requestWithMethod:(id)method path:(id)path parameters:(id)parameters; /* old style */
-@end
-
 DO_RISKY_BUSINESS
 @implementation RGAPIClient
 
+#pragma mark - Initialization
 - (instancetype) init {
     return [self initWithBaseURL:nil sessionConfiguration:nil];
 }
@@ -85,7 +80,11 @@ DO_RISKY_BUSINESS
 }
 
 - (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration {
-    Class super_class = rg_clientSuperClass();
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+    Class super_class = NSClassFromString(@"AFHTTPSessionManager");
+#else
+    Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager");
+#endif
     if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
         self = [super initWithBaseURL:url sessionConfiguration:configuration];
     } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
@@ -93,16 +92,17 @@ DO_RISKY_BUSINESS
     } else {
         self = [super init];
     }
-    self.sessionConfiguration = configuration;
+    _sessionConfiguration = configuration;
     return self;
 }
 
+#pragma mark - Engine Methods
 - (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(out NSManagedObjectContext**)outContext {
-    /* cls* | NSArray<cls*>* */ id target;
     /* NSManagedObjectContext* */ id context;
     NSString* primaryKey;
     NSUInteger index;
     NSArray* allObjects;
+    NSError* error;
     if ([cls isSubclassOfClass:rg_sNSManagedObject]) {
         if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
             primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
@@ -112,15 +112,14 @@ DO_RISKY_BUSINESS
         }
         NSAssert(context, @"Subclasses of NSManagedObject must be created within an NSManagedObjectContext");
     }
-    target = path ? [response valueForKeyPath:path] : response;
+    NSArray* target = path ? [response valueForKeyPath:path] : response;
+    target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
     if (primaryKey && cls) {
-        id fetch = [rg_sNSFetchRequest performSelector:@selector(fetchRequestWithEntityName:) withObject:NSStringFromClass(cls)];
-        [fetch setPredicate:[NSPredicate predicateWithFormat:@"%K in %@", primaryKey, target[primaryKey]]];
-        [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
-        allObjects = [context performSelector:@selector(executeFetchRequest:error:) withObject:fetch withObject:nil];
-    }
-    if (![target isKindOfClass:[NSArray class]]) {
-        target = @[ target ];
+        NSObject* fetch = [rg_sNSFetchRequest fetchRequestWithEntityName:NSStringFromClass(cls)];
+        fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, target[primaryKey]];
+        fetch.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:NO] ];
+        allObjects = [context executeFetchRequest:fetch error:&error];
+        error ?: RGLog(@"Warning, fetch %@ failed", fetch);
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
@@ -137,7 +136,9 @@ DO_RISKY_BUSINESS
     }
     response = ret.count == 1 ? ret[0] : [ret copy];
     @try {
-        [context performSelector:@selector(save:) withObject:nil];
+        if ([context hasChanges]) {
+            [context save:&error] ?: RGLog(@"Error, context save failed with error %@", error);
+        }
     }
     @catch (NSException* e) {
         RGLog(@"Warning, saving context %@ failed: %@", context, e);
@@ -172,8 +173,7 @@ DO_RISKY_BUSINESS
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
     if ([self respondsToSelector:@selector(requestSerializer)]) { /* "Modern" style */
-        id requestSerializer = [self performSelector:@selector(requestSerializer)];
-        request = [requestSerializer requestWithMethod:method URLString:fullPath parameters:parameters];
+        request = [self.requestSerializer requestWithMethod:method URLString:fullPath parameters:parameters];
     } else {
         request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];
     }
@@ -209,6 +209,7 @@ DO_RISKY_BUSINESS
 #endif
 }
 
+#pragma mark - VERB Methods
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion delegate:nil];
 }
@@ -244,6 +245,7 @@ DO_RISKY_BUSINESS
 @end
 END_RISKY_BUSINESS
 
+#pragma mark - Convenience Methods
 @implementation RGAPIClient (RGConvenience)
 
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {

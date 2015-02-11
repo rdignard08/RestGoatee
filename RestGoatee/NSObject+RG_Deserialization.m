@@ -23,6 +23,10 @@
 #import "RestGoatee.h"
 #import "NSObject+RG_SharedImpl.h"
 
+@interface NSObject (RGForwardDeclarations)
++ (id) insertNewObjectForEntityForName:(NSString*)entityName inManagedObjectContext:(id)context;
+@end
+
 NSArray* rg_unpackArray(NSArray* json, id context) {
     NSMutableArray* ret = [NSMutableArray array];
     for (__strong id obj in json) {
@@ -58,7 +62,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     if ([self isSubclassOfClass:rg_sNSManagedObject]) {
         NSAssert(context, @"A subclass of NSManagedObject must be created within a valid NSManagedObjectContext.");
         DO_RISKY_BUSINESS
-        ret = [rg_sNSEntityDescription performSelector:@selector(insertNewObjectForEntityForName:inManagedObjectContext:) withObject:NSStringFromClass(self) withObject:context];
+        ret = [rg_sNSEntityDescription insertNewObjectForEntityForName:NSStringFromClass(self) inManagedObjectContext:context];
         END_RISKY_BUSINESS
     } else {
         ret = [self new];
@@ -136,20 +140,20 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     } else if (rg_isCollectionObject(propertyType)) { /* NSArray, NSSet, or NSOrderedSet */
         self[key] = [[propertyType alloc] initWithArray:value];
     } else if ([propertyType isSubclassOfClass:[NSDecimalNumber class]]) { /* NSDecimalNumber, subclasses must go first */
-        if ([value isKindOfClass:[RGXMLNode class]]) value = [value attributes][kRGInnerXMLKey];
+        if ([value isKindOfClass:[RGXMLNode class]]) value = [value innerXML];
         if ([value isKindOfClass:[NSNumber class]]) value = [value stringValue];
         self[key] = [propertyType decimalNumberWithString:value];
     } else if ([propertyType isSubclassOfClass:[NSNumber class]]) { /* NSNumber */
-        if ([value isKindOfClass:[RGXMLNode class]]) value = [value attributes][kRGInnerXMLKey];
+        if ([value isKindOfClass:[RGXMLNode class]]) value = [value innerXML];
         if ([value isKindOfClass:[NSString class]]) value = @([value doubleValue]);
         self[key] = value; /* Note: setValue: will unwrap the value if the destination is a primitive */
     } else if ([propertyType isSubclassOfClass:[NSString class]] || [propertyType isSubclassOfClass:[NSURL class]]) { /* NSString, NSURL */
-        if ([value isKindOfClass:[RGXMLNode class]]) value = [value attributes][kRGInnerXMLKey];
+        if ([value isKindOfClass:[RGXMLNode class]]) value = [value innerXML];
         if ([value isKindOfClass:[NSArray class]]) value = [value componentsJoinedByString:@", "];
         if ([value isKindOfClass:[NSNumber class]]) value = [value stringValue];
         self[key] = [[propertyType alloc] initWithString:value];
     } else if ([propertyType isSubclassOfClass:[NSDate class]]) { /* NSDate */
-        if ([value isKindOfClass:[RGXMLNode class]]) value = [value attributes][kRGInnerXMLKey];
+        if ([value isKindOfClass:[RGXMLNode class]]) value = [value innerXML];
         NSString* providedDateFormat;
         if ([[self class] respondsToSelector:@selector(dateFormatForKey:)]) {
             providedDateFormat = [[self class] dateFormatForKey:key];

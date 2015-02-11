@@ -23,29 +23,16 @@
 
 #import "RGXMLNode.h"
 
-const NSString* const kRGInnerXMLKey = @"__text__";
-
-@interface RGXMLNode ()
-
-@property (nonatomic, strong, readwrite) NSMutableArray* childNodes;
-
-@end
-
 @implementation RGXMLNode
+@synthesize parentNode = _parentNode;
+@synthesize attributes = _attributes;
+@synthesize childNodes = _childNodes;
 
-- (void) setInnerXML:(NSString*)innerXML {
-    self.attributes[kRGInnerXMLKey] = innerXML;
-}
-
-- (NSString*) innerXML {
-    return self.attributes[kRGInnerXMLKey];
-}
-
-- (NSMutableArray*) childNodes {
+- (NSArray*) childNodes {
     if (!_childNodes) {
         _childNodes = [NSMutableArray new];
     }
-    return (id)_childNodes;
+    return _childNodes;
 }
 
 - (NSMutableDictionary*) attributes {
@@ -56,7 +43,7 @@ const NSString* const kRGInnerXMLKey = @"__text__";
 }
 
 - (void) addChildNode:(RGXMLNode*)node {
-    node.parentNode = self;
+    node->_parentNode = self;
     [(id)self.childNodes addObject:node];
 }
 
@@ -67,7 +54,7 @@ const NSString* const kRGInnerXMLKey = @"__text__";
             [ret addObject:child];
         }
     }
-    return ret.count > 1 ? ret : ret.count == 1 ? [ret lastObject] : nil;
+    return ret.count > 1 ? ret : [ret lastObject];
 }
 
 @end

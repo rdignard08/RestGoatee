@@ -22,6 +22,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <objc/runtime.h>
+#import "RestGoatee.h"
 
 /**
  This category allows any call to be performed on an instance of `NSNull` without calling `-doesNotRecognizeSelector:`.
@@ -36,7 +37,8 @@
 }
 
 - (void) forwardInvocation:(NSInvocation*)anInvocation {
-    [anInvocation setSelector:@selector(__nil_objc_send)];
+    RGLog(@"Error, method %@ invoked on NSNull", NSStringFromSelector(anInvocation.selector));
+    anInvocation.selector = @selector(__nil_objc_send);
     [anInvocation invokeWithTarget:self];
 }
 

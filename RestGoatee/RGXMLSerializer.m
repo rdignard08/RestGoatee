@@ -25,10 +25,8 @@
 #import "RestGoatee.h"
 
 @interface RGXMLSerializer () <NSXMLParserDelegate>
-
-@property (nonatomic, strong) RGXMLNode* currentNode;
+@property (nonatomic, weak) RGXMLNode* currentNode;
 @property (nonatomic, strong) NSMutableString* currentString;
-
 @end
 
 @implementation RGXMLSerializer
@@ -43,18 +41,12 @@
 - (RGXMLNode*) rootNode {
     if (!_rootNode) {
         _rootNode = [RGXMLNode new];
+        _currentNode = _rootNode;
         if (![self.parser parse]) {
             RGLog(@"Warning, XML parsing failed");
         }
     }
     return _rootNode;
-}
-
-- (RGXMLNode*) currentNode {
-    if (!_currentNode) {
-        _currentNode = self.rootNode;
-    }
-    return _currentNode;
 }
 
 - (NSMutableString*) currentString {
@@ -76,7 +68,7 @@
 - (void) parser:(__unused NSXMLParser*)p didStartElement:(NSString*)element namespaceURI:(__unused NSString*)n qualifiedName:(__unused NSString*)q attributes:(NSDictionary*)attributes {
     RGXMLNode* node = [RGXMLNode new];
     node.name = element;
-    node.attributes = [attributes mutableCopy];
+    [node.attributes addEntriesFromDictionary:attributes];
     [self.currentNode addChildNode:node];
     self.currentNode = node;
 }
@@ -86,8 +78,8 @@
 }
 
 - (void) parser:(__unused NSXMLParser*)p didEndElement:(__unused NSString*)e namespaceURI:(__unused NSString*)n qualifiedName:(__unused NSString*)q {
-    self.currentNode.attributes[kRGInnerXMLKey] = self->_currentString;
-    self.currentString = nil;
+    self.currentNode.innerXML = self->_currentString;
+    self->_currentString = nil;
     self.currentNode = self.currentNode.parentNode; /* move up the parse tree */
 }
 

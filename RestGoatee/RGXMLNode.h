@@ -22,11 +22,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 /**
- This value of this key must not be present as a key in any node's attributes.
- */
-extern const NSString* const kRGInnerXMLKey;
-
-/**
  The `RGXMLNode` is the parse result of `NSXMLParser`.
  */
 @interface RGXMLNode : NSObject
@@ -34,7 +29,7 @@ extern const NSString* const kRGInnerXMLKey;
 /**
  Set when `-addChildNode:` is called.  A weak reference to the enclosing node.
  */
-@property (nonatomic, weak) RGXMLNode* parentNode;
+@property (nonatomic, weak, readonly) RGXMLNode* parentNode;
 
 /**
  Attributes come from <object id="123" name="cool"> and will equal @{ "id" : "123", "name" : "cool" }.
@@ -42,10 +37,8 @@ extern const NSString* const kRGInnerXMLKey;
  Value can be obtained through valueForKeyPath:, @"object.id", in this example.
  
  You may mutate the collection.
- 
- The inner text is provided as on the key `kRGInnerXMLKey`.
  */
-@property (nonatomic, strong) NSMutableDictionary* attributes;
+@property (nonatomic, strong, readonly) NSMutableDictionary* attributes;
 
 /**
  The name of the tag.  <foobar>...</foobar> will have the value of `foobar` here.
@@ -67,12 +60,12 @@ extern const NSString* const kRGInnerXMLKey;
 @property (nonatomic, strong, readonly) NSArray* childNodes;
 
 /**
- May return either NSArray<RGXML>* or RGXML*.  If there are multiple children with that name, the array is returned; otherwise a single node or `nil`.
+ May return either `NSArray<RGXMLNode*>*` or `RGXMLNode*`.  If there are multiple children with that name, the array is returned; otherwise a single node or `nil`.
  */
 - (id) childrenNamed:(NSString*)name;
 
 /**
- Call this method to insert a new node into this objects `childNodes` property.
+ Call this method to insert a new node into this object's `childNodes` property.
  */
 - (void) addChildNode:(RGXMLNode*)node;
 

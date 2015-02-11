@@ -72,7 +72,7 @@
 
 #pragma mark - private
 - (id) valueForKey:(NSString*)key {
-    return self.attributes[key] ?: [self childrenNamed:key] ?: self.attributes[kRGInnerXMLKey];
+    return self.attributes[key] ?: [self childrenNamed:key] ?: self.innerXML;
 }
 
 - (void) setValue:(id)value forKey:(NSString*)key {
