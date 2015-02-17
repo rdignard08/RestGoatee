@@ -25,7 +25,7 @@ Consider your favorite or most popular model framework:
 # Installation
 Using cocoapods add `pod 'RestGoatee'` (after `pod 'AFNetworking'` if present) to your Podfile and run `pod install`.  People without cocoapods can include "RestGoatee" top level folder in their repository.  Include `#import <RestGoatee/RestGoatee.h>` to include all public headers and start using the library. 
 
-A feature I've called "Server Typing" can be enabled by calling `rg_setServerTypeKey` with your desired key before you make the first call to any method on `RGAPIClient`.  You are highly advised not to change this during the operation of your app.  If you do enable it, the key ought to be something generally available on all objects (a unique identifer).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
+A feature I've called "Server Typing" can be enabled by calling `rg_setServerTypeKey` with your desired key before you make the first call to any method on `RGAPIClient`.  You are highly advised not to change this during the operation of your app.  It will mark the key with the given name in your responses as being metadata about the response (in this case indicating which class type this response represents).  If you implement `-keyForReconciliationOfType:`, the key ought to be something generally available on all objects (a unique identifer key for example).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
 
 Example
 =======
@@ -46,7 +46,7 @@ We will use this example to turn a request to [iTunes Search API](https://itunes
 
 @end
 ```
-*** A note on usage: the semantics of the property are fully respected.  A property could be declared `(copy, readonly)` and would be treated correctly.
+*** A note on usage: the semantics of the property are fully respected.  A property could be declared `(copy, readonly)` and would be treated correctly. `readonly` properties are constructed through their backing instance variables and `copy` are sent `-copy`, etc. 
 ```objc
 @implementation RGBook @end //nothing!
 ```
