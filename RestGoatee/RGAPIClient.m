@@ -116,7 +116,12 @@ DO_RISKY_BUSINESS
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
     if (primaryKey && cls) {
         NSObject* fetch = [rg_sNSFetchRequest fetchRequestWithEntityName:NSStringFromClass(cls)];
-        fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, target[primaryKey]];
+        NSArray* incomingKeys = target[primaryKey];
+        NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
+        for (__strong id value in incomingKeys) {
+            [parsedKeys addObject:[value isKindOfClass:[RGXMLNode class]] ? [value innerXML] : value];
+        }
+        fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, parsedKeys];
         fetch.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:NO] ];
         allObjects = [context executeFetchRequest:fetch error:&error];
         error ?: RGLog(@"Warning, fetch %@ failed", fetch);
