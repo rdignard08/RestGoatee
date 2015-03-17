@@ -26,6 +26,11 @@
  */
 struct objc_property;
 
+/**
+ forward declaration from <objc/runtime.h>
+ */
+struct objc_ivar;
+
 /* Some notes on property attributes, declaration modifiers '
     assign is exactly the same unsafe_unretained 
     retain is exactly the same as strong
@@ -217,8 +222,27 @@ Class rg_sNSFetchRequest;
 /**
  Returns the built-in date formats the library supports. Contains: ISO, `-[NSDate description]`.
  */
-NSArray* const rg_dateFormats();
+NSArray* const rg_dateFormats(void);
 
+/**
+ Taking in an array, will attempt to construct non dictionary / xml node objects.
+ */
+NSArray* rg_unpackArray(NSArray* json, id context);
+
+/**
+ modify the `__property_list__` declarations to include information from the backing instance variable.
+ */
+void rg_parseIvarStructOntoPropertyDeclaration(struct objc_ivar* ivar, NSMutableDictionary* propertyData);
+
+/**
+ modifies the `properties` param to have the ivar size available.
+ */
+void rg_calculateIvarSize(Class object, NSMutableArray/*NSMutableDictionary*/* properties);
+
+/**
+ return the details about the backing ivar as an object.
+ */
+NSMutableDictionary* rg_parseIvarStruct(struct objc_ivar* ivar);
 /**
  Returns the property name in as its canonical key.
  */
@@ -263,6 +287,16 @@ NSDictionary* rg_parsePropertyStruct(struct objc_property* property);
  If the value of `str` has 2 '"' this function returns the contents between each '"'.
  */
 NSString* rg_trimLeadingAndTrailingQuotes(NSString* str);
+
+/**
+ Return the class object which is responsible for providing the implementation of a given `self.propertyName` invocation.
+ 
+ multiple classes may implement the same property, in this instance, only the top (i.e. the most subclass Class object) is returned.
+ 
+ @param currentClass is the object to test
+ @param propertyName is the name of the property
+ */
+Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName);
 
 /**
  This is a private category which contains all the of the methods used jointly by the categories `RG_Deserialization` and `RG_Serialization`.

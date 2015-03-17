@@ -123,7 +123,7 @@ Class rg_classForTypeString(NSString* str) {
     return NSClassFromString(str) ?: [NSNumber class];
 }
 
-void rg_parseIvarStructOntoPropertyDeclaration(Ivar ivar, NSMutableDictionary* propertyData) {
+void rg_parseIvarStructOntoPropertyDeclaration(struct objc_ivar* ivar, NSMutableDictionary* propertyData) {
     propertyData[kRGIvarOffset] = @(ivar_getOffset(ivar));
 }
 
@@ -158,7 +158,7 @@ NSMutableDictionary* rg_parsePropertyStruct(objc_property_t property) {
     objc_property_attribute_t* attributes = property_copyAttributeList(property, &attributeCount);
     for (uint32_t i = 0; i < attributeCount; i++) {
         objc_property_attribute_t attribute = attributes[i];
-        unichar heading = strlen(attribute.name) ? attribute.name[0] : '\0';
+        const char heading = attribute.name[0];
         NSString* value = [NSString stringWithUTF8String:attribute.value];
         /* The first character is the type encoding; the other field is a value of some kind (if anything)
          See: https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html */
@@ -200,7 +200,7 @@ NSMutableDictionary* rg_parsePropertyStruct(objc_property_t property) {
     return propertyDict;
 }
 
-void rg_calculateIvarSize(Class object, NSMutableArray/*<NSMutableDictionary>*/* properties) {
+void rg_calculateIvarSize(Class object, NSMutableArray/*NSMutableDictionary*/* properties) {
     NSArray* rawOffsets = properties[kRGIvarOffset];
     NSMutableArray* offsets = [NSMutableArray new];
     for (NSUInteger i = 0; i < rawOffsets.count; i++) {
@@ -217,6 +217,18 @@ void rg_calculateIvarSize(Class object, NSMutableArray/*<NSMutableDictionary>*/*
         NSNumber* nextOffset = (i == (offsets.count - 1)) ? @(class_getInstanceSize(object)) : offsets[i+1][@"o"];
         properties[[obj[@"i"] unsignedIntegerValue]][kRGIvarSize] = @([nextOffset unsignedIntegerValue] - [obj[@"o"] unsignedIntegerValue]);
     }
+}
+
+Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName) {
+    const char* utf8Name = [propertyName UTF8String];
+    Class iteratorClass = currentClass;
+    Class priorClass;
+    while (YES) {
+        if (!class_getProperty(iteratorClass, utf8Name) && !class_getInstanceVariable(iteratorClass, utf8Name)) return priorClass;
+        priorClass = iteratorClass;
+        iteratorClass = class_getSuperclass(iteratorClass);
+    }
+    return Nil; /* technically this line is never executed */
 }
 
 @implementation NSObject (RG_SharedImpl)
@@ -288,6 +300,12 @@ void rg_calculateIvarSize(Class object, NSMutableArray/*<NSMutableDictionary>*/*
 - (NSArray*) rg_keys {
     if ([self isKindOfClass:[NSDictionary class]]) {
         return [(id)self allKeys];
+    }
+    if ([self isKindOfClass:[RGXMLNode class]]) {
+        NSMutableArray* someKeys = [self.__property_list__[kRGPropertyName] mutableCopy];
+        [someKeys addObjectsFromArray:[[(RGXMLNode*)self attributes] allKeys]];
+        [someKeys addObjectsFromArray:[(RGXMLNode*)self childNodes][@"name"]];
+        return [someKeys copy];
     }
     return self.__property_list__[kRGPropertyName];
 }
