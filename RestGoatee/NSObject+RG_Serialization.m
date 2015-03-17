@@ -137,7 +137,7 @@
 }
 
 - (NSData*) JSONRepresentation {
-    return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:0 error:nil];
+    return [NSJSONSerialization dataWithJSONObject:[self dictionaryRepresentation] options:(NSJSONWritingOptions)0 error:nil];
 }
 
 @end
