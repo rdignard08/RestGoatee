@@ -77,6 +77,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     }
     for (NSString* key in source) {
         /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
+        if (overrides[key]) continue;
         NSUInteger index;
         if ((index = [propertiesToFill[kRGPropertyCanonicalName] indexOfObject:rg_canonicalForm(key)]) != NSNotFound) {
             @try {
@@ -191,12 +192,13 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
 
 - (instancetype) extendWith:(id)object inContext:(id)context {
     for (NSString* propertyName in [object rg_keys]) {
-        if ([propertyName isEqual:kRGPropertyListProperty]) continue;
-        @try {
-            [self rg_initProperty:propertyName withValue:object[propertyName] inContext:context];
-        }
-        @catch (NSException* e) {
-            RGLog(@"Warning, exception initializing property %@ on type %@: %@", propertyName, [object class], e);
+        if (topClassDeclaringPropertyNamed([self class], propertyName) != [NSObject class]) {
+            @try {
+                [self rg_initProperty:propertyName withValue:object[propertyName] inContext:context];
+            }
+            @catch (NSException* e) {
+                RGLog(@"Warning, exception initializing property %@ on type %@: %@", propertyName, [object class], e);
+            }
         }
     }
     return self;
