@@ -97,7 +97,7 @@ DO_RISKY_BUSINESS
 }
 
 #pragma mark - Engine Methods
-- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(out NSManagedObjectContext**)outContext {
+- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(out __strong NSManagedObjectContext**)outContext {
     /* NSManagedObjectContext* */ id context;
     NSString* primaryKey;
     NSUInteger index;
@@ -122,9 +122,9 @@ DO_RISKY_BUSINESS
             [parsedKeys addObject:[value isKindOfClass:[RGXMLNode class]] ? [value innerXML] : value];
         }
         fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, parsedKeys];
-        fetch.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:NO] ];
+        fetch.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ];
         allObjects = [context executeFetchRequest:fetch error:&error];
-        error ?: RGLog(@"Warning, fetch %@ failed", fetch);
+        !error ?: RGLog(@"Warning, fetch %@ failed %@", fetch, error);
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
