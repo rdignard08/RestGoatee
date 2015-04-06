@@ -38,6 +38,8 @@
 /**
  If there was an error, this will contain the highest level error.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
  
+ Any response data that was available at the time of the error will be present on the property `extraData`.
+ 
  Otherwise `nil`.
  */
 @property (nonatomic, strong) NSError* error;

@@ -31,4 +31,9 @@
  */
 - (NSUInteger) HTTPStatusCode;
 
+/**
+ If a failure is generated at some point in the response processing event chain, this property will contain if available whatever the state of the response was when the error was encountered.
+ */
+@property (nonatomic, strong) id extraData;
+
 @end

@@ -22,11 +22,20 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RestGoatee.h"
+#import <objc/runtime.h>
 
 @implementation NSError (RG_HTTPStatusCode)
 
 - (NSUInteger) HTTPStatusCode {
     return [self.userInfo[kRGHTTPStatusCode] unsignedIntegerValue];
+}
+
+- (id) extraData {
+    return objc_getAssociatedObject(self, @selector(extraData));
+}
+
+- (void) setExtraData:(id)extraData {
+    objc_setAssociatedObject(self, @selector(extraData), extraData, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

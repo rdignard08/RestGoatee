@@ -124,7 +124,7 @@ DO_RISKY_BUSINESS
         fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, parsedKeys];
         fetch.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ];
         allObjects = [context executeFetchRequest:fetch error:&error];
-        !error ?: RGLog(@"Warning, fetch %@ failed %@", fetch, error);
+        error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : nil;
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
@@ -155,7 +155,7 @@ DO_RISKY_BUSINESS
 - (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keyPath class:(Class)cls error:(NSError*)error {
     RGResponseObject* ret = [RGResponseObject new];
     NSManagedObjectContext* context;
-    if (!error && body) {
+    if (!error) {
         if ([body isKindOfClass:[NSXMLParser class]]) {
             BOOL shouldSerializeXML = [self.serializationDelegate respondsToSelector:@selector(shouldSerializeXML)] && [self.serializationDelegate shouldSerializeXML];
             if (shouldSerializeXML) {
@@ -166,6 +166,8 @@ DO_RISKY_BUSINESS
         } else {
             ret.responseBody = [self parseResponse:body atPath:keyPath intoClass:cls context:&context];
         }
+    } else {
+        error.extraData = body;
     }
     ret.error = error;
     ret.context = context;
