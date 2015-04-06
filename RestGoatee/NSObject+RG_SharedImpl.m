@@ -26,36 +26,36 @@
 #import "RestGoatee.h"
 
 /* Property Description Keys */
-const NSString* const kRGPropertyAtomicType = @"atomicity";
-const NSString* const kRGPropertyBacking = @"ivar";
-const NSString* const kRGPropertyGetter = @"getter";
-const NSString* const kRGPropertySetter = @"setter";
-const NSString* const kRGPropertyReadwrite = @"readwrite";
-const NSString* const kRGPropertyReadonly = @"readonly";
-const NSString* const kRGPropertyAssign = @"assign";
-const NSString* const kRGPropertyStrong = @"retain";
-const NSString* const kRGPropertyCopy = @"copy";
-const NSString* const kRGPropertyWeak = @"weak";
-const NSString* const kRGPropertyClass = @"type";
-const NSString* const kRGPropertyRawType = @"raw_type";
-const NSString* const kRGPropertyDynamic = @"__dynamic__";
-const NSString* const kRGPropertyAtomic = @"atomic";
-const NSString* const kRGPropertyNonatomic = @"nonatomic";
+NSString* const kRGPropertyAtomicType = @"atomicity";
+NSString* const kRGPropertyBacking = @"ivar";
+NSString* const kRGPropertyGetter = @"getter";
+NSString* const kRGPropertySetter = @"setter";
+NSString* const kRGPropertyReadwrite = @"readwrite";
+NSString* const kRGPropertyReadonly = @"readonly";
+NSString* const kRGPropertyAssign = @"assign";
+NSString* const kRGPropertyStrong = @"retain";
+NSString* const kRGPropertyCopy = @"copy";
+NSString* const kRGPropertyWeak = @"weak";
+NSString* const kRGPropertyClass = @"type";
+NSString* const kRGPropertyRawType = @"raw_type";
+NSString* const kRGPropertyDynamic = @"__dynamic__";
+NSString* const kRGPropertyAtomic = @"atomic";
+NSString* const kRGPropertyNonatomic = @"nonatomic";
 
 /* Ivar Description Keys */
-const NSString* const kRGIvarOffset = @"ivar_offset";
-const NSString* const kRGIvarSize = @"ivar_size";
-const NSString* const kRGIvarPrivate = @"private";
-const NSString* const kRGIvarProtected = @"protected";
-const NSString* const kRGIvarPublic = @"public";
+NSString* const kRGIvarOffset = @"ivar_offset";
+NSString* const kRGIvarSize = @"ivar_size";
+NSString* const kRGIvarPrivate = @"private";
+NSString* const kRGIvarProtected = @"protected";
+NSString* const kRGIvarPublic = @"public";
 
 /* Keys shared between properties and ivars */
-const NSString* const kRGPropertyName = @"name";
-const NSString* const kRGPropertyCanonicalName = @"canonically";
-const NSString* const kRGPropertyStorage = @"storage";
-const NSString* const kRGPropertyAccess = @"access";
-const NSString* const kRGSerializationKey = @"__class";
-const NSString* const kRGPropertyListProperty = @"__property_list__";
+NSString* const kRGPropertyName = @"name";
+NSString* const kRGPropertyCanonicalName = @"canonically";
+NSString* const kRGPropertyStorage = @"storage";
+NSString* const kRGPropertyAccess = @"access";
+NSString* const kRGSerializationKey = @"__class";
+NSString* const kRGPropertyListProperty = @"__property_list__";
 
 NSArray* const rg_dateFormats() {
     static dispatch_once_t onceToken;
@@ -66,14 +66,14 @@ NSArray* const rg_dateFormats() {
     return _sDateFormats;
 }
 
-const NSString* rg_canonicalForm(const NSString* const input) {
+NSString* const rg_canonicalForm(NSString* const input) {
     NSString* output;
     const size_t inputLength = input.length + 1; /* +1 for the nul terminator */
     char* inBuffer, * outBuffer;
+    size_t i = 0, j = 0;
     inBuffer = malloc(inputLength << 1);
     outBuffer = inBuffer + inputLength;
     [input getCString:inBuffer maxLength:inputLength encoding:NSUTF8StringEncoding];
-    size_t i = 0, j = 0;
     for (; i != inputLength; i++) {
         char c = inBuffer[i];
         if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')) { /* a digit or lowercase character; no change */
@@ -113,7 +113,10 @@ BOOL rg_isKeyedCollectionObject(Class cls) {
 
 NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
     NSArray* substrs = [str componentsSeparatedByString:@"\""];
-    if (substrs.count != 3) return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
+    if (substrs.count != 3) {
+        RGLog(@"Warning: Could not determine class name %@", str);
+        return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
+    }
     return substrs[1];
 }
 
@@ -158,7 +161,7 @@ NSMutableDictionary* rg_parsePropertyStruct(objc_property_t property) {
     objc_property_attribute_t* attributes = property_copyAttributeList(property, &attributeCount);
     for (uint32_t i = 0; i < attributeCount; i++) {
         objc_property_attribute_t attribute = attributes[i];
-        const char heading = attribute.name[0];
+        const char heading = attribute.name ? attribute.name[0] : '\0';
         NSString* value = [NSString stringWithUTF8String:attribute.value];
         /* The first character is the type encoding; the other field is a value of some kind (if anything)
          See: https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html */

@@ -43,99 +43,99 @@ struct objc_ivar;
 /**
  The key associated with the name of one of the class's properties.
  */
-extern const NSString* const kRGPropertyName;
+extern NSString* const kRGPropertyName;
 
 /**
  The key associated with the canonical name of one of the class's properties.
  
  canonical names are used to match disparate keys to the same meta key. This is to say that the keys "fooBar" and "foo_bar" share the same meta/canonical key and will be resolved to the same entry.
  */
-extern const NSString* const kRGPropertyCanonicalName;
+extern NSString* const kRGPropertyCanonicalName;
 
 /**
  The key associated with a property's storage qualifier (i.e. `assign`, `weak`, `strong`, `copy`, `unsafe_unretained`).
  */
-extern const NSString* const kRGPropertyStorage;
+extern NSString* const kRGPropertyStorage;
 
 /**
  The key associated with a property's atomic nature (i.e. `atomic`, `nonatomic`).
  */
-extern const NSString* const kRGPropertyAtomicType;
+extern NSString* const kRGPropertyAtomicType;
 
 /**
  The key associated with a property's public declaration (i.e. `readonly`, `readwrite`).
  */
-extern const NSString* const kRGPropertyAccess;
+extern NSString* const kRGPropertyAccess;
 
 /**
  The key associated with a property's backing instance variable (if any).  Pass through properties will appear to have no backing state for example.
  */
-extern const NSString* const kRGPropertyBacking;
+extern NSString* const kRGPropertyBacking;
 
 /**
  The key associated with a property's getter method (if non-standard; for example on `fooBar`: `isFooBar`).
  */
-extern const NSString* const kRGPropertyGetter;
+extern NSString* const kRGPropertyGetter;
 
 /**
  The key associated with a property's setter method (if non-standard; for example on `fooBar`: `setIsFooBar`).
  */
-extern const NSString* const kRGPropertySetter;
+extern NSString* const kRGPropertySetter;
 
 /**
  This value on the key `kRGPropertyAccess` indicates the property is `readwrite`.
  */
-extern const NSString* const kRGPropertyReadwrite;
+extern NSString* const kRGPropertyReadwrite;
 
 /**
  This value on the key `kRGPropertyAccess` indicates the property is `readonly`.
  */
-extern const NSString* const kRGPropertyReadonly;
+extern NSString* const kRGPropertyReadonly;
 
 /**
  This value on the key `kRGPropertyStorage` indicates the property is `assign`.
  */
-extern const NSString* const kRGPropertyAssign;
+extern NSString* const kRGPropertyAssign;
 
 /**
  This value on the key `kRGPropertyStorage` indicates the property is `strong`.
  */
-extern const NSString* const kRGPropertyStrong;
+extern NSString* const kRGPropertyStrong;
 
 /**
  This value on the key `kRGPropertyStorage` indicates the property is `copy`.
  */
-extern const NSString* const kRGPropertyCopy;
+extern NSString* const kRGPropertyCopy;
 
 /**
  This value on the key `kRGPropertyStorage` indicates the property is `weak`.
  */
-extern const NSString* const kRGPropertyWeak;
+extern NSString* const kRGPropertyWeak;
 
 /**
  The key associated with the class type of this property.
  */
-extern const NSString* const kRGPropertyClass;
+extern NSString* const kRGPropertyClass;
 
 /**
  The key associated with the general type of this property.  Represents structs, pointers, primitives, etc.
  */
-extern const NSString* const kRGPropertyRawType;
+extern NSString* const kRGPropertyRawType;
 
 /**
  This value on the key `kRGPropertyBacking` indicates the property was declared `@dynamic`.  Mutually exclusive with the presence of a backing instance variable.
  */
-extern const NSString* const kRGPropertyDynamic;
+extern NSString* const kRGPropertyDynamic;
 
 /**
  This value on the key `kRGPropertyAtomicType` indicates the property is `atomic`.
  */
-extern const NSString* const kRGPropertyAtomic;
+extern NSString* const kRGPropertyAtomic;
 
 /**
  This value on the key `kRGPropertyAtomicType` indicates the property is `nonatomic`.
  */
-extern const NSString* const kRGPropertyNonatomic;
+extern NSString* const kRGPropertyNonatomic;
 
 /**
  This key is inserted into `NSDictionary*` instances which are serialized by this library.  It facilitates easier reconversion back to the original type.  Usage:
@@ -147,12 +147,12 @@ extern const NSString* const kRGPropertyNonatomic;
  id originalObject = [NSClassFromString(serialized[kRGSerializationKey]) objectFromDataSource:serialized];
  ```
  */
-extern const NSString* const kRGSerializationKey;
+extern NSString* const kRGSerializationKey;
 
 /**
  This key indicates the class meta data that the library uses for all other operations.
  */
-extern const NSString* const kRGPropertyListProperty;
+extern NSString* const kRGPropertyListProperty;
 
 /* Ivar Description Keys */
 
@@ -165,27 +165,27 @@ extern const NSString* const kRGPropertyListProperty;
  
  Granted you shouldn't do this. The run-time supports it, so it's not my place to artificially limit.
  */
-extern const NSString* const kRGIvarOffset;
+extern NSString* const kRGIvarOffset;
 
 /**
  This key indicates the byte size of the given instance variable.
  */
-extern const NSString* const kRGIvarSize;
+extern NSString* const kRGIvarSize;
 
 /**
  This instance variable was marked `@private`.
  */
-extern const NSString* const kRGIvarPrivate;
+extern NSString* const kRGIvarPrivate;
 
 /**
  This instance variable was marked `@protected`.
  */
-extern const NSString* const kRGIvarProtected;
+extern NSString* const kRGIvarProtected;
 
 /**
  This instance variable was marked `@public`.
  */
-extern const NSString* const kRGIvarPublic;
+extern NSString* const kRGIvarPublic;
 
 /* These classes are used to dynamically link into coredata if present. */
 
@@ -246,7 +246,7 @@ NSMutableDictionary* rg_parseIvarStruct(struct objc_ivar* ivar);
 /**
  Returns the property name in as its canonical key.
  */
-const NSString* rg_canonicalForm(const NSString* const input);
+NSString* const rg_canonicalForm(NSString* const input);
 
 /**
  Returns true if `Class cls = object;` is not a pointer type conversion.
@@ -306,12 +306,12 @@ Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName)
 /**
  This is a readonly property that describes the meta data of the given receiver's class.  It declares properties and instance variables in an object accessible manner.
  */
-- (NSArray*) __property_list__;
+@property (nonatomic, strong, readonly) NSArray* __property_list__;
 
 /**
  This function returns the output keys of the receiver for use when determining what state information is present in the instance.
  */
-- (NSArray*) rg_keys;
+@property (nonatomic, strong, readonly) NSArray* rg_keys;
 
 /**
  Returns a `Class` object which is the type of the property specified by `propertyName`; defaults to `NSNumber` if unknown.
@@ -319,7 +319,7 @@ Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName)
 - (Class) rg_classForProperty:(NSString*)propertyName;
 
 /**
- Returns the meta data for the property specified by `propertyName`.
+ Returns the metadata for the property specified by `propertyName`.
  */
 + (NSDictionary*) rg_declarationForProperty:(NSString*)propertyName;
 
