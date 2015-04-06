@@ -67,7 +67,7 @@ const NSString* const rg_serverTypeKey(void);
 #ifdef DEBUG
     #define __SOURCE_FILE__ ({char* c = strrchr(__FILE__, '/'); c ? c + 1 : __FILE__;})
     #define RGLog(format, ...) _RGLog(format, __SOURCE_FILE__, (long)__LINE__, ##__VA_ARGS__)
-    extern void _RGLog(NSString* format, ...);
+    void _RGLog(NSString* format, ...);
 #else
     /* we define out with `(void)0` generally this is `NULL` to allow constructs like `condition ?: RGLog(@"Blah")`. */
     #define RGLog(...) (void)0

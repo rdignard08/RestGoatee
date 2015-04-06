@@ -68,18 +68,28 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
 
 - (void) getItunesArtist:(NSString*)artist {
     self.responseSerializer = [AFJSONResponseSerializer new];
-    [self GET:@"/search" parameters:@{ @"term" : artist ?: @"" } keyPath:@"results" class:[RDDItunesEntry class] completion:^(RGResponseObject* response) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)] object:[response responseBody]];
+    
+    [self GET:@"/search"
+   parameters:@{ @"term" : artist ?: @"" }
+      keyPath:@"results"
+        class:[RDDItunesEntry class]
+   completion:^(RGResponseObject* response) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)]
+                                                            object:response.responseBody];
     }];
 }
 
 - (void) getStationsWithCompletion:(RGResponseBlock)completion {
     self.responseSerializer = [AFXMLParserResponseSerializer new];
-    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:basicsForCommand(ALL_STATIONS_COMMAND) keyPath:@"root.stations.station" class:[RDDBartStation class] completion:^(RGResponseObject* response) {
+    
+    [self GET:@"http://api.bart.gov/api/stn.aspx"
+   parameters:basicsForCommand(ALL_STATIONS_COMMAND)
+      keyPath:@"root.stations.station"
+        class:[RDDBartStation class]
+   completion:^(RGResponseObject* response) {
+       
         if (!response.error) {
-            NSArray* objects = !response.responseBody || [response.responseBody isKindOfClass:[NSArray class]] ? response.responseBody : @[ response.responseBody ];
-            
-            for (id obj in objects) {
+            for (id obj in response.responseBody) {
                 NSLog(@"%@", [obj dictionaryRepresentation]);
             }
         }

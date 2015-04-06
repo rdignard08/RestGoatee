@@ -23,6 +23,8 @@
 
 #import "RestGoatee.h"
 
+void _RGLog(NSString* format, ...);
+
 const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
 
 static const NSString* _sClassPrefix;
