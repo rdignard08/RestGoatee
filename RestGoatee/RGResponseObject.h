@@ -24,19 +24,19 @@
 @class NSManagedObjectContext;
 
 /**
- Encapsulate the complete response from a request to RGAPIClient.  The presence of `error` does not preclude `responseBody` from having a value; rather it will contain whatever data was received, and parsed to the best of the ability of AFNetworking.
+ Encapsulate the complete response from a request to RGAPIClient.  The presence of `error` precludes `responseBody` from having a value.
  */
 @interface RGResponseObject : NSObject
 
 /**
- In the event of a successful request, this parameter will contain either a single instance of the specified deserialization class or an array of such instances.  If no deserialization class was specified or one could not be constructed it will contain the raw json response (up to the json keypath if it was specified).
+ In the event of a successful request, this parameter will contain an array of the specified deserialization class.  If no deserialization class was specified or one could not be constructed it will contain the raw json response (up to the json keypath if it was specified).
  
- In the event of an error, this will contain whatever data was returned and processed before an error was encountered.  Extreme care should be taken in regards to the type of the `responseBody` in this case.
+ Otherwise `nil`.
  */
-@property (nonatomic, strong) id responseBody;
+@property (nonatomic, strong) NSArray* responseBody;
 
 /**
- If there was an error, this will contain the highest level error.  `responseBody` may provide additional information as to what error occured.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
+ If there was an error, this will contain the highest level error.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
  
  Otherwise `nil`.
  */

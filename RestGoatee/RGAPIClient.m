@@ -97,7 +97,7 @@ DO_RISKY_BUSINESS
 }
 
 #pragma mark - Engine Methods
-- (id) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(out __strong NSManagedObjectContext**)outContext {
+- (NSArray*) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(out __strong NSManagedObjectContext**)outContext {
     /* NSManagedObjectContext* */ id context;
     NSString* primaryKey;
     NSUInteger index;
@@ -110,7 +110,7 @@ DO_RISKY_BUSINESS
         if ([self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)]) {
             *outContext = context = [self.serializationDelegate contextForManagedObjectType:cls];
         }
-        NSAssert(context, @"Subclasses of NSManagedObject must be created within an NSManagedObjectContext");
+        context ?: [NSException raise:NSGenericException format:@"Subclasses of NSManagedObject must be created within an NSManagedObjectContext"];
     }
     NSArray* target = path ? [response valueForKeyPath:path] : response;
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
@@ -140,7 +140,7 @@ DO_RISKY_BUSINESS
             [ret addObject:(cls ? [cls objectFromDataSource:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
         }
     }
-    response = ret.count == 1 ? ret[0] : [ret copy];
+    response = [ret copy];
     @try {
         if ([context hasChanges]) {
             [context save:&error] ?: RGLog(@"Error, context save failed with error %@", error);
@@ -166,8 +166,6 @@ DO_RISKY_BUSINESS
         } else {
             ret.responseBody = [self parseResponse:body atPath:keyPath intoClass:cls context:&context];
         }
-    } else {
-        ret.responseBody = body;
     }
     ret.error = error;
     ret.context = context;
