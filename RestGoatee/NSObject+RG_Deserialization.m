@@ -31,10 +31,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     NSMutableArray* ret = [NSMutableArray array];
     for (__strong id obj in json) {
         if ([obj conformsToProtocol:@protocol(RGDataSourceProtocol)]) {
-            Class objectClass = NSClassFromString([rg_classPrefix() stringByAppendingString:([obj[rg_serverTypeKey()] capitalizedString] ?: @"")]);
-            if (!objectClass) {
-                objectClass = NSClassFromString(obj[kRGSerializationKey]);
-            }
+            Class objectClass = NSClassFromString([rg_classPrefix() stringByAppendingString:([obj[rg_serverTypeKey()] capitalizedString] ?: @"")]) ?: NSClassFromString(obj[kRGSerializationKey]);
             obj = [objectClass conformsToProtocol:@protocol(RGDataSourceProtocol)] ? obj : [objectClass objectFromDataSource:obj inContext:context];
         }
         [ret addObject:obj];
@@ -44,23 +41,17 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
 
 @implementation NSObject (RG_Deserialization)
 
-+ (instancetype) objectFromJSON:(NSDictionary*)json {
-    return [self objectFromDataSource:json];
-}
-
 + (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source {
-    NSAssert(![self isSubclassOfClass:rg_sNSManagedObject], @"Managed object subclasses must be initialized within a managed object context.  Use +objectFromJSON:inContext:");
+    if ([self isSubclassOfClass:rg_sNSManagedObject]) {
+        [NSException raise:NSGenericException format:@"Managed object subclasses must be initialized within a managed object context.  Use +objectFromJSON:inContext:"];
+    }
     return [self objectFromDataSource:source inContext:nil];
-}
-
-+ (instancetype) objectFromJSON:(NSDictionary*)json inContext:(id)context {
-    return [self objectFromDataSource:json inContext:context];
 }
 
 + (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source inContext:(id)context {
     NSObject* ret;
     if ([self isSubclassOfClass:rg_sNSManagedObject]) {
-        NSAssert(context, @"A subclass of NSManagedObject must be created within a valid NSManagedObjectContext.");
+        context ?: [NSException raise:NSGenericException format:@"A subclass of NSManagedObject must be created within a valid NSManagedObjectContext."];
         DO_RISKY_BUSINESS
         ret = [rg_sNSEntityDescription insertNewObjectForEntityForName:NSStringFromClass(self) inManagedObjectContext:context];
         END_RISKY_BUSINESS
@@ -106,11 +97,19 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
  @discussion JSON types when deserialized from NSData are: NSNull, NSNumber (number or boolean), NSString, NSArray, NSDictionary
  */
 - (void) rg_initProperty:(NSString*)key withValue:(id)value inContext:(id)context {
+    static NSDateFormatter* dateFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dateFormatter = [NSDateFormatter new];
+    });
+    
     /* Can't initialize the value of a property if the property doesn't exist */
-    if ([key isKindOfClass:[NSNull class]] || [key isEqualToString:(id)kRGPropertyListProperty] || ![self rg_declarationForProperty:key]) return;
+    if ([key isKindOfClass:[NSNull class]] || [key isEqual:kRGPropertyListProperty] || ![self rg_declarationForProperty:key]) {
+        return;
+    }
+    
     if (!value || [value isKindOfClass:[NSNull class]]) {
-        /* We don't care what the receiving type is since it's empty anyway
-        The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
+        /* We don't care what the receiving type is since it's empty anyway. The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
         self[key] = nil;
         return;
     }
@@ -127,7 +126,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         return;
     } /* This is the one instance where we can quickly cast down the value */
     
-    if ([value isKindOfClass:propertyType]) {
+    if ([value isKindOfClass:propertyType]) { /* NSValue */
         self[key] = value;
         return;
     } /* If JSONValue is already a subclass of propertyType theres no reason to coerce it */
@@ -162,19 +161,17 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         if ([self respondsToSelector:@selector(dateFormatForKey:)]) {
             providedDateFormat = [(id)self dateFormatForKey:key];
         }
-        NSDateFormatter* df = [NSDateFormatter new];
-        NSDate* ret;
         if (providedDateFormat) {
-            df.dateFormat = providedDateFormat;
-            self[key] = [df dateFromString:value];
+            dateFormatter.dateFormat = providedDateFormat;
+            self[key] = [dateFormatter dateFromString:value];
             return; /* Let's not second-guess the developer... */
+        } else {
+            for (NSString* dateFormat in rg_dateFormats()) {
+                dateFormatter.dateFormat = dateFormat;
+                self[key] = [dateFormatter dateFromString:value];
+                if (self[key]) break;
+            }
         }
-        for (NSString* dateFormat in rg_dateFormats()) {
-            df.dateFormat = dateFormat;
-            ret = [df dateFromString:value];
-            if (ret) break;
-        }
-        self[key] = ret;
         
     /* At this point we've exhausted the supported foundation classes for the LHS... these handle sub-objects */
     } else if ([value conformsToProtocol:@protocol(RGDataSourceProtocol)]) { /* lhs is some kind of user defined object, since the source has keys, but doesn't match NSDictionary */
