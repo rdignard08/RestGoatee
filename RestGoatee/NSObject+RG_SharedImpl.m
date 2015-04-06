@@ -114,7 +114,7 @@ BOOL rg_isKeyedCollectionObject(Class cls) {
 NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
     NSArray* substrs = [str componentsSeparatedByString:@"\""];
     if (substrs.count != 3) {
-        RGLog(@"Warning: Could not determine class name %@", str);
+        substrs.count > 1 ? RGLog(@"Warning: Could not determine class name %@", str) : nil;
         return str; /* there should be 2 '"' on each end, the class is in the middle, if not, give up */
     }
     return substrs[1];

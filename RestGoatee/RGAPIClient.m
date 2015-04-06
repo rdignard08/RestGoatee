@@ -186,7 +186,7 @@ DO_RISKY_BUSINESS
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, task)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(task, @selector(request:url:parameters:keyPath:class:completion:delegate:));
+        id<RGResponseDelegate> del = objc_getAssociatedObject(task, _cmd);
         if (del) {
             error ? [del response:responseObject failedForRequest:task] : [del response:responseObject receivedForRequest:task];
         } else if (completion) {
@@ -195,11 +195,10 @@ DO_RISKY_BUSINESS
     }];
 #else
     void(^callback)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
-        RGLog(@"cmd in a block is %s", _cmd);
         id body, /* NSError* */ error;
         [response isKindOfClass:[NSError class]] ? (error = response) : (body = response);
         RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(op, @selector(request:url:parameters:keyPath:class:completion:delegate:context:));
+        id<RGResponseDelegate> del = objc_getAssociatedObject(op, _cmd);
         if (del) {
             error ? [del response:responseObject failedForRequest:task] : [del response:responseObject receivedForRequest:task];
         } else if (completion) {
@@ -208,7 +207,7 @@ DO_RISKY_BUSINESS
     };
     task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
 #endif
-    objc_setAssociatedObject(task, @selector(request:url:parameters:keyPath:class:completion:delegate:context:), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(task, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     [task resume];
 #else
