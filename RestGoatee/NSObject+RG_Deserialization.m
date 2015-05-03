@@ -103,6 +103,15 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         dateFormatter = [NSDateFormatter new];
     });
     
+    /* first ask if there's a custom implementation */
+    if ([self respondsToSelector:@selector(transformValue:forProperty:inContext:)]) {
+        id changedValue = [(id)self transformValue:value forProperty:key inContext:context];
+        if (changedValue != value) {
+            self[key] = changedValue;
+            return;
+        }
+    }
+    
     /* Can't initialize the value of a property if the property doesn't exist */
     if ([key isKindOfClass:[NSNull class]] || [key isEqual:kRGPropertyListProperty] || ![self rg_declarationForProperty:key]) {
         return;

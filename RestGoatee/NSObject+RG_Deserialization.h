@@ -57,6 +57,15 @@
  */
 @property (nonatomic, strong, readonly) NSString* dateFormatForKey;
 
+/**
+ @abstract implement this method to provide custom logic on a given property.  Return the original value if implemented an the default is desired.
+ 
+ If the deserialization desired is an `NSManagedObject` subclass you may use the context parameter for construct.
+ 
+ This method tends to be necessary for deserializing arrays that lack a metadata key indicating the type of the object.
+ */
+- (id) transformValue:(id)value forProperty:(NSString*)property inContext:(NSManagedObjectContext*)context;
+
 @end
 
 

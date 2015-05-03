@@ -224,14 +224,12 @@ void rg_calculateIvarSize(Class object, NSMutableArray/*NSMutableDictionary*/* p
 
 Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName) {
     const char* utf8Name = [propertyName UTF8String];
-    Class iteratorClass = currentClass;
-    Class priorClass;
+    Class iteratorClass = currentClass, priorClass;
     while (YES) {
         if (!class_getProperty(iteratorClass, utf8Name) && !class_getInstanceVariable(iteratorClass, utf8Name)) return priorClass;
         priorClass = iteratorClass;
         iteratorClass = class_getSuperclass(iteratorClass);
     }
-    return Nil; /* technically this line is never executed */
 }
 
 @implementation NSObject (RG_SharedImpl)
