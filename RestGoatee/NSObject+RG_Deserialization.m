@@ -142,7 +142,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     
     /* Otherwise... this mess */
     
-    if (rg_isMetaClassObject(propertyType)) { /* the properties type is Meta-class so its a reference to Class */
+    if (rg_isMetaClassObject(propertyType)) { /* the property's type is Meta-class so its a reference to Class */
         self[key] = NSClassFromString([value description]);
     } else if ([propertyType isSubclassOfClass:[NSDictionary class]]) { /* NSDictionary */
         self[key] = [[propertyType alloc] initWithDictionary:value];

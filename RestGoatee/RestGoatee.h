@@ -87,7 +87,7 @@ DO_RISKY_BUSINESS \
 statement \
 END_RISKY_BUSINESS
 
-#import "RGDataSourceProtocol.h"
+#import "RGXMLNode+RGDataSourceProtocol.h"
 #import "NSObject+RG_KeyedSubscripting.h"
 #import "NSError+RG_HTTPStatusCode.h"
 #import "RGResponseObject.h"

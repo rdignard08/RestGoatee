@@ -52,7 +52,7 @@
 @end
 
 /**
- `NSDictionary` already declares and implements all of these methods.  This allows us to pass an `NSDictionary*` where ever an `id<RGDataSourceProtocol>` is needed.
+ `NSDictionary` already declares and implements all of these methods.  This allows us to pass an `NSDictionary*` where ever a variable is typed `id<RGDataSourceProtocol>`.
  */
 @interface NSDictionary (RGDataSourceProtocol) <RGDataSourceProtocol> @end
 

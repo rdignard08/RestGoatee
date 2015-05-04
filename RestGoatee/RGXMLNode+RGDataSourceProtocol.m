@@ -21,7 +21,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import "RGDataSourceProtocol.h"
+#import "RGXMLNode+RGDataSourceProtocol.h"
 #import "NSObject+RG_KeyedSubscripting.h"
 #import <objc/runtime.h>
 
