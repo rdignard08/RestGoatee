@@ -1,1 +1,1 @@
-pod 'RestGoatee', :path => "../RestGoatee"
+pod 'RestGoatee', :path => "./"
