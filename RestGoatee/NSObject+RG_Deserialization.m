@@ -30,9 +30,9 @@
 NSArray* rg_unpackArray(NSArray* json, id context) {
     NSMutableArray* ret = [NSMutableArray array];
     for (__strong id obj in json) {
-        if ([obj conformsToProtocol:@protocol(RGDataSourceProtocol)]) {
+        if (rg_isDataSourceClass([obj class])) {
             Class objectClass = NSClassFromString([rg_classPrefix() stringByAppendingString:([obj[rg_serverTypeKey()] capitalizedString] ?: @"")]) ?: NSClassFromString(obj[kRGSerializationKey]);
-            obj = [objectClass conformsToProtocol:@protocol(RGDataSourceProtocol)] ? obj : [objectClass objectFromDataSource:obj inContext:context];
+            obj = rg_isDataSourceClass(objectClass) ? obj : [objectClass objectFromDataSource:obj inContext:context];
         }
         [ret addObject:obj];
     }
@@ -183,7 +183,7 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         }
         
     /* At this point we've exhausted the supported foundation classes for the LHS... these handle sub-objects */
-    } else if ([value conformsToProtocol:@protocol(RGDataSourceProtocol)]) { /* lhs is some kind of user defined object, since the source has keys, but doesn't match NSDictionary */
+    } else if (rg_isDataSourceClass([value class])) { /* lhs is some kind of user defined object, since the source has keys, but doesn't match NSDictionary */
         self[key] = [propertyType objectFromDataSource:value inContext:context];
     } else if ([value isKindOfClass:[NSArray class]]) { /* single entry arrays are converted to an inplace object */
         [value count] > 1 ? RGLog(@"Warning, data loss on property %@ on type %@", key, [self class]) : nil;

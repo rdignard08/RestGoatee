@@ -274,6 +274,11 @@ BOOL rg_isCollectionObject(Class cls);
 BOOL rg_isKeyedCollectionObject(Class cls);
 
 /**
+ Returns true if the given class conforms to `RGDataSourceProtocol`.  Necessary due to some bug.
+ */
+BOOL rg_isDataSourceClass(Class cls);
+
+/**
  Returns a `Class` object (i.e. an Objective-C object type), from the given type string.
  */
 Class rg_classForTypeString(NSString* str);

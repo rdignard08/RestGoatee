@@ -128,7 +128,7 @@ DO_RISKY_BUSINESS
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
-        if ([entry conformsToProtocol:@protocol(RGDataSourceProtocol)] && primaryKey && allObjects && entry[primaryKey]) {
+        if (rg_isDataSourceClass([entry class]) && primaryKey && allObjects && entry[primaryKey]) {
             id keyValue = [entry isKindOfClass:[RGXMLNode class]] ? [entry[primaryKey] innerXML] : entry[primaryKey];
             index = [allObjects[primaryKey] indexOfObject:keyValue inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
             if (index != NSNotFound) {

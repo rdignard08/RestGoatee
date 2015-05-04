@@ -111,6 +111,10 @@ BOOL rg_isKeyedCollectionObject(Class cls) {
     return [cls isSubclassOfClass:[NSDictionary class]];
 }
 
+BOOL rg_isDataSourceClass(Class cls) {
+    return [cls instancesRespondToSelector:@selector(objectForKeyedSubscript:)] && [cls instancesRespondToSelector:@selector(setObject:forKeyedSubscript:)] && [cls instancesRespondToSelector:@selector(valueForKeyPath:)];
+}
+
 NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
     NSArray* substrs = [str componentsSeparatedByString:@"\""];
     if (substrs.count != 3) {
