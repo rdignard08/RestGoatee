@@ -78,6 +78,7 @@ _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wgnu\"") \
 _Pragma("clang diagnostic ignored \"-Wobjc-designated-initializers\"") \
 _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"") \
+_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"")
 
 #define END_RISKY_BUSINESS \
 _Pragma("clang diagnostic pop")
