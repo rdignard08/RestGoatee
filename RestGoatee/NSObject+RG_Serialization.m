@@ -93,7 +93,9 @@
     if ([pointersSeen indexOfObject:self] != NSNotFound) return [NSNull null];
     /* [pointersSeen addObject:self]; // disable DAG for now */
     id ret;
-    if (rg_isInlineObject([self class]) || rg_isClassObject(self)) { /* classes can be stored as strings too */
+    if ([[self class] isSubclassOfClass:[NSNull class]]) {
+        ret = self;
+    } else if (rg_isInlineObject([self class]) || rg_isClassObject(self)) { /* classes can be stored as strings too */
         ret = [self description];
     } else if (rg_isCollectionObject([self class])) {
         ret = [[NSMutableArray alloc] initWithCapacity:[(id)self count]];
@@ -103,7 +105,7 @@
     } else if (rg_isKeyedCollectionObject([self class])) {
         ret = [[NSMutableDictionary alloc] initWithCapacity:[(id)self count]];
         for (id key in (id)self) {
-            ret[key] = self[key];
+            ret[key] = [self[key] rg_dictionaryHelper:pointersSeen followWeak:followWeak];
         }
         ret[kRGSerializationKey] = NSStringFromClass([self class]);
     } else {
