@@ -70,7 +70,7 @@ const NSString* const rg_serverTypeKey(void);
     void _RGLog(NSString* format, ...);
 #else
     /* we define out with `(void)0` generally this is `NULL` to allow constructs like `condition ?: RGLog(@"Blah")`. */
-    #define RGLog(...) (void)0
+    #define RGLog(...) ((void)0)
 #endif
 
 #define DO_RISKY_BUSINESS \
