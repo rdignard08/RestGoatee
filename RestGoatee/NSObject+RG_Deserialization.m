@@ -122,11 +122,10 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     }
     
     if (!value || [value isKindOfClass:[NSNull class]]) {
-        /* We don't care what the receiving type is since it's empty anyway. The docs say this may be a problem on primitive properties but I haven't observed this behavior when testing */
-        self[key] = nil;
+        self[key] = [self rg_isPrimitive:key] ? @0 : nil;
         return;
     }
-
+    
     Class propertyType = [self rg_classForProperty:key];
     
     if ([value isKindOfClass:[NSArray class]]) { /* If the array we're given contains objects which we can create, create those too */

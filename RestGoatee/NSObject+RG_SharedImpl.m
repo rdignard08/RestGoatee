@@ -319,4 +319,8 @@ Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName)
     return [self rg_declarationForProperty:propertyName][kRGPropertyClass];
 }
 
+- (BOOL) rg_isPrimitive:(NSString*)propertyName {
+    return !NSClassFromString([self rg_declarationForProperty:propertyName][kRGPropertyRawType]);
+}
+
 @end

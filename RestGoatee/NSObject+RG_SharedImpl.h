@@ -324,6 +324,11 @@ Class topClassDeclaringPropertyNamed(Class currentClass, NSString* propertyName)
 - (Class) rg_classForProperty:(NSString*)propertyName;
 
 /**
+ Returns `YES` if the type of the property is an object type (as known by `NSClassFromString()`).
+ */
+- (BOOL) rg_isPrimitive:(NSString*)propertyName;
+
+/**
  Returns the metadata for the property specified by `propertyName`.
  */
 + (NSDictionary*) rg_declarationForProperty:(NSString*)propertyName;
