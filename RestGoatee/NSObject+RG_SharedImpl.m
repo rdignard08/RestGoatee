@@ -112,7 +112,7 @@ BOOL rg_isKeyedCollectionObject(Class cls) {
 }
 
 BOOL rg_isDataSourceClass(Class cls) {
-    return [cls instancesRespondToSelector:@selector(objectForKeyedSubscript:)] && [cls instancesRespondToSelector:@selector(setObject:forKeyedSubscript:)] && [cls instancesRespondToSelector:@selector(valueForKeyPath:)];
+    return [cls instancesRespondToSelector:@selector(objectForKeyedSubscript:)] && [cls instancesRespondToSelector:@selector(setObject:forKeyedSubscript:)] && [cls instancesRespondToSelector:@selector(valueForKeyPath:)] && [cls instancesRespondToSelector:@selector(countByEnumeratingWithState:objects:count:)];
 }
 
 NSString* rg_trimLeadingAndTrailingQuotes(NSString* str) {
