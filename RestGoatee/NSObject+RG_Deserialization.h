@@ -73,14 +73,14 @@
 + (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source;
 
 /**
- @abstract creates and returns an array of objects of the type of the receiver.
+ @abstract creates and returns an array of objects of the type of the receiver.  Need only be something iteratable.
  */
-+ (NSArray*) objectsFromArraySource:(NSArray*)source inContext:(NSManagedObjectContext*)context;
++ (NSArray*) objectsFromArraySource:(id<NSFastEnumeration>)source inContext:(NSManagedObjectContext*)context;
 
 /**
  @abstract creates and returns an array of objects of the type of the receiver.
  */
-+ (NSArray*) objectsFromArraySource:(NSArray *)source;
++ (NSArray*) objectsFromArraySource:(id<NSFastEnumeration>)source;
 
 /**
  @abstract merges two objects into a single object.  The return value is not a new object, but rather is the receiver augmented with the values in `object`.

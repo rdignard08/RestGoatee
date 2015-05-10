@@ -41,11 +41,11 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
 
 @implementation NSObject (RG_Deserialization)
 
-+ (NSArray*) objectsFromArraySource:(NSArray*)source {
++ (NSArray*) objectsFromArraySource:(id<NSFastEnumeration>)source {
     return [self objectsFromArraySource:source inContext:nil];
 }
 
-+ (NSArray*) objectsFromArraySource:(NSArray*)source inContext:(NSManagedObjectContext*)context {
++ (NSArray*) objectsFromArraySource:(id<NSFastEnumeration>)source inContext:(NSManagedObjectContext*)context {
     NSMutableArray* objects = [NSMutableArray new];
     for (NSDictionary* object in source) {
         if (rg_isDataSourceClass([object class])) {
