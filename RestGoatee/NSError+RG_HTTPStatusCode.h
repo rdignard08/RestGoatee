@@ -29,7 +29,7 @@
 /**
  @abstract as part of the RGAPIClient, NSErrors which are related to an HTTP error, will contain the HTTP status code (if available, otherwise 0).
  */
-- (NSUInteger) HTTPStatusCode;
+@property (nonatomic, assign) NSUInteger HTTPStatusCode;
 
 /**
  If a failure is generated at some point in the response processing event chain, this property will contain if available whatever the state of the response was when the error was encountered.

@@ -27,7 +27,11 @@
 @implementation NSError (RG_HTTPStatusCode)
 
 - (NSUInteger) HTTPStatusCode {
-    return [self.userInfo[kRGHTTPStatusCode] unsignedIntegerValue];
+    return [objc_getAssociatedObject(self, @selector(HTTPStatusCode)) unsignedIntegerValue];
+}
+
+- (void) setHTTPStatusCode:(NSUInteger)HTTPStatusCode {
+    objc_setAssociatedObject(self, @selector(HTTPStatusCode), @(HTTPStatusCode), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (id) extraData {

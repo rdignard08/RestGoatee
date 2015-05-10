@@ -25,8 +25,6 @@
 
 void _RGLog(NSString* format, ...);
 
-const NSString* const kRGHTTPStatusCode = @"HTTPStatusCode";
-
 static const NSString* _sClassPrefix;
 const NSString* const rg_classPrefix() {
     @synchronized ([NSObject class]) {

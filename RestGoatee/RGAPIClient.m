@@ -60,9 +60,7 @@ static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, i
 
 static inline NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
     if (error && [[task response] respondsToSelector:@selector(statusCode)]) {
-        NSMutableDictionary* userInfo = [error.userInfo mutableCopy];
-        userInfo[kRGHTTPStatusCode] = @([(id)[task response] statusCode]);
-        error = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:[userInfo copy]];
+        error.HTTPStatusCode = [(id)[task response] statusCode];
     }
     return error;
 }

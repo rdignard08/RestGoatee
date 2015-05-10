@@ -22,12 +22,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 /**
- Key returned as part of HTTP related errors.  Usage:
- `error.userInfo[kRGHTTPStatusCode]`
- */
-extern const NSString* const kRGHTTPStatusCode;
-
-/**
  Optionally use this function to provide your project's class prefix.
  
  XYZMyClass -> provide @"XYZ"
