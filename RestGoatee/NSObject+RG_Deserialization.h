@@ -73,6 +73,16 @@
 + (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source;
 
 /**
+ @abstract creates and returns an array of objects of the type of the receiver.
+ */
++ (NSArray*) objectsFromArraySource:(NSArray*)source inContext:(NSManagedObjectContext*)context;
+
+/**
+ @abstract creates and returns an array of objects of the type of the receiver.
+ */
++ (NSArray*) objectsFromArraySource:(NSArray *)source;
+
+/**
  @abstract merges two objects into a single object.  The return value is not a new object, but rather is the receiver augmented with the values in `object`.
  @param object Can be of type NSDictionary or the receiving type.
  @return the receiving object extended with `object`; any conflicts will take `object`'s value as precedent.

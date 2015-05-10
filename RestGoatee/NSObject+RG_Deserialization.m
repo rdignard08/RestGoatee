@@ -41,6 +41,20 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
 
 @implementation NSObject (RG_Deserialization)
 
++ (NSArray*) objectsFromArraySource:(NSArray*)source {
+    return [self objectsFromArraySource:source inContext:nil];
+}
+
++ (NSArray*) objectsFromArraySource:(NSArray*)source inContext:(NSManagedObjectContext*)context {
+    NSMutableArray* objects = [NSMutableArray new];
+    for (NSDictionary* object in source) {
+        if (rg_isDataSourceClass([object class])) {
+            [objects addObject:[self objectFromDataSource:object inContext:context]];
+        }
+    }
+    return source ? [objects copy] : nil;
+}
+
 + (instancetype) objectFromDataSource:(id<RGDataSourceProtocol>)source {
     if ([self isSubclassOfClass:rg_sNSManagedObject]) {
         [NSException raise:NSGenericException format:@"Managed object subclasses must be initialized within a managed object context.  Use +objectFromJSON:inContext:"];
@@ -58,13 +72,8 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
     } else {
         ret = [self new];
     }
-    NSMutableDictionary* overrides = [NSMutableDictionary new];
-    if ([[ret class] respondsToSelector:@selector(overrideKeysForMapping)]) {
-        [overrides addEntriesFromDictionary:[[ret class] overrideKeysForMapping]];
-    }
-    if ([ret respondsToSelector:@selector(overrideKeysForMapping)]) {
-        [overrides addEntriesFromDictionary:[ret overrideKeysForMapping]];
-    }
+    Class returnType = [ret class];
+    NSDictionary* overrides = [returnType respondsToSelector:@selector(overrideKeysForMapping)] ? [returnType overrideKeysForMapping] : nil;
     for (NSString* key in source) {
         /* default behavior self.key = json[key] (each `key` is compared in canonical form) */
         if (overrides[key]) continue;
@@ -169,9 +178,6 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         NSString* providedDateFormat;
         if ([[self class] respondsToSelector:@selector(dateFormatForKey:)]) {
             providedDateFormat = [[self class] dateFormatForKey:key];
-        }
-        if ([self respondsToSelector:@selector(dateFormatForKey:)]) {
-            providedDateFormat = [(id)self dateFormatForKey:key];
         }
         if (providedDateFormat) {
             dateFormatter.dateFormat = providedDateFormat;
