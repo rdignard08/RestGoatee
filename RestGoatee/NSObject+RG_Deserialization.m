@@ -175,12 +175,9 @@ NSArray* rg_unpackArray(NSArray* json, id context) {
         self[key] = [[propertyType alloc] initWithString:value];
     } else if ([propertyType isSubclassOfClass:[NSDate class]]) { /* NSDate */
         if ([value isKindOfClass:[RGXMLNode class]]) value = [value innerXML];
-        NSString* providedDateFormat;
-        if ([[self class] respondsToSelector:@selector(dateFormatForKey:)]) {
-            providedDateFormat = [[self class] dateFormatForKey:key];
-        }
-        if (providedDateFormat) {
-            dateFormatter.dateFormat = providedDateFormat;
+        NSString* dateFormat = [[self class] respondsToSelector:@selector(dateFormatForKey:)] ? [[self class] dateFormatForKey:key] : nil;
+        if (dateFormat) {
+            dateFormatter.dateFormat = dateFormat;
             self[key] = [dateFormatter dateFromString:value];
             return; /* Let's not second-guess the developer... */
         } else {
