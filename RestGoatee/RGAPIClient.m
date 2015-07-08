@@ -25,6 +25,7 @@
 #import "NSObject+RG_SharedImpl.h"
 #import "RGXMLSerializer.h"
 #import <objc/runtime.h>
+#import <Core-RestGoatee.h>
 
 #pragma mark - Forward Declarations
 /**
