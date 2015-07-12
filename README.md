@@ -23,13 +23,13 @@ Consider your favorite or most popular model framework:
   * JSON or XML? <img src="https://github.com/jloughry/Unicode/raw/master/graphics/green_check.png"/>
 
 # Installation
-Using cocoapods add `pod 'RestGoatee'` (after `pod 'AFNetworking'` if present) to your Podfile and run `pod install`.  People without cocoapods can include "RestGoatee" top level folder in their repository.  Include `#import <RestGoatee/RestGoatee.h>` to include all public headers and start using the library. 
+Using cocoapods add `pod 'RestGoatee'` to your Podfile and run `pod install`.  People without cocoapods can include the top level folder "RestGoatee" in their repository.  Include `#import <RestGoatee/RestGoatee.h>` to include all public headers and start using the library. 
 
-A feature I've called "Server Typing" can be enabled by calling `rg_setServerTypeKey` with your desired key before you make the first call to any method on `RGAPIClient`.  You are highly advised not to change this during the operation of your app.  It will mark the key with the given name in your responses as being metadata about the response (in this case indicating which class type this response represents).  If you implement `-keyForReconciliationOfType:`, the key ought to be something generally available on all objects (a unique identifer key for example).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
+If you implement `-keyForReconciliationOfType:`, the key ought to be something generally available on all objects (a unique identifer key for example).  Objects without this key will not be unique checked, additionally it does not affect non-`NSManagedObject` subclasses.
 
 Example
 =======
-You can clone this repository and run the RestGoateeExample project, but you will need to run `pod install` in your installation directory.  (I am in the not-committing-your-pods camp).
+You can clone this repository and run `pod install` in your installation directory.
 
 We will use this example to turn a request to [iTunes Search API](https://itunes.apple.com/search?term=pink+floyd) into objects.
 ## Model
@@ -62,4 +62,4 @@ We will use this example to turn a request to [iTunes Search API](https://itunes
 
 License
 =======
-BSD Simplied (2-clause)
+BSD Simplified (2-clause)
