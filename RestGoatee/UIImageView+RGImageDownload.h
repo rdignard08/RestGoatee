@@ -1,4 +1,4 @@
-/* Copyright (c) 6/10/14, Ryan Dignard
+/* Copyright (c) 9/7/15, Ryan Dignard
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -21,7 +21,24 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import "UIImageView+RGImageDownload.h"
-#import "NSError+RG_HTTPStatusCode.h"
-#import "RGResponseObject.h"
-#import "RGAPIClient.h"
+#import <AFNetworking/AFNetworking.h>
+
+void rg_setImageWithURL(UIImageView* self,
+                     NSURLRequest* urlRequest,
+                     UIImage* placeholderImage,
+                     void(^success)(NSHTTPURLResponse*, UIImage*),
+                     void(^failure)(NSHTTPURLResponse*, NSError*));
+
+id rg_resourceForURL(UIImageView* self, NSURLRequest* url, void(^handler)(AFHTTPRequestOperation*, id));
+
+@interface UIImageView (RGImageDownload)
+
+@property (nonatomic, strong) AFHTTPRequestOperation* rg_pendingOperation;
+
+- (void) rg_setImageWithURL:(NSURL*)url;
+
+- (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder;
+
+- (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder success:(void(^)(NSHTTPURLResponse*, UIImage*))success failure:(void(^)(NSHTTPURLResponse*, NSError*))failure;
+
+@end
