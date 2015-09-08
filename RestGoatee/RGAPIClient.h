@@ -388,17 +388,17 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 
 @optional
 /**
- Implement this method if you wish to provide a context for response objects which are subclasses of NSManagedObject.  Types other than NSManagedObject are not queried.
+ Implement this method if you wish to provide a context for response objects which are subclasses of `NSManagedObject`.  Types other than `NSManagedObject` are not queried.
  */
 - (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls;
 
 /**
- Return a non-`nil` key to have `NSManagedObjects` be reconciled to an existing object if the value of this key matches.
+ Return a non-`nil` key to have `NSManagedObject`s be reconciled to an existing object if the value of this key matches.
  */
 - (NSString*) keyForReconciliationOfType:(Class)cls;
 
 /**
- Enable basic XML to JSON parsing. If you do not to the `NSXMLParser*` will be passed back as the `responseBody`.  Defaults to `NO`.
+ Enable basic XML to JSON parsing. If you want the `NSXMLParser` it will be passed back as the `responseBody` when `NO`.  Defaults to `NO`.
  */
 - (BOOL) shouldSerializeXML;
 
