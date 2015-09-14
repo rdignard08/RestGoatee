@@ -23,6 +23,30 @@
 
 #import "UIImageView+RGImageDownload.h"
 #import <objc/runtime.h>
+#import "RestGoatee.h"
+
+static STCacheBlock _sFileCacheHandler;
+void setFileCacheLimit(STCacheBlock handler) {
+    _sFileCacheHandler = handler;
+}
+
+@implementation NSFileManager (Startup)
+
+- (NSNumber*) sizeForFolderAtPath:(NSURL*)source error:(NSError**)error {
+    uint64_t directorySize = 0;
+    NSDirectoryEnumerator* enumerator = [self enumeratorAtURL:source includingPropertiesForKeys:@[ (id)kCFURLContentAccessDateKey, (id)kCFURLTotalFileAllocatedSizeKey ] options:0 errorHandler:^(NSURL* url, NSError* error) {
+        RGLog(@"%@ %@", url, error);
+        return YES;
+    }];
+    for (NSURL* file in enumerator) {
+        NSNumber* value;
+        [file getResourceValue:&value forKey:(id)kCFURLTotalFileAllocatedSizeKey error:error];
+        directorySize = directorySize + [value unsignedLongLongValue];
+    }
+    return @(directorySize);
+}
+
+@end
 
 @interface NSOperation (RGCompletionBlocks)
 

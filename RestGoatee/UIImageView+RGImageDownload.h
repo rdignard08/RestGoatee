@@ -42,3 +42,22 @@ id rg_resourceForURL(UIImageView* self, NSURLRequest* url, void(^handler)(AFHTTP
 - (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder success:(void(^)(NSHTTPURLResponse*, UIImage*))success failure:(void(^)(NSHTTPURLResponse*, NSError*))failure;
 
 @end
+
+/**
+ STCacheBlock is a block type which will be retained forever and invoked periodically to determine space available for files.
+ */
+typedef uint64_t (^STCacheBlock)(void);
+
+/**
+ provide a `STCacheBlock` to be called on file system changes.  Return the maximum number of bytes allowed.
+ */
+void setFileCacheLimit(STCacheBlock handler);
+
+@interface NSFileManager (Startup)
+
+/**
+ A wrapped `uint64_t` representing the total file content size stored within a directory.
+ */
+- (NSNumber*) sizeForFolderAtPath:(NSURL*)source error:(NSError**)error;
+
+@end
