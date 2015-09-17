@@ -173,7 +173,7 @@ DO_RISKY_BUSINESS
     return ret;
 }
 
-- (void) request:(NSString*)method url:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion delegate:(id<RGResponseDelegate>)delegate context:(NSManagedObjectContext*)context {
+- (void) request:(NSString*)method url:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion context:(NSManagedObjectContext*)context {
     __block __strong id task;
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
@@ -184,29 +184,21 @@ DO_RISKY_BUSINESS
     }
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
-        RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, task)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(task, _cmd);
-        if (del) {
-            error ? [del response:responseObject failedForRequest:task] : [del response:responseObject receivedForRequest:task];
-        } else if (completion) {
-            completion(responseObject);
+        if (completion) {
+            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, task)]);
         }
     }];
 #else
     void(^callback)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
         id body, /* NSError* */ error;
         [response isKindOfClass:[NSError class]] ? (error = response) : (body = response);
-        RGResponseObject* responseObject = [self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op)];
-        id<RGResponseDelegate> del = objc_getAssociatedObject(op, _cmd);
-        if (del) {
-            error ? [del response:responseObject failedForRequest:task] : [del response:responseObject receivedForRequest:task];
-        } else if (completion) {
-            completion(responseObject);
+        if (completion) {
+            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op)]);
         }
     };
     task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
 #endif
-    objc_setAssociatedObject(task, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     [task resume];
 #else
@@ -219,64 +211,32 @@ DO_RISKY_BUSINESS
     [self GET:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate {
-    [self GET:url parameters:parameters keyPath:path class:cls context:nil delegate:delegate];;
-}
-
 - (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion delegate:nil context:context];
-}
-
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context delegate:(id<RGResponseDelegate>)delegate {
-    [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:nil delegate:delegate context:context];
+    [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
 }
 
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self POST:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate {
-    [self POST:url parameters:parameters keyPath:path class:cls context:nil delegate:delegate];
-}
-
 - (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:completion delegate:nil context:context];
-}
-
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context delegate:(id<RGResponseDelegate>)delegate {
-    [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:NULL delegate:delegate context:context];
+    [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
 }
 
 - (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self PUT:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate {
-    [self PUT:url parameters:parameters keyPath:path class:cls context:nil delegate:delegate];
-}
-
 - (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:completion delegate:nil context:context];
-}
-
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context delegate:(id<RGResponseDelegate>)delegate {
-    [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:NULL delegate:delegate context:context];
+    [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
 }
 
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
     [self DELETE:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls delegate:(id<RGResponseDelegate>)delegate {
-    [self DELETE:url parameters:parameters keyPath:path class:cls context:nil delegate:delegate];
-}
-
 - (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:completion delegate:nil context:context];
-}
-
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context delegate:(id<RGResponseDelegate>)delegate {
-    [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:NULL delegate:delegate context:context];
+    [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
 }
 
 @end
@@ -337,32 +297,16 @@ END_RISKY_BUSINESS
     [self GET:url parameters:nil keyPath:nil class:Nil completion:completion];
 }
 
-- (void) GET:(NSString*)url delegate:(id<RGResponseDelegate>)delegate {
-    [self GET:url parameters:nil keyPath:nil class:Nil delegate:delegate];
-}
-
 - (void) POST:(NSString*)url completion:(RGResponseBlock)completion {
     [self POST:url parameters:nil keyPath:nil class:Nil completion:completion];
-}
-
-- (void) POST:(NSString*)url delegate:(id<RGResponseDelegate>)delegate {
-    [self POST:url parameters:nil keyPath:nil class:Nil delegate:delegate];
 }
 
 - (void) PUT:(NSString*)url completion:(RGResponseBlock)completion {
     [self PUT:url parameters:nil keyPath:nil class:Nil completion:completion];
 }
 
-- (void) PUT:(NSString*)url delegate:(id<RGResponseDelegate>)delegate {
-    [self PUT:url parameters:nil keyPath:nil class:Nil delegate:delegate];
-}
-
 - (void) DELETE:(NSString*)url completion:(RGResponseBlock)completion {
     [self DELETE:url parameters:nil keyPath:nil class:Nil completion:completion];
-}
-
-- (void) DELETE:(NSString*)url delegate:(id<RGResponseDelegate>)delegate {
-    [self DELETE:url parameters:nil keyPath:nil class:Nil delegate:delegate];
 }
 
 @end
