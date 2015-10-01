@@ -51,6 +51,7 @@
 @property (nonatomic, readonly) BOOL hasChanges;
 - (NSArray*) executeFetchRequest:(id)request error:(NSError**)error;
 - (BOOL) save:(NSError**)error;
+- (void) performBlockAndWait:(void(^)())block;
 
 @end
 
@@ -101,9 +102,7 @@ DO_RISKY_BUSINESS
 - (NSArray*) parseResponse:(id)response atPath:(NSString*)path intoClass:(Class)cls context:(inout __strong NSManagedObjectContext**)outContext {
     /* NSManagedObjectContext* */ id context = *outContext;
     NSString* primaryKey;
-    NSUInteger index;
-    NSArray* allObjects;
-    NSError* error;
+    __block NSArray* allObjects;
     if ([cls isSubclassOfClass:rg_sNSManagedObject]) {
         if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
             primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
@@ -115,7 +114,7 @@ DO_RISKY_BUSINESS
     }
     NSArray* target = path ? [response valueForKeyPath:path] : response;
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
-    if (primaryKey && cls) {
+    if (primaryKey && [cls isSubclassOfClass:rg_sNSManagedObject]) {
         NSObject* fetch = [rg_sNSFetchRequest fetchRequestWithEntityName:NSStringFromClass(cls)];
         NSArray* incomingKeys = target[primaryKey];
         NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
@@ -124,32 +123,37 @@ DO_RISKY_BUSINESS
         }
         fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, parsedKeys];
         fetch.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ];
-        allObjects = [context executeFetchRequest:fetch error:&error];
-        error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : nil;
+        [context performBlockAndWait:^{
+            NSError* error;
+            allObjects = [context executeFetchRequest:fetch error:&error];
+            error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : nil;
+        }];
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
         if (rg_isDataSourceClass([entry class]) && primaryKey && allObjects && entry[primaryKey]) {
             id keyValue = [entry isKindOfClass:[RGXMLNode class]] ? [entry[primaryKey] innerXML] : entry[primaryKey];
-            index = [allObjects[primaryKey] indexOfObject:keyValue inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
+            NSUInteger index = [allObjects[primaryKey] indexOfObject:keyValue inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
             if (index != NSNotFound) {
                 [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
             } else {
                 [ret addObject:[cls objectFromDataSource:entry inContext:context]]; /* New Object */
             }
         } else {
-            [ret addObject:(cls ? [cls objectFromDataSource:entry inContext:context] : entry)]; /* Nothing to lookup so it may be new or the raw is desired. */
+            [ret addObject:cls ? [cls objectFromDataSource:entry inContext:context] : entry]; /* Nothing to lookup so it may be new or the raw is desired. */
         }
     }
     response = [ret copy];
-    @try {
-        if ([context hasChanges]) {
-            [context save:&error] ?: RGLog(@"Error, context save failed with error %@", error);
+    [context performBlockAndWait:^{
+        NSError* error;
+        @try {
+            if ([context hasChanges]) {
+                [context save:&error] ?: RGLog(@"Error, context save failed with error %@", error);
+            }
+        } @catch (NSException* e) {
+            RGLog(@"Warning, saving context %@ failed: %@", context, e);
         }
-    }
-    @catch (NSException* e) {
-        RGLog(@"Warning, saving context %@ failed: %@", context, e);
-    }
+    }];
     return response;
 }
 
