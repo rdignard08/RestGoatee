@@ -24,6 +24,12 @@
 #import <AFNetworking/AFNetworking.h>
 #import "RGResponseObject.h"
 
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+    #define IOS_7_PLUS 1
+#else
+    #define IOS_7_PLUS 0
+#endif
+
 /**
  The `RGResponseBlock` type specifies the common handler type for all methods declared in `RGAPIClient`.
  */
@@ -35,7 +41,7 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 /**
  The RGAPIClient is a subclass of either `AFHTTPSessionManager` or `AFRequestOperationManager` depending on the project's deployment target.  Method calls through this class (specifically those declared at the RGAPIClient level) will attempt to automatically deserialize objects from a raw information type into a type specified by the user.
  */
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+#if IOS_7_PLUS
 @interface RGAPIClient : AFHTTPSessionManager
 #else
 @interface RGAPIClient : AFHTTPRequestOperationManager
@@ -243,7 +249,7 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
 /**
  Certain requests to the API require additional information that might not be available in a standard request.
  
- `NSManagedObjectContext` is required for use with classes which are subclasses of `NSManagedObject`.
+ An `NSManagedObjectContext` is required for use with classes which are subclasses of `NSManagedObject`.
  
  Unique checking can be performed here as well.
  
@@ -256,6 +262,16 @@ typedef void(^RGResponseBlock)(RGResponseObject*);
  Implement this method if you wish to provide a context for response objects which are subclasses of `NSManagedObject`.  Types other than `NSManagedObject` are not queried.
  */
 - (NSManagedObjectContext*) contextForManagedObjectType:(Class)cls;
+
+/**
+ Implement this method to retry requests as determined by you.  Return `YES` to retry; `NO` otherwise.  Default is `NO` for all requests.
+ 
+ @param request The request being retried. Contains the method, URL, and body as resolved by redirects.
+ @param response The response that indicated failure.
+ @param error The error that failed the request.
+ @param count The number of times this request has been retried before.
+ */
+- (BOOL) shouldRetryRequest:(NSURLRequest*)request response:(NSHTTPURLResponse*)response error:(NSError*)error retryCount:(NSUInteger)count;
 
 /**
  Return a non-`nil` key to have `NSManagedObject`s be reconciled to an existing object if the value of this key matches.
