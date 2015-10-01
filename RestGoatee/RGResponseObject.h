@@ -21,6 +21,8 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class NSManagedObjectContext;
 
 /**
@@ -33,7 +35,7 @@
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong) NSArray* responseBody;
+@property (nonatomic, strong, nullable) NSArray* responseBody;
 
 /**
  If there was an error, this will contain the highest level error.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
@@ -42,13 +44,15 @@
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong) NSError* error;
+@property (nonatomic, strong, nullable) NSError* error;
 
 /**
  If the type of the provided deserialization class is a subclass of `NSManagedObject` then this property is the context that the response was created in.
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong) NSManagedObjectContext* context;
+@property (nonatomic, strong, nullable) NSManagedObjectContext* context;
 
 @end
+
+NS_ASSUME_NONNULL_END

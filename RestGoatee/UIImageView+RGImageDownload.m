@@ -25,6 +25,8 @@
 #import <objc/runtime.h>
 #import "RestGoatee.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static STCacheBlock _sFileCacheHandler;
 void setFileCacheLimit(STCacheBlock handler) {
     _sFileCacheHandler = handler;
@@ -50,7 +52,7 @@ void setFileCacheLimit(STCacheBlock handler) {
 
 @interface NSOperation (RGCompletionBlocks)
 
-@property (nonatomic, strong, readonly) NSMutableArray* completionBlocks;
+@property (nonatomic, strong, readonly, nonnull) NSMutableArray* completionBlocks;
 
 @end
 
@@ -115,23 +117,23 @@ void setFileCacheLimit(STCacheBlock handler) {
     return _sCachedOperationQueue;
 }
 
-- (AFHTTPRequestOperation*)rg_pendingOperation {
+- (nullable AFHTTPRequestOperation*)rg_pendingOperation {
     return objc_getAssociatedObject(self, @selector(rg_pendingOperation));
 }
 
-- (void)setRg_pendingOperation:(AFHTTPRequestOperation*)rg_pendingOperation {
+- (void)setRg_pendingOperation:(nullable AFHTTPRequestOperation*)rg_pendingOperation {
     objc_setAssociatedObject(self, @selector(rg_pendingOperation), rg_pendingOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void) rg_setImageWithURL:(NSURL*)url {
+- (void) rg_setImageWithURL:(nonnull NSURL*)url {
     [self rg_setImageWithURL:url placeholder:nil success:nil failure:nil];
 }
 
-- (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder {
+- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(nullable UIImage*)placeholder {
     [self rg_setImageWithURL:url placeholder:placeholder success:nil failure:nil];
 }
 
-- (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder success:(void(^)(NSHTTPURLResponse*, UIImage*))success failure:(void(^)(NSHTTPURLResponse*, NSError*))failure {
+- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(nullable UIImage*)placeholder success:(void(^ __nullable)(NSHTTPURLResponse* __nullable, UIImage* __nullable))success failure:(void(^ __nullable)(NSHTTPURLResponse* __nullable, NSError* __nonnull))failure {
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:@"image/*" forHTTPHeaderField:@"Accept"];
     rg_setImageWithURL(self, request, placeholder, success, failure);
@@ -198,11 +200,11 @@ id rg_resourceForURL(UIImageView* self, NSURLRequest* url, void(^handler)(AFHTTP
     return resource;
 }
 
-void rg_setImageWithURL(UIImageView* self,
-                        NSURLRequest* urlRequest,
-                        UIImage* placeholderImage,
-                        void(^success)(NSHTTPURLResponse*, UIImage*),
-                        void(^failure)(NSHTTPURLResponse*, NSError*)) {
+void rg_setImageWithURL(UIImageView* __nullable self,
+                        NSURLRequest* __nonnull urlRequest,
+                        UIImage* __nullable placeholderImage,
+                        void(^ __nullable success)(NSHTTPURLResponse* __nullable, UIImage* __nullable),
+                        void(^ __nullable failure)(NSHTTPURLResponse* __nullable, NSError* __nonnull)) {
                             
     __weak typeof(self) weakSelf = self;
     id resource = rg_resourceForURL(self, urlRequest, ^(AFHTTPRequestOperation* op, id response) {
@@ -240,3 +242,5 @@ void rg_setImageWithURL(UIImageView* self,
         }
     }
 }
+
+NS_ASSUME_NONNULL_END

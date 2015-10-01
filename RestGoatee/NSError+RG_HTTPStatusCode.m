@@ -24,6 +24,8 @@
 #import "RestGoatee.h"
 #import <objc/runtime.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation NSError (RG_HTTPStatusCode)
 
 - (NSUInteger) HTTPStatusCode {
@@ -34,12 +36,14 @@
     objc_setAssociatedObject(self, @selector(HTTPStatusCode), @(HTTPStatusCode), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (id) extraData {
+- (nullable id) extraData {
     return objc_getAssociatedObject(self, @selector(extraData));
 }
 
-- (void) setExtraData:(id)extraData {
+- (void) setExtraData:(nullable id)extraData {
     objc_setAssociatedObject(self, @selector(extraData), extraData, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

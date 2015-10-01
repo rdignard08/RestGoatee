@@ -23,23 +23,25 @@
 
 #import <AFNetworking/AFNetworking.h>
 
-void rg_setImageWithURL(UIImageView* self,
-                     NSURLRequest* urlRequest,
-                     UIImage* placeholderImage,
-                     void(^success)(NSHTTPURLResponse*, UIImage*),
-                     void(^failure)(NSHTTPURLResponse*, NSError*));
+NS_ASSUME_NONNULL_BEGIN
 
-id rg_resourceForURL(UIImageView* self, NSURLRequest* url, void(^handler)(AFHTTPRequestOperation*, id));
+void rg_setImageWithURL(UIImageView* __nullable self,
+                     NSURLRequest* __nonnull urlRequest,
+                     UIImage* __nullable placeholderImage,
+                     void(^__nullable success)(NSHTTPURLResponse* __nullable, UIImage* __nullable),
+                     void(^__nullable failure)(NSHTTPURLResponse* __nullable, NSError* __nonnull));
+
+__nullable id rg_resourceForURL(UIImageView* __nullable self, NSURLRequest* __nonnull url, void(^__nullable handler)(AFHTTPRequestOperation* __nullable, id __nullable));
 
 @interface UIImageView (RGImageDownload)
 
-@property (nonatomic, strong) AFHTTPRequestOperation* rg_pendingOperation;
+@property (nonatomic, strong, nullable) AFHTTPRequestOperation* rg_pendingOperation;
 
-- (void) rg_setImageWithURL:(NSURL*)url;
+- (void) rg_setImageWithURL:(nonnull NSURL*)url;
 
-- (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder;
+- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(nullable UIImage*)placeholder;
 
-- (void) rg_setImageWithURL:(NSURL*)url placeholder:(UIImage*)placeholder success:(void(^)(NSHTTPURLResponse*, UIImage*))success failure:(void(^)(NSHTTPURLResponse*, NSError*))failure;
+- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(nullable UIImage*)placeholder success:(void(^ __nullable)(NSHTTPURLResponse* __nullable, UIImage* __nullable))success failure:(void(^ __nullable)(NSHTTPURLResponse* __nullable, NSError* __nonnull))failure;
 
 @end
 
@@ -51,13 +53,15 @@ typedef uint64_t (^STCacheBlock)(void);
 /**
  provide a `STCacheBlock` to be called on file system changes.  Return the maximum number of bytes allowed.
  */
-void setFileCacheLimit(STCacheBlock handler);
+void setFileCacheLimit(STCacheBlock __nonnull handler);
 
 @interface NSFileManager (Startup)
 
 /**
  A wrapped `uint64_t` representing the total file content size stored within a directory.
  */
-- (NSNumber*) sizeForFolderAtPath:(NSURL*)source error:(NSError**)error;
+- (nonnull NSNumber*) sizeForFolderAtPath:(nonnull NSURL*)source error:(NSError* __nullable * __nullable)error;
 
 @end
+
+NS_ASSUME_NONNULL_END
