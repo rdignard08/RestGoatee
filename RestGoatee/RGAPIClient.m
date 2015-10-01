@@ -27,6 +27,8 @@
 #import <objc/runtime.h>
 #import <Core-RestGoatee.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark - Forward Declarations
 /**
  Garbage used that may not be present in the super class (since the super class is variable).
@@ -34,13 +36,12 @@
 @interface NSObject (_RGForwardDeclarations)
 
 #pragma mark - AFNetworking
-- (id) initWithBaseURL:(id)url sessionConfiguration:(id)configuration;
-- (id) initWithBaseURL:(id)url;
-- (id) requestSerializer;
-- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
-- (id) requestWithMethod:(id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id*)error;
-- (id) requestWithMethod:(id)method path:(id)path parameters:(id)parameters; /* old style */
-@property (nonatomic, strong) id requestSerializer;
+- (nullable id) initWithBaseURL:(nullable id)url sessionConfiguration:(nullable id)configuration;
+- (nullable id) initWithBaseURL:(nullable id)url;
+- (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
+- (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* __nullable)error;
+- (nonnull id) requestWithMethod:(nonnull id)method path:(id)path parameters:(id)parameters; /* old style */
+@property (nonatomic, strong, nonnull) id requestSerializer;
 
 #pragma mark - NSFetchRequest
 + (id) fetchRequestWithEntityName:(NSString*)entityName;
@@ -79,7 +80,7 @@ DO_RISKY_BUSINESS
     return [self initWithBaseURL:baseURL sessionConfiguration:nil];
 }
 
-- (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration {
+- (nullable instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration {
 #if IOS_7_PLUS
     Class super_class = NSClassFromString(@"AFHTTPSessionManager");
 #else
@@ -92,7 +93,7 @@ DO_RISKY_BUSINESS
     } else {
         self = [super init];
     }
-    if (self) {
+    if (self && configuration) {
         self->_sessionConfiguration = configuration;
     }
     return self;
@@ -179,7 +180,7 @@ DO_RISKY_BUSINESS
     return ret;
 }
 
-- (void) request:(NSString*)method url:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion context:(NSManagedObjectContext*)context {
+- (void) request:(NSString*)method url:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion context:(nullable NSManagedObjectContext*)context count:(NSUInteger)count {
     __block __strong id task;
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
@@ -188,7 +189,7 @@ DO_RISKY_BUSINESS
     } else {
         request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];
     }
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+#if IOS_7_PLUS
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* response, id body, NSError* error) {
         if (completion) {
             completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, response)]);
@@ -205,114 +206,48 @@ DO_RISKY_BUSINESS
     task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
 #endif
     
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+#if IOS_7_PLUS
     [task resume];
 #else
     [self.operationQueue addOperation:task];
 #endif
 }
 
+
 #pragma mark - VERB Methods
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+- (void) GET:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
     [self GET:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
+- (void) GET:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+    [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+- (void) POST:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
     [self POST:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
+- (void) POST:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+    [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+- (void) PUT:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
     [self PUT:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
+- (void) PUT:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+    [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
+- (void) DELETE:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
     [self DELETE:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters keyPath:(NSString*)path class:(Class)cls context:(NSManagedObjectContext*)context completion:(RGResponseBlock)completion {
-    [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:completion context:context];
+- (void) DELETE:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+    [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
 @end
 END_RISKY_BUSINESS
 
-#pragma mark - Convenience Methods
-@implementation RGAPIClient (RGConvenience)
-
-- (void) GET:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
-    [self GET:url parameters:parameters keyPath:nil class:cls completion:completion];
-}
-
-- (void) GET:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self GET:url parameters:nil keyPath:path class:cls completion:completion];
-}
-
-- (void) GET:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
-    [self GET:url parameters:nil keyPath:nil class:cls completion:completion];
-}
-
-- (void) POST:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
-    [self POST:url parameters:parameters keyPath:nil class:cls completion:completion];
-}
-
-- (void) POST:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self POST:url parameters:nil keyPath:path class:cls completion:completion];
-}
-
-- (void) POST:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
-    [self POST:url parameters:nil keyPath:nil class:cls completion:completion];
-}
-
-- (void) PUT:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
-    [self PUT:url parameters:parameters keyPath:nil class:cls completion:completion];
-}
-
-- (void) PUT:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self PUT:url parameters:nil keyPath:path class:cls completion:completion];
-}
-
-- (void) PUT:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
-    [self PUT:url parameters:nil keyPath:nil class:cls completion:completion];
-}
-
-- (void) DELETE:(NSString*)url parameters:(NSDictionary*)parameters class:(Class)cls completion:(RGResponseBlock)completion {
-    [self DELETE:url parameters:parameters keyPath:nil class:cls completion:completion];
-}
-
-- (void) DELETE:(NSString*)url keyPath:(NSString*)path class:(Class)cls completion:(RGResponseBlock)completion {
-    [self DELETE:url parameters:nil keyPath:path class:cls completion:completion];
-}
-
-- (void) DELETE:(NSString*)url class:(Class)cls completion:(RGResponseBlock)completion {
-    [self DELETE:url parameters:nil keyPath:nil class:cls completion:completion];
-}
-
-- (void) GET:(NSString*)url completion:(RGResponseBlock)completion {
-    [self GET:url parameters:nil keyPath:nil class:Nil completion:completion];
-}
-
-- (void) POST:(NSString*)url completion:(RGResponseBlock)completion {
-    [self POST:url parameters:nil keyPath:nil class:Nil completion:completion];
-}
-
-- (void) PUT:(NSString*)url completion:(RGResponseBlock)completion {
-    [self PUT:url parameters:nil keyPath:nil class:Nil completion:completion];
-}
-
-- (void) DELETE:(NSString*)url completion:(RGResponseBlock)completion {
-    [self DELETE:url parameters:nil keyPath:nil class:Nil completion:completion];
-}
-
-@end
+NS_ASSUME_NONNULL_END
