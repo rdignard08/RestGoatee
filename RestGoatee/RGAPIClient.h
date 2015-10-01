@@ -209,11 +209,11 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  Implement this method to retry requests as determined by you.  Return `YES` to retry; `NO` otherwise.  Default is `NO` for all requests.
  
  @param request The request being retried. Contains the method, URL, and body as resolved by redirects.
- @param response The response that indicated failure.
+ @param response The response that indicated failure.  Should be of type `NSHTTPURLResponse`, but you should type check anyway.
  @param error The error that failed the request.
  @param count The number of times this request has been retried before.
  */
-- (BOOL) shouldRetryRequest:(nonnull NSURLRequest*)request response:(nonnull NSHTTPURLResponse*)response error:(nonnull NSError*)error retryCount:(NSUInteger)count;
+- (BOOL) shouldRetryRequest:(nonnull NSURLRequest*)request response:(nonnull NSURLResponse*)response error:(nonnull NSError*)error retryCount:(NSUInteger)count;
 
 /**
  Return a non-`nil` key to have `NSManagedObject`s be reconciled to an existing object if the value of this key matches.
