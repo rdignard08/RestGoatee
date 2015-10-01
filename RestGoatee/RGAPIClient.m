@@ -191,7 +191,11 @@ DO_RISKY_BUSINESS
     }
 #if IOS_7_PLUS
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* response, id body, NSError* error) {
-        if (completion) {
+        if (error &&
+            [self.serializationDelegate respondsToSelector:@selector(shouldRetryRequest:response:error:retryCount:)] &&
+            [self.serializationDelegate shouldRetryRequest:[task currentRequest] response:response error:error retryCount:count]) {
+            [self request:method url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:count + 1];
+        } else if (completion) {
             completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, response)]);
         }
     }];
@@ -199,7 +203,11 @@ DO_RISKY_BUSINESS
     void(^callback)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
         id body, /* NSError* */ error;
         [response isKindOfClass:[NSError class]] ? (error = response) : (body = response);
-        if (completion) {
+        if (error &&
+            [self.serializationDelegate respondsToSelector:@selector(shouldRetryRequest:response:error:retryCount:)] &&
+            [self.serializationDelegate shouldRetryRequest:op.request response:op.response error:error retryCount:count]) {
+            [self request:method url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:count + 1];
+        } else if (completion) {
             completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op.response)]);
         }
     };
