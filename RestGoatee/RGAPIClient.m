@@ -59,9 +59,9 @@ static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, i
     return [[obj1 description] compare:[obj2 description]];
 };
 
-static inline NSError* errorWithStatusCodeFromTask(NSError* error, id task) {
-    if (error && [[task response] respondsToSelector:@selector(statusCode)]) {
-        error.HTTPStatusCode = [(id)[task response] statusCode];
+static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse* task) {
+    if ([task isKindOfClass:[NSHTTPURLResponse class]]) {
+        error.HTTPStatusCode = [(NSHTTPURLResponse*)task statusCode];
     }
     return error;
 }
@@ -79,7 +79,7 @@ DO_RISKY_BUSINESS
 }
 
 - (instancetype) initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration*)configuration {
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+#if IOS_7_PLUS
     Class super_class = NSClassFromString(@"AFHTTPSessionManager");
 #else
     Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager");
@@ -91,7 +91,9 @@ DO_RISKY_BUSINESS
     } else {
         self = [super init];
     }
-    _sessionConfiguration = configuration;
+    if (self) {
+        self->_sessionConfiguration = configuration;
+    }
     return self;
 }
 
@@ -183,9 +185,9 @@ DO_RISKY_BUSINESS
         request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];
     }
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
-    task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* __unused response, id body, NSError* error) {
+    task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* response, id body, NSError* error) {
         if (completion) {
-            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, task)]);
+            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, response)]);
         }
     }];
 #else
@@ -193,7 +195,7 @@ DO_RISKY_BUSINESS
         id body, /* NSError* */ error;
         [response isKindOfClass:[NSError class]] ? (error = response) : (body = response);
         if (completion) {
-            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op)]);
+            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op.response)]);
         }
     };
     task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
