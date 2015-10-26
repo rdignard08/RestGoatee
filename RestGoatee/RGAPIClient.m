@@ -25,7 +25,7 @@
 #import "NSObject+RG_SharedImpl.h"
 #import "RGXMLSerializer.h"
 #import <objc/runtime.h>
-#import <Core-RestGoatee.h>
+#import <RestGoatee-Core.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -68,7 +68,6 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     return error;
 }
 
-DO_RISKY_BUSINESS
 @implementation RGAPIClient
 
 #pragma mark - Initialization
@@ -76,9 +75,12 @@ DO_RISKY_BUSINESS
     return [self initWithBaseURL:nil sessionConfiguration:nil];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 - (instancetype) initWithBaseURL:(NSURL*)baseURL {
     return [self initWithBaseURL:baseURL sessionConfiguration:nil];
 }
+#pragma clang diagnostic pop
 
 - (nullable instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration {
 #if IOS_7_PLUS
@@ -256,6 +258,5 @@ DO_RISKY_BUSINESS
 }
 
 @end
-END_RISKY_BUSINESS
 
 NS_ASSUME_NONNULL_END

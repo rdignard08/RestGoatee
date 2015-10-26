@@ -10,6 +10,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.requires_arc = true
   s.source_files = 'RestGoatee'
-  s.dependency 'RestGoatee-Core', '= 1.1.0'
+  s.dependency 'RestGoatee-Core', '= 1.2.4'
   s.dependency 'AFNetworking'
 end
