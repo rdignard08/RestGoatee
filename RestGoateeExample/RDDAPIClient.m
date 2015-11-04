@@ -90,7 +90,7 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
        
         if (!response.error) {
             for (id obj in response.responseBody) {
-                NSLog(@"%@", [obj dictionaryRepresentation]);
+                NSLog(@"%@", [(NSObject*)obj dictionaryRepresentation]);
             }
         }
         

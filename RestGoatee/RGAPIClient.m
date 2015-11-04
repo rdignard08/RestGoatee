@@ -22,7 +22,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RestGoatee.h"
-#import "NSObject+RG_SharedImpl.h"
 #import "RGXMLSerializer.h"
 #import <objc/runtime.h>
 #import <RestGoatee-Core.h>
@@ -106,7 +105,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     /* NSManagedObjectContext* */ id context = *outContext;
     NSString* primaryKey;
     __block NSArray* allObjects;
-    if ([cls isSubclassOfClass:rg_sNSManagedObject]) {
+    if ([cls isSubclassOfClass:objc_getClass("NSManagedObject")]) {
         if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
             primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
         }
@@ -117,9 +116,9 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     }
     NSArray* target = path ? [response valueForKeyPath:path] : response;
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
-    if (primaryKey && [cls isSubclassOfClass:rg_sNSManagedObject]) {
-        NSObject* fetch = [rg_sNSFetchRequest fetchRequestWithEntityName:NSStringFromClass(cls)];
-        NSArray* incomingKeys = target[primaryKey];
+    if (primaryKey && [cls isSubclassOfClass:objc_getClass("NSManagedObject")]) {
+        NSObject* fetch = [objc_getClass("NSFetchRequest") fetchRequestWithEntityName:NSStringFromClass(cls)];
+        NSArray* incomingKeys = [target valueForKey:primaryKey];
         NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
         for (__strong id value in incomingKeys) {
             [parsedKeys addObject:[value isKindOfClass:[RGXMLNode class]] ? [value innerXML] : value];
@@ -134,9 +133,9 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (id entry in target) {
-        if (rg_isDataSourceClass([entry class]) && primaryKey && allObjects && entry[primaryKey]) {
+        if (([entry isKindOfClass:[NSDictionary class]] || [entry conformsToProtocol:@protocol(RGDataSource)]) && primaryKey && allObjects && entry[primaryKey]) {
             id keyValue = [entry isKindOfClass:[RGXMLNode class]] ? [entry[primaryKey] innerXML] : entry[primaryKey];
-            NSUInteger index = [allObjects[primaryKey] indexOfObject:keyValue inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
+            NSUInteger index = [[allObjects valueForKey:primaryKey] indexOfObject:keyValue inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
             if (index != NSNotFound) {
                 [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
             } else {
@@ -187,7 +186,10 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
     if ([self respondsToSelector:@selector(requestSerializer)]) { /* "Modern" style */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
         request = [self.requestSerializer requestWithMethod:method URLString:fullPath parameters:parameters];
+#pragma clang diagnostic pop
     } else {
         request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];
     }

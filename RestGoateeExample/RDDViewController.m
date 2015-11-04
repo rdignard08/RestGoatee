@@ -40,8 +40,8 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"RDDTableCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAlbums:) name:[NSString stringWithFormat:@"%s", sel_getName(@selector(getItunesArtist:))] object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAlbums:) name:STRING_SEL(getItunesArtist:) object:nil];
+
     [[RDDAPIClient manager] getStationsWithCompletion:nil];
 }
 
