@@ -153,7 +153,7 @@ void(^saveImageBlock)(UIImage*, NSString*) = ^(UIImage* image, NSString* path) {
  NSNull = I've tried downloading it before and it failed on our end (4xx response).
  UIImage = I've downloaded this image successful. Will check memory and disk.
  */
-id rg_resourceForURL(UIImageView* self, NSURLRequest* url, void(^handler)(AFHTTPRequestOperation*, id)) {
+id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NSURLRequest* RG_SUFFIX_NONNULL url, void(^ RG_SUFFIX_NULLABLE handler)(AFHTTPRequestOperation*, id)) {
     static void(^standardCompletionBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
         [[UIImageView rg_imageCacheLock] lock];
         if ([response isKindOfClass:[UIImage class]]) {

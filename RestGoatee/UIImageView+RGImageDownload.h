@@ -22,6 +22,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <AFNetworking/AFNetworking.h>
+#import <RestGoatee-Core.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,7 +32,7 @@ void rg_setImageWithURL(UIImageView* __nullable self,
                      void(^__nullable success)(NSHTTPURLResponse* __nullable, UIImage* __nullable),
                      void(^__nullable failure)(NSHTTPURLResponse* __nullable, NSError* __nonnull));
 
-__nullable id rg_resourceForURL(UIImageView* __nullable self, NSURLRequest* __nonnull url, void(^__nullable handler)(AFHTTPRequestOperation* __nullable, id __nullable));
+id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* __nullable self, NSURLRequest* __nonnull url, void(^ RG_SUFFIX_NULLABLE handler)(AFHTTPRequestOperation* __nullable, id __nullable));
 
 @interface UIImageView (RGImageDownload)
 
