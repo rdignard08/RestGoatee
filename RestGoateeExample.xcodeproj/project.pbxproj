@@ -302,7 +302,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = RDD;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Ryan Dignard";
 				TargetAttributes = {
 					A4481FFD19957CDB00214EB0 = {
@@ -487,6 +487,7 @@
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -630,6 +631,7 @@
 				MOMC_NO_MAX_PROPERTY_COUNT_WARNINGS = YES;
 				MOMC_NO_WARNINGS = YES;
 				MOMC_SUPPRESS_INVERSE_TRANSIENT_ERROR = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Ryan-Dignard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -686,6 +688,7 @@
 				MOMC_NO_MAX_PROPERTY_COUNT_WARNINGS = YES;
 				MOMC_NO_WARNINGS = YES;
 				MOMC_SUPPRESS_INVERSE_TRANSIENT_ERROR = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Ryan-Dignard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -706,6 +709,7 @@
 				);
 				INFOPLIST_FILE = "RestGoateeExampleTests/RestGoateeExampleTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Ryan-Dignard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -726,6 +730,7 @@
 				);
 				INFOPLIST_FILE = "RestGoateeExampleTests/RestGoateeExampleTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Ryan-Dignard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
