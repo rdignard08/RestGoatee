@@ -68,14 +68,12 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
 
 - (void) getItunesArtist:(NSString*)artist {
     self.responseSerializer = [AFJSONResponseSerializer new];
-    
     [self GET:@"/search"
    parameters:@{ @"term" : artist ?: @"" }
       keyPath:@"results"
         class:[RDDItunesEntry class]
    completion:^(RGResponseObject* response) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%s", sel_getName(_cmd)]
-                                                            object:response.responseBody];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@(sel_getName(_cmd)) object:response.responseBody];
     }];
 }
 
