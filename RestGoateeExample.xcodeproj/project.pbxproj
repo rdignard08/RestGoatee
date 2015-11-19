@@ -265,6 +265,7 @@
 				A4481FDB19957CDB00214EB0 /* Frameworks */,
 				A4481FDC19957CDB00214EB0 /* Resources */,
 				A7984E5A9C064FFAB85357D0 /* Copy Pods Resources */,
+				F76FD7572E78769B1B2CDE85 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -381,6 +382,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = ./oclint_run.sh;
+		};
+		F76FD7572E78769B1B2CDE85 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
