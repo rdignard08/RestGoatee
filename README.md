@@ -1,3 +1,4 @@
+[![Pod License](http://img.shields.io/cocoapods/l/RestGoatee.svg?style=flat)](https://github.com/rdignard08/RestGoatee/blob/master/LICENSE)
 [![Dependency Status](https://www.versioneye.com/objective-c/restgoatee/2.4.0/badge?style=flat)](https://www.versioneye.com/objective-c/restgoatee/2.4.0)
 
 RestGoatee
