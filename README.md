@@ -1,3 +1,5 @@
+[![Dependency Status](https://www.versioneye.com/objective-c/restgoatee/2.4.0/badge?style=flat)](https://www.versioneye.com/objective-c/restgoatee/2.4.0)
+
 RestGoatee
 ==========
 
