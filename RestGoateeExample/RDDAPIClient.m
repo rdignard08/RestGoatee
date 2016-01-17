@@ -80,7 +80,7 @@ static inline NSMutableDictionary* basicsForCommand(NSString* command) {
 - (void) getStationsWithCompletion:(RGResponseBlock)completion {
     self.responseSerializer = [AFXMLParserResponseSerializer new];
     
-    [self GET:@"http://api.bart.gov/api/stn.aspx"
+    [self GET:BART_API_BASE @"/stn.aspx"
    parameters:basicsForCommand(ALL_STATIONS_COMMAND)
       keyPath:@"root.stations.station"
         class:[RDDBartStation class]
