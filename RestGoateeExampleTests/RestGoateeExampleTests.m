@@ -52,7 +52,7 @@
                                @"type" : @"RGTestObject"
                                };
     
-    RGTestObject* test = [RGTestObject objectFromDataSource:testJSON];
+    RGTestObject* test = [RGTestObject objectFromDataSource:testJSON inContext:nil];
     XCTAssert(test.b == YES, @"__b failed");
     XCTAssert([test.string isEqual:testJSON[@"_str_ing"]], @"_str_ing failed");
 }
