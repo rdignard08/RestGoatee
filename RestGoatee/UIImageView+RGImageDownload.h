@@ -24,8 +24,6 @@
 #import <AFNetworking/AFNetworking.h>
 #import <RestGoatee-Core.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 void rg_setImageWithURL(UIImageView* __nullable self,
                      NSURLRequest* __nonnull urlRequest,
                      UIImage* __nullable placeholderImage,
@@ -64,5 +62,3 @@ void setFileCacheLimit(STCacheBlock __nonnull handler);
 - (nonnull NSNumber*) sizeForFolderAtPath:(nonnull NSURL*)source error:(NSError* __nullable * __nullable)error;
 
 @end
-
-NS_ASSUME_NONNULL_END

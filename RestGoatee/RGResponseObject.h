@@ -21,8 +21,6 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-NS_ASSUME_NONNULL_BEGIN
-
 @class NSManagedObjectContext;
 
 /**
@@ -35,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong, nullable) NSArray* responseBody;
+@property (nonatomic, strong, nullable) NSArray<__kindof NSObject*>* responseBody;
 
 /**
  If there was an error, this will contain the highest level error.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
@@ -54,5 +52,3 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSManagedObjectContext* context;
 
 @end
-
-NS_ASSUME_NONNULL_END

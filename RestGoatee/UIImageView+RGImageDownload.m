@@ -25,8 +25,6 @@
 #import <objc/runtime.h>
 #import "RestGoatee.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 static STCacheBlock _sFileCacheHandler;
 void setFileCacheLimit(STCacheBlock handler) {
     _sFileCacheHandler = handler;
@@ -242,5 +240,3 @@ void rg_setImageWithURL(UIImageView* __nullable self,
         }
     }
 }
-
-NS_ASSUME_NONNULL_END

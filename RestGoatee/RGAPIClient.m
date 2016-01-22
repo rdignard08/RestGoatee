@@ -26,8 +26,6 @@
 #import <objc/runtime.h>
 #import <RestGoatee-Core.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 #pragma mark - Forward Declarations
 /**
  Garbage used that may not be present in the super class (since the super class is variable).
@@ -260,5 +258,3 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 }
 
 @end
-
-NS_ASSUME_NONNULL_END

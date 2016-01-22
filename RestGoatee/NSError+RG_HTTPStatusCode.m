@@ -24,8 +24,6 @@
 #import "RestGoatee.h"
 #import <objc/runtime.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @implementation NSError (RG_HTTPStatusCode)
 
 - (NSUInteger) HTTPStatusCode {
@@ -45,5 +43,3 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 @end
-
-NS_ASSUME_NONNULL_END

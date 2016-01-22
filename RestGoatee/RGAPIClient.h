@@ -24,8 +24,6 @@
 #import <AFNetworking/AFNetworking.h>
 #import "RGResponseObject.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
     #define IOS_7_PLUS 1
 #else
@@ -226,5 +224,3 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
 - (BOOL) shouldSerializeXML;
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -21,8 +21,6 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-NS_ASSUME_NONNULL_BEGIN
-
 /**
  The only component that gets returned up from AFNetworking in the failure case generally is an `NSError*` object.  This is problematic for projects which use status codes to determine behavior.
  */
@@ -39,5 +37,3 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) id extraData;
 
 @end
-
-NS_ASSUME_NONNULL_END
