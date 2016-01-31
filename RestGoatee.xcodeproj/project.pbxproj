@@ -13,6 +13,8 @@
 		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
 		BE9DC1F577C97AFBA529FFA3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA7A9B33E01124B46D4C0336 /* libPods.a */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
+		BED254FB1C5E0CDE00F41F48 /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */; };
+		BED254FD1C5E0CE100F41F48 /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BED254FC1C5E0CE100F41F48 /* libAFNetworking.a */; };
 		BEF5FD581C520128006EACA8 /* RestGoatee_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RestGoatee_Tests.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
 /* End PBXBuildFile section */
@@ -54,6 +56,8 @@
 		BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+RGImageDownload.m"; sourceTree = "<group>"; };
 		BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRestGoatee.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RestGoatee.h; sourceTree = "<group>"; };
+		BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
+		BED254FC1C5E0CE100F41F48 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		BEF5FD551C520128006EACA8 /* RestGoatee-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RestGoatee-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEF5FD571C520128006EACA8 /* RestGoatee_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RestGoatee_Tests.m; sourceTree = "<group>"; };
 		BEF5FD591C520128006EACA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -64,6 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BED254FD1C5E0CE100F41F48 /* libAFNetworking.a in Frameworks */,
+				BED254FB1C5E0CDE00F41F48 /* libRestGoatee-Core.a in Frameworks */,
 				BE9DC1F577C97AFBA529FFA3 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,6 +88,8 @@
 		89520671F6DFFF4060849895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BED254FC1C5E0CE100F41F48 /* libAFNetworking.a */,
+				BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */,
 				BA7A9B33E01124B46D4C0336 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -343,7 +351,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-all_load";
@@ -381,7 +389,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-all_load";
 				SDKROOT = iphoneos;
@@ -393,6 +401,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3E0BC7583FEF4E55EE1F7A9B /* Pods.debug.xcconfig */;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -402,6 +414,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 79C7CF99F069A1B726AAA0C8 /* Pods.release.xcconfig */;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
