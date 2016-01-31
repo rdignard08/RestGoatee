@@ -314,7 +314,6 @@
 		BEB2A34B1C51FE7C00B0BE03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -347,6 +346,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods/RestGoatee-Core\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -357,7 +357,6 @@
 		BEB2A34C1C51FE7C00B0BE03 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -384,6 +383,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods/RestGoatee-Core\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -443,6 +443,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"${PROJECT_DIR}/Pods/RestGoatee-Core\"",
+					"\"${PROJECT_DIR}/Pods/AFNetworking\"",
+				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";
@@ -454,6 +458,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"${PROJECT_DIR}/Pods/RestGoatee-Core\"",
+					"\"${PROJECT_DIR}/Pods/AFNetworking\"",
+				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";

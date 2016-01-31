@@ -22,6 +22,9 @@
         [expectation fulfill];
         XCTAssert(response.responseBody);
     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        
+    }];
 }
 
 @end
