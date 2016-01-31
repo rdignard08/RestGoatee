@@ -11,7 +11,6 @@
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
 		BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD431C52006E00267D5C /* RGResponseObject.m */; };
 		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
-		BE9DC1F577C97AFBA529FFA3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA7A9B33E01124B46D4C0336 /* libPods.a */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
 		BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
@@ -66,7 +65,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE9DC1F577C97AFBA529FFA3 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +408,7 @@
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-l\"Pods\"",
+					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -435,6 +434,7 @@
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-l\"Pods\"",
+					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -451,6 +451,10 @@
 				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-l\"Pods\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -466,6 +470,10 @@
 				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-l\"Pods\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
