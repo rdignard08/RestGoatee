@@ -79,7 +79,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 }
 #pragma clang diagnostic pop
 
-- (nullable instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration {
+- (nonnull instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration {
 #if IOS_7_PLUS
     Class super_class = NSClassFromString(@"AFHTTPSessionManager");
 #else

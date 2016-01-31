@@ -60,7 +60,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
 /**
  designated initializer.  For deployment targets <= iOS 6, pass `nil` for `configuration` or use `-initWithBaseURL:`.
  */
-- (nullable instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration;
+- (nonnull instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration;
 
 /**
  This is the primitive method that underlies all requests made by this class.  It is agnostic of the super class.
