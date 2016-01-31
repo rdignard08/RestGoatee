@@ -7,25 +7,47 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BEBFA8051C5DF4F800EA0DBE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BEBFA8041C5DF4F800EA0DBE /* main.m */; };
-		BEBFA8081C5DF4F800EA0DBE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BEBFA8071C5DF4F800EA0DBE /* AppDelegate.m */; };
-		BEBFA80B1C5DF4F800EA0DBE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BEBFA80A1C5DF4F800EA0DBE /* ViewController.m */; };
-		BEBFA80E1C5DF4F800EA0DBE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BEBFA80C1C5DF4F800EA0DBE /* Main.storyboard */; };
 		BEBFA8101C5DF4F800EA0DBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BEBFA80F1C5DF4F800EA0DBE /* Assets.xcassets */; };
-		BEBFA8131C5DF4F800EA0DBE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BEBFA8111C5DF4F800EA0DBE /* LaunchScreen.storyboard */; };
+		BEE70E211C5DF78700F1F939 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E201C5DF78700F1F939 /* main.m */; };
+		BEE70E381C5DF79800F1F939 /* RestGoateeExample.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E221C5DF79800F1F939 /* RestGoateeExample.xcdatamodeld */; };
+		BEE70E391C5DF79800F1F939 /* RestGoateeExample-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BEE70E251C5DF79800F1F939 /* RestGoateeExample-Info.plist */; };
+		BEE70E3A1C5DF79800F1F939 /* RDDViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BEE70E261C5DF79800F1F939 /* RDDViewController.xib */; };
+		BEE70E3B1C5DF79800F1F939 /* RDDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E271C5DF79800F1F939 /* RDDViewController.m */; };
+		BEE70E3C1C5DF79800F1F939 /* RDDTestObject2.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E291C5DF79800F1F939 /* RDDTestObject2.m */; };
+		BEE70E3D1C5DF79800F1F939 /* RDDTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BEE70E2C1C5DF79800F1F939 /* RDDTableCell.xib */; };
+		BEE70E3E1C5DF79800F1F939 /* RDDTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E2D1C5DF79800F1F939 /* RDDTableCell.m */; };
+		BEE70E3F1C5DF79800F1F939 /* RDDItunesEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E2F1C5DF79800F1F939 /* RDDItunesEntry.m */; };
+		BEE70E401C5DF79800F1F939 /* RDDBartStation.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E311C5DF79800F1F939 /* RDDBartStation.m */; };
+		BEE70E411C5DF79800F1F939 /* RDDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E331C5DF79800F1F939 /* RDDAppDelegate.m */; };
+		BEE70E421C5DF79800F1F939 /* RDDAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E351C5DF79800F1F939 /* RDDAPIClient.m */; };
+		BEE70E431C5DF79800F1F939 /* RDDTestObject1.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE70E371C5DF79800F1F939 /* RDDTestObject1.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BEBFA8001C5DF4F800EA0DBE /* RestGoateeExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RestGoateeExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEBFA8041C5DF4F800EA0DBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		BEBFA8061C5DF4F800EA0DBE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		BEBFA8071C5DF4F800EA0DBE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		BEBFA8091C5DF4F800EA0DBE /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		BEBFA80A1C5DF4F800EA0DBE /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		BEBFA80D1C5DF4F800EA0DBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BEBFA80F1C5DF4F800EA0DBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BEBFA8121C5DF4F800EA0DBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		BEBFA8141C5DF4F800EA0DBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BEE70E201C5DF78700F1F939 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
+		BEE70E231C5DF79800F1F939 /* RestGoateeExample.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RestGoateeExample.xcdatamodel; sourceTree = "<group>"; };
+		BEE70E241C5DF79800F1F939 /* RestGoateeExample-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RestGoateeExample-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		BEE70E251C5DF79800F1F939 /* RestGoateeExample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "RestGoateeExample-Info.plist"; sourceTree = SOURCE_ROOT; };
+		BEE70E261C5DF79800F1F939 /* RDDViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RDDViewController.xib; sourceTree = SOURCE_ROOT; };
+		BEE70E271C5DF79800F1F939 /* RDDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDViewController.m; sourceTree = SOURCE_ROOT; };
+		BEE70E281C5DF79800F1F939 /* RDDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDViewController.h; sourceTree = SOURCE_ROOT; };
+		BEE70E291C5DF79800F1F939 /* RDDTestObject2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDTestObject2.m; sourceTree = SOURCE_ROOT; };
+		BEE70E2A1C5DF79800F1F939 /* RDDTestObject2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDTestObject2.h; sourceTree = SOURCE_ROOT; };
+		BEE70E2B1C5DF79800F1F939 /* RDDTestObject1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDTestObject1.h; sourceTree = SOURCE_ROOT; };
+		BEE70E2C1C5DF79800F1F939 /* RDDTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RDDTableCell.xib; sourceTree = SOURCE_ROOT; };
+		BEE70E2D1C5DF79800F1F939 /* RDDTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDTableCell.m; sourceTree = SOURCE_ROOT; };
+		BEE70E2E1C5DF79800F1F939 /* RDDTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDTableCell.h; sourceTree = SOURCE_ROOT; };
+		BEE70E2F1C5DF79800F1F939 /* RDDItunesEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDItunesEntry.m; sourceTree = SOURCE_ROOT; };
+		BEE70E301C5DF79800F1F939 /* RDDItunesEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDItunesEntry.h; sourceTree = SOURCE_ROOT; };
+		BEE70E311C5DF79800F1F939 /* RDDBartStation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDBartStation.m; sourceTree = SOURCE_ROOT; };
+		BEE70E321C5DF79800F1F939 /* RDDBartStation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDBartStation.h; sourceTree = SOURCE_ROOT; };
+		BEE70E331C5DF79800F1F939 /* RDDAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDAppDelegate.m; sourceTree = SOURCE_ROOT; };
+		BEE70E341C5DF79800F1F939 /* RDDAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		BEE70E351C5DF79800F1F939 /* RDDAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDAPIClient.m; sourceTree = SOURCE_ROOT; };
+		BEE70E361C5DF79800F1F939 /* RDDAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDDAPIClient.h; sourceTree = SOURCE_ROOT; };
+		BEE70E371C5DF79800F1F939 /* RDDTestObject1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDDTestObject1.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,14 +80,28 @@
 		BEBFA8021C5DF4F800EA0DBE /* RestGoateeExample */ = {
 			isa = PBXGroup;
 			children = (
-				BEBFA8061C5DF4F800EA0DBE /* AppDelegate.h */,
-				BEBFA8071C5DF4F800EA0DBE /* AppDelegate.m */,
-				BEBFA8091C5DF4F800EA0DBE /* ViewController.h */,
-				BEBFA80A1C5DF4F800EA0DBE /* ViewController.m */,
-				BEBFA80C1C5DF4F800EA0DBE /* Main.storyboard */,
 				BEBFA80F1C5DF4F800EA0DBE /* Assets.xcassets */,
-				BEBFA8111C5DF4F800EA0DBE /* LaunchScreen.storyboard */,
-				BEBFA8141C5DF4F800EA0DBE /* Info.plist */,
+				BEE70E361C5DF79800F1F939 /* RDDAPIClient.h */,
+				BEE70E351C5DF79800F1F939 /* RDDAPIClient.m */,
+				BEE70E341C5DF79800F1F939 /* RDDAppDelegate.h */,
+				BEE70E331C5DF79800F1F939 /* RDDAppDelegate.m */,
+				BEE70E321C5DF79800F1F939 /* RDDBartStation.h */,
+				BEE70E311C5DF79800F1F939 /* RDDBartStation.m */,
+				BEE70E301C5DF79800F1F939 /* RDDItunesEntry.h */,
+				BEE70E2F1C5DF79800F1F939 /* RDDItunesEntry.m */,
+				BEE70E2E1C5DF79800F1F939 /* RDDTableCell.h */,
+				BEE70E2D1C5DF79800F1F939 /* RDDTableCell.m */,
+				BEE70E2C1C5DF79800F1F939 /* RDDTableCell.xib */,
+				BEE70E2B1C5DF79800F1F939 /* RDDTestObject1.h */,
+				BEE70E371C5DF79800F1F939 /* RDDTestObject1.m */,
+				BEE70E2A1C5DF79800F1F939 /* RDDTestObject2.h */,
+				BEE70E291C5DF79800F1F939 /* RDDTestObject2.m */,
+				BEE70E281C5DF79800F1F939 /* RDDViewController.h */,
+				BEE70E271C5DF79800F1F939 /* RDDViewController.m */,
+				BEE70E261C5DF79800F1F939 /* RDDViewController.xib */,
+				BEE70E251C5DF79800F1F939 /* RestGoateeExample-Info.plist */,
+				BEE70E241C5DF79800F1F939 /* RestGoateeExample-Prefix.pch */,
+				BEE70E221C5DF79800F1F939 /* RestGoateeExample.xcdatamodeld */,
 				BEBFA8031C5DF4F800EA0DBE /* Supporting Files */,
 			);
 			path = RestGoateeExample;
@@ -74,7 +110,7 @@
 		BEBFA8031C5DF4F800EA0DBE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				BEBFA8041C5DF4F800EA0DBE /* main.m */,
+				BEE70E201C5DF78700F1F939 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -137,9 +173,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEBFA8131C5DF4F800EA0DBE /* LaunchScreen.storyboard in Resources */,
+				BEE70E391C5DF79800F1F939 /* RestGoateeExample-Info.plist in Resources */,
+				BEE70E3A1C5DF79800F1F939 /* RDDViewController.xib in Resources */,
 				BEBFA8101C5DF4F800EA0DBE /* Assets.xcassets in Resources */,
-				BEBFA80E1C5DF4F800EA0DBE /* Main.storyboard in Resources */,
+				BEE70E3D1C5DF79800F1F939 /* RDDTableCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,32 +187,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEBFA80B1C5DF4F800EA0DBE /* ViewController.m in Sources */,
-				BEBFA8081C5DF4F800EA0DBE /* AppDelegate.m in Sources */,
-				BEBFA8051C5DF4F800EA0DBE /* main.m in Sources */,
+				BEE70E401C5DF79800F1F939 /* RDDBartStation.m in Sources */,
+				BEE70E431C5DF79800F1F939 /* RDDTestObject1.m in Sources */,
+				BEE70E421C5DF79800F1F939 /* RDDAPIClient.m in Sources */,
+				BEE70E411C5DF79800F1F939 /* RDDAppDelegate.m in Sources */,
+				BEE70E211C5DF78700F1F939 /* main.m in Sources */,
+				BEE70E3E1C5DF79800F1F939 /* RDDTableCell.m in Sources */,
+				BEE70E381C5DF79800F1F939 /* RestGoateeExample.xcdatamodeld in Sources */,
+				BEE70E3F1C5DF79800F1F939 /* RDDItunesEntry.m in Sources */,
+				BEE70E3C1C5DF79800F1F939 /* RDDTestObject2.m in Sources */,
+				BEE70E3B1C5DF79800F1F939 /* RDDViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		BEBFA80C1C5DF4F800EA0DBE /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BEBFA80D1C5DF4F800EA0DBE /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		BEBFA8111C5DF4F800EA0DBE /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BEBFA8121C5DF4F800EA0DBE /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		BEBFA8151C5DF4F800EA0DBE /* Debug */ = {
@@ -299,8 +324,22 @@
 				BEBFA8191C5DF4F800EA0DBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		BEE70E221C5DF79800F1F939 /* RestGoateeExample.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BEE70E231C5DF79800F1F939 /* RestGoateeExample.xcdatamodel */,
+			);
+			currentVersion = BEE70E231C5DF79800F1F939 /* RestGoateeExample.xcdatamodel */;
+			path = RestGoateeExample.xcdatamodeld;
+			sourceTree = SOURCE_ROOT;
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BEBFA7F81C5DF4F800EA0DBE /* Project object */;
 }
