@@ -23,6 +23,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <RestGoatee-Core.h>
+#import <UIKit/UIKit.h>
 
 void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
                      NSURLRequest* RG_SUFFIX_NONNULL urlRequest,
