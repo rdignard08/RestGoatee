@@ -109,13 +109,6 @@
 			name = Classes;
 			sourceTree = "<group>";
 		};
-		BE1CCD4C1C52009A00267D5C /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Protocols;
-			sourceTree = "<group>";
-		};
 		BEB2A33B1C51FE7C00B0BE03 = {
 			isa = PBXGroup;
 			children = (
@@ -139,7 +132,6 @@
 		BEB2A3461C51FE7C00B0BE03 /* RestGoatee */ = {
 			isa = PBXGroup;
 			children = (
-				BE1CCD4C1C52009A00267D5C /* Protocols */,
 				BE1CCD4B1C52009100267D5C /* Classes */,
 				BE1CCD4A1C52008200267D5C /* Categories */,
 				BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */,
@@ -463,6 +455,7 @@
 				BEF5FD5E1C520128006EACA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

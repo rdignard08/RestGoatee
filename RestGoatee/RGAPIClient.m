@@ -35,10 +35,10 @@
 #pragma mark - AFNetworking
 - (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url sessionConfiguration:(RG_PREFIX_NULLABLE id)configuration;
 - (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url;
-- (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
-- (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* RG_SUFFIX_NULLABLE)error;
-- (nonnull id) requestWithMethod:(nonnull id)method path:(id)path parameters:(id)parameters; /* old style */
-@property (nonatomic, strong, nonnull) id requestSerializer;
+- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
+- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* RG_SUFFIX_NULLABLE)error;
+- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method path:(id)path parameters:(id)parameters; /* old style */
+@property (nonatomic, strong, RG_PREFIX_NONNULL) id requestSerializer;
 
 #pragma mark - NSFetchRequest
 + (id) fetchRequestWithEntityName:(NSString*)entityName;
@@ -79,7 +79,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 }
 #pragma clang diagnostic pop
 
-- (nonnull instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
+- (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
 #if IOS_7_PLUS
     Class super_class = NSClassFromString(@"AFHTTPSessionManager");
 #else

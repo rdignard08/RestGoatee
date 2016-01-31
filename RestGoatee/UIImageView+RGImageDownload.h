@@ -25,22 +25,22 @@
 #import <RestGoatee-Core.h>
 
 void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
-                     NSURLRequest* __nonnull urlRequest,
+                     NSURLRequest* RG_SUFFIX_NONNULL urlRequest,
                      UIImage* RG_SUFFIX_NULLABLE placeholderImage,
                      void(^RG_SUFFIX_NULLABLE success)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE),
-                     void(^RG_SUFFIX_NULLABLE failure)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* __nonnull));
+                     void(^RG_SUFFIX_NULLABLE failure)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* RG_SUFFIX_NONNULL));
 
-id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NSURLRequest* __nonnull url, void(^ RG_SUFFIX_NULLABLE handler)(AFHTTPRequestOperation* RG_SUFFIX_NULLABLE, id RG_SUFFIX_NULLABLE));
+id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NSURLRequest* RG_SUFFIX_NONNULL url, void(^ RG_SUFFIX_NULLABLE handler)(AFHTTPRequestOperation* RG_SUFFIX_NULLABLE, id RG_SUFFIX_NULLABLE));
 
 @interface UIImageView (RGImageDownload)
 
 @property RG_NULLABLE_PROPERTY(nonatomic, strong) AFHTTPRequestOperation* rg_pendingOperation;
 
-- (void) rg_setImageWithURL:(nonnull NSURL*)url;
+- (void) rg_setImageWithURL:(RG_PREFIX_NONNULL NSURL*)url;
 
-- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(RG_PREFIX_NULLABLE UIImage*)placeholder;
+- (void) rg_setImageWithURL:(RG_PREFIX_NONNULL NSURL*)url placeholder:(RG_PREFIX_NULLABLE UIImage*)placeholder;
 
-- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(RG_PREFIX_NULLABLE UIImage*)placeholder success:(void(^ RG_SUFFIX_NULLABLE)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE))success failure:(void(^ RG_SUFFIX_NULLABLE)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* __nonnull))failure;
+- (void) rg_setImageWithURL:(RG_PREFIX_NONNULL NSURL*)url placeholder:(RG_PREFIX_NULLABLE UIImage*)placeholder success:(void(^ RG_SUFFIX_NULLABLE)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE))success failure:(void(^ RG_SUFFIX_NULLABLE)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* RG_SUFFIX_NONNULL))failure;
 
 @end
 
@@ -52,13 +52,13 @@ typedef uint64_t (^STCacheBlock)(void);
 /**
  provide a `STCacheBlock` to be called on file system changes.  Return the maximum number of bytes allowed.
  */
-void setFileCacheLimit(STCacheBlock __nonnull handler);
+void setFileCacheLimit(STCacheBlock RG_SUFFIX_NONNULL handler);
 
 @interface NSFileManager (Startup)
 
 /**
  A wrapped `uint64_t` representing the total file content size stored within a directory.
  */
-- (nonnull NSNumber*) sizeForFolderAtPath:(nonnull NSURL*)source error:(NSError* RG_SUFFIX_NULLABLE * RG_SUFFIX_NULLABLE)error;
+- (RG_PREFIX_NONNULL NSNumber*) sizeForFolderAtPath:(RG_PREFIX_NONNULL NSURL*)source error:(NSError* RG_SUFFIX_NULLABLE * RG_SUFFIX_NULLABLE)error;
 
 @end
