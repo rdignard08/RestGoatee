@@ -1,8 +1,5 @@
 Pods/
 Podfile.lock
-*xcshareddata*
-*/xcuserdata/*
-*.xcscheme
 build
 
 compile_commands.json
