@@ -126,7 +126,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         [context performBlockAndWait:^{
             NSError* error;
             allObjects = [context executeFetchRequest:fetch error:&error];
-            error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : nil;
+            error ? NSLog(@"Warning, fetch %@ failed %@", fetch, error) : nil;
         }];
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
@@ -148,10 +148,10 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         NSError* error;
         @try {
             if ([context hasChanges]) {
-                [context save:&error] ?: RGLog(@"Error, context save failed with error %@", error);
+                [context save:&error] ?: NSLog(@"Error, context save failed with error %@", error);
             }
         } @catch (NSException* e) {
-            RGLog(@"Warning, saving context %@ failed: %@", context, e);
+            NSLog(@"Warning, saving context %@ failed: %@", context, e);
         }
     }];
     return response;

@@ -35,7 +35,7 @@ void setFileCacheLimit(STCacheBlock handler) {
 - (NSNumber*) sizeForFolderAtPath:(NSURL*)source error:(NSError**)error {
     uint64_t directorySize = 0;
     NSDirectoryEnumerator* enumerator = [self enumeratorAtURL:source includingPropertiesForKeys:@[ (id)kCFURLContentAccessDateKey, (id)kCFURLTotalFileAllocatedSizeKey ] options:0 errorHandler:^(NSURL* url, NSError* error) {
-        RGLog(@"%@ %@", url, error);
+        NSLog(@"%@ %@", url, error);
         return YES;
     }];
     for (NSURL* file in enumerator) {
