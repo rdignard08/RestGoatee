@@ -23,6 +23,9 @@
 
 #import "RDDViewController.h"
 #import "RDDTableCell.h"
+#import <RestGoatee-Core/RestGoatee-Core.h>
+#import "RDDAPIClient.h"
+#import "RDDItunesEntry.h"
 
 @interface RDDViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 

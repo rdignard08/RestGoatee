@@ -11,5 +11,5 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source_files = 'RestGoatee'
   s.dependency 'RestGoatee-Core', '= 2.1.5'
-  s.dependency 'AFNetworking'
+  s.dependency 'AFNetworking', '~> 2.0'
 end

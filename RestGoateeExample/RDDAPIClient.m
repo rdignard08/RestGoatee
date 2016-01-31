@@ -23,6 +23,7 @@
 
 #import "RDDAPIClient.h"
 #import "RDDBartStation.h"
+#import "RDDItunesEntry.h"
 
 #define BART_API_BASE @"http://api.bart.gov/api"
 #define BART_API_KEY @"MW9S-E7SL-26DU-VV8V"

@@ -23,6 +23,7 @@
 
 #import "RDDAppDelegate.h"
 #import "RDDViewController.h"
+#import <CoreData/CoreData.h>
 
 @interface RDDAppDelegate ()
 @property (readwrite, strong, nonatomic) NSManagedObjectContext* managedObjectContext;
