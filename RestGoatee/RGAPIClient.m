@@ -33,10 +33,10 @@
 @interface NSObject (_RGForwardDeclarations)
 
 #pragma mark - AFNetworking
-- (nullable id) initWithBaseURL:(nullable id)url sessionConfiguration:(nullable id)configuration;
-- (nullable id) initWithBaseURL:(nullable id)url;
+- (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url sessionConfiguration:(RG_PREFIX_NULLABLE id)configuration;
+- (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url;
 - (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
-- (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* __nullable)error;
+- (nonnull id) requestWithMethod:(nonnull id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* RG_SUFFIX_NULLABLE)error;
 - (nonnull id) requestWithMethod:(nonnull id)method path:(id)path parameters:(id)parameters; /* old style */
 @property (nonatomic, strong, nonnull) id requestSerializer;
 
@@ -79,7 +79,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 }
 #pragma clang diagnostic pop
 
-- (nonnull instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration {
+- (nonnull instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
 #if IOS_7_PLUS
     Class super_class = NSClassFromString(@"AFHTTPSessionManager");
 #else
@@ -179,7 +179,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     return ret;
 }
 
-- (void) request:(NSString*)method url:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion context:(nullable NSManagedObjectContext*)context count:(NSUInteger)count {
+- (void) request:(NSString*)method url:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context count:(NSUInteger)count {
     __block __strong id task;
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
@@ -225,35 +225,35 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 
 
 #pragma mark - VERB Methods
-- (void) GET:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
+- (void) GET:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self GET:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) GET:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+- (void) GET:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self request:@"GET" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
-- (void) POST:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
+- (void) POST:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self POST:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) POST:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+- (void) POST:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self request:@"POST" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
-- (void) PUT:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
+- (void) PUT:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self PUT:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) PUT:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+- (void) PUT:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self request:@"PUT" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 
-- (void) DELETE:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion {
+- (void) DELETE:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self DELETE:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
 }
 
-- (void) DELETE:(NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion {
+- (void) DELETE:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
     [self request:@"DELETE" url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:0];
 }
 

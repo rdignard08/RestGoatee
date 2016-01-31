@@ -115,11 +115,11 @@ void setFileCacheLimit(STCacheBlock handler) {
     return _sCachedOperationQueue;
 }
 
-- (nullable AFHTTPRequestOperation*)rg_pendingOperation {
+- (RG_PREFIX_NULLABLE AFHTTPRequestOperation*)rg_pendingOperation {
     return objc_getAssociatedObject(self, @selector(rg_pendingOperation));
 }
 
-- (void)setRg_pendingOperation:(nullable AFHTTPRequestOperation*)rg_pendingOperation {
+- (void)setRg_pendingOperation:(RG_PREFIX_NULLABLE AFHTTPRequestOperation*)rg_pendingOperation {
     objc_setAssociatedObject(self, @selector(rg_pendingOperation), rg_pendingOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -127,11 +127,11 @@ void setFileCacheLimit(STCacheBlock handler) {
     [self rg_setImageWithURL:url placeholder:nil success:nil failure:nil];
 }
 
-- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(nullable UIImage*)placeholder {
+- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(RG_PREFIX_NULLABLE UIImage*)placeholder {
     [self rg_setImageWithURL:url placeholder:placeholder success:nil failure:nil];
 }
 
-- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(nullable UIImage*)placeholder success:(void(^ __nullable)(NSHTTPURLResponse* __nullable, UIImage* __nullable))success failure:(void(^ __nullable)(NSHTTPURLResponse* __nullable, NSError* __nonnull))failure {
+- (void) rg_setImageWithURL:(nonnull NSURL*)url placeholder:(RG_PREFIX_NULLABLE UIImage*)placeholder success:(void(^ RG_SUFFIX_NULLABLE)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE))success failure:(void(^ RG_SUFFIX_NULLABLE)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* __nonnull))failure {
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:@"image/*" forHTTPHeaderField:@"Accept"];
     rg_setImageWithURL(self, request, placeholder, success, failure);
@@ -198,11 +198,11 @@ id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NS
     return resource;
 }
 
-void rg_setImageWithURL(UIImageView* __nullable self,
+void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
                         NSURLRequest* __nonnull urlRequest,
-                        UIImage* __nullable placeholderImage,
-                        void(^ __nullable success)(NSHTTPURLResponse* __nullable, UIImage* __nullable),
-                        void(^ __nullable failure)(NSHTTPURLResponse* __nullable, NSError* __nonnull)) {
+                        UIImage* RG_SUFFIX_NULLABLE placeholderImage,
+                        void(^ RG_SUFFIX_NULLABLE success)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE),
+                        void(^ RG_SUFFIX_NULLABLE failure)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* __nonnull)) {
                             
     __weak typeof(self) weakSelf = self;
     id resource = rg_resourceForURL(self, urlRequest, ^(AFHTTPRequestOperation* op, id response) {

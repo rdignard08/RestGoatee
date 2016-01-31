@@ -34,11 +34,11 @@
     objc_setAssociatedObject(self, @selector(HTTPStatusCode), @(HTTPStatusCode), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (nullable id) extraData {
+- (RG_PREFIX_NULLABLE id) extraData {
     return objc_getAssociatedObject(self, @selector(extraData));
 }
 
-- (void) setExtraData:(nullable id)extraData {
+- (void) setExtraData:(RG_PREFIX_NULLABLE id)extraData {
     objc_setAssociatedObject(self, @selector(extraData), extraData, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 

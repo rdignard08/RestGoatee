@@ -33,7 +33,7 @@
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong, nullable) NSArray<__kindof NSObject*>* responseBody;
+@property RG_NULLABLE_PROPERTY(nonatomic, strong) NSArray RG_GENERIC(__kindof NSObject*) * responseBody;
 
 /**
  If there was an error, this will contain the highest level error.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
@@ -42,13 +42,13 @@
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong, nullable) NSError* error;
+@property RG_NULLABLE_PROPERTY(nonatomic, strong) NSError* error;
 
 /**
  If the type of the provided deserialization class is a subclass of `NSManagedObject` then this property is the context that the response was created in.
  
  Otherwise `nil`.
  */
-@property (nonatomic, strong, nullable) NSManagedObjectContext* context;
+@property RG_NULLABLE_PROPERTY(nonatomic, strong) NSManagedObjectContext* context;
 
 @end

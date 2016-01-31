@@ -55,12 +55,12 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
 /**
  You must provide a `serializationDelegate` if you intend to use your API client to unique check, parse XML, or create NSManagedObjects.  All others may safely ignore this property.
  */
-@property (nonatomic, weak, nullable) id<RGSerializationDelegate> serializationDelegate;
+@property RG_NULLABLE_PROPERTY(nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
 
 /**
  designated initializer.  For deployment targets <= iOS 6, pass `nil` for `configuration` or use `-initWithBaseURL:`.
  */
-- (nonnull instancetype) initWithBaseURL:(nullable NSURL*)url sessionConfiguration:(nullable NSURLSessionConfiguration*)configuration;
+- (nonnull instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration;
 
 /**
  This is the primitive method that underlies all requests made by this class.  It is agnostic of the super class.
@@ -85,11 +85,11 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  */
 - (void) request:(nonnull NSString*)method
              url:(nonnull NSString*)url
-      parameters:(nullable NSDictionary*)parameters
-         keyPath:(nullable NSString*)path
-           class:(nullable Class)cls
-      completion:(nullable RGResponseBlock)completion
-         context:(nullable NSManagedObjectContext*)context
+      parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters
+         keyPath:(RG_PREFIX_NULLABLE NSString*)path
+           class:(RG_PREFIX_NULLABLE Class)cls
+      completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion
+         context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context
            count:(NSUInteger)count;
 
 /**
@@ -101,7 +101,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param cls the class into which the response should be deserialized.  Do not specify a foundation class (`NSArray`/`NSDictionary`); omit this argument if this is the desired behavior.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) GET:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion;
+- (void) GET:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract GET the specified relative endpoint.
@@ -113,7 +113,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param context the `NSManagedObjectContext` to insert any `NSManagedObject`(s), use this for `cls` which are `NSManagedObjects`.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) GET:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion;
+- (void) GET:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract POST to the specified relative endpoint.
@@ -124,7 +124,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param cls the class into which the response should be deserialized.  Do not specify a foundation class (`NSArray`/`NSDictionary`); omit this argument if this is the desired behavior.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) POST:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion;
+- (void) POST:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract POST the specified relative endpoint.
@@ -136,7 +136,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param context the `NSManagedObjectContext` to insert any `NSManagedObject`(s), use this for `cls` which are `NSManagedObjects`.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) POST:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion;
+- (void) POST:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract PUT to the specified relative endpoint.
@@ -147,7 +147,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param cls the class into which the response should be deserialized.  Do not specify a foundation class (`NSArray`/`NSDictionary`); omit this argument if this is the desired behavior.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) PUT:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion;
+- (void) PUT:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract PUT to the specified relative endpoint.
@@ -159,7 +159,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param context the `NSManagedObjectContext` to insert any `NSManagedObject`(s), use this for `cls` which are `NSManagedObjects`.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) PUT:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion;
+- (void) PUT:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract DELETE the specified relative endpoint.
@@ -170,7 +170,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param cls the class into which the response should be deserialized.  Do not specify a foundation class (`NSArray`/`NSDictionary`); omit this argument if this is the desired behavior.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) DELETE:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls completion:(nullable RGResponseBlock)completion;
+- (void) DELETE:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 /**
  @abstract DELETE the specified relative endpoint.
@@ -182,7 +182,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
  @param context the `NSManagedObjectContext` to insert any `NSManagedObject`(s), use this for `cls` which are `NSManagedObjects`.
  @param completion This block will be called when the request complete either by succeeding or encountering some error condition.
  */
-- (void) DELETE:(nonnull NSString*)url parameters:(nullable NSDictionary*)parameters keyPath:(nullable NSString*)path class:(nullable Class)cls context:(nullable NSManagedObjectContext*)context completion:(nullable RGResponseBlock)completion;
+- (void) DELETE:(nonnull NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion;
 
 @end
 
@@ -201,7 +201,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
 /**
  Implement this method if you wish to provide a context for response objects which are subclasses of `NSManagedObject`.  Types other than `NSManagedObject` are not queried.
  */
-- (nullable NSManagedObjectContext*) contextForManagedObjectType:(nonnull Class)cls;
+- (RG_PREFIX_NULLABLE NSManagedObjectContext*) contextForManagedObjectType:(nonnull Class)cls;
 
 /**
  Implement this method to retry requests as determined by you.  Return `YES` to retry; `NO` otherwise.  Default is `NO` for all requests.
@@ -216,7 +216,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* __nonnull);
 /**
  Return a non-`nil` key to have `NSManagedObject`s be reconciled to an existing object if the value of this key matches.
  */
-- (nullable NSString*) keyForReconciliationOfType:(nonnull Class)cls;
+- (RG_PREFIX_NULLABLE NSString*) keyForReconciliationOfType:(nonnull Class)cls;
 
 /**
  Enable basic XML to JSON parsing. If you want the `NSXMLParser` it will be passed back as the `responseBody` when `NO`.  Defaults to `NO`.
