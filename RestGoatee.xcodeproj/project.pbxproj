@@ -398,6 +398,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				MACH_O_TYPE = staticlib;
 				OTHER_LDFLAGS = (
 					"-framework",
 					"\"CoreGraphics\"",
@@ -407,7 +408,6 @@
 					"\"Security\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-l\"Pods\"",
 					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -424,6 +424,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				MACH_O_TYPE = staticlib;
 				OTHER_LDFLAGS = (
 					"-framework",
 					"\"CoreGraphics\"",
@@ -433,7 +434,6 @@
 					"\"Security\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-l\"Pods\"",
 					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
