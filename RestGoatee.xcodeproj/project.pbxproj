@@ -13,8 +13,6 @@
 		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
 		BE9DC1F577C97AFBA529FFA3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA7A9B33E01124B46D4C0336 /* libPods.a */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
-		BED254FB1C5E0CDE00F41F48 /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */; };
-		BED254FD1C5E0CE100F41F48 /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BED254FC1C5E0CE100F41F48 /* libAFNetworking.a */; };
 		BEF5FD581C520128006EACA8 /* RestGoatee_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RestGoatee_Tests.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
 /* End PBXBuildFile section */
@@ -68,8 +66,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BED254FD1C5E0CE100F41F48 /* libAFNetworking.a in Frameworks */,
-				BED254FB1C5E0CDE00F41F48 /* libRestGoatee-Core.a in Frameworks */,
 				BE9DC1F577C97AFBA529FFA3 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
