@@ -12,6 +12,7 @@
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
 		BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD431C52006E00267D5C /* RGResponseObject.m */; };
 		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
+		BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
 		BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
@@ -52,6 +53,7 @@
 		BE1CCD431C52006E00267D5C /* RGResponseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObject.m; sourceTree = "<group>"; };
 		BE1CCD441C52006E00267D5C /* UIImageView+RGImageDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+RGImageDownload.h"; sourceTree = "<group>"; };
 		BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+RGImageDownload.m"; sourceTree = "<group>"; };
+		BE763B7D1C5EEF980095C4D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRestGoatee.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RestGoatee.h; sourceTree = "<group>"; };
 		BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */,
 				0AD71196A050B9CF1D7AA58A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,6 +87,7 @@
 		89520671F6DFFF4060849895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BE763B7D1C5EEF980095C4D5 /* UIKit.framework */,
 				BED254FC1C5E0CE100F41F48 /* libAFNetworking.a */,
 				BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */,
 				BA7A9B33E01124B46D4C0336 /* libPods.a */,
