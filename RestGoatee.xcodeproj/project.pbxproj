@@ -412,8 +412,7 @@
 				);
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
+					"-all_load",
 					"-framework",
 					"\"CoreGraphics\"",
 					"-framework",
@@ -439,8 +438,7 @@
 				);
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
+					"-all_load",
 					"-framework",
 					"\"CoreGraphics\"",
 					"-framework",
