@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0AD71196A050B9CF1D7AA58A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA7A9B33E01124B46D4C0336 /* libPods.a */; };
 		BE1CCD461C52006E00267D5C /* NSError+RG_HTTPStatusCode.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */; };
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
 		BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD431C52006E00267D5C /* RGResponseObject.m */; };
@@ -65,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AD71196A050B9CF1D7AA58A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +346,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods/RestGoatee-Core\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -381,7 +382,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods/RestGoatee-Core\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -394,22 +394,7 @@
 			baseConfigurationReference = 3E0BC7583FEF4E55EE1F7A9B /* Pods.debug.xcconfig */;
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
 				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = (
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-					"-all_load",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -420,22 +405,7 @@
 			baseConfigurationReference = 79C7CF99F069A1B726AAA0C8 /* Pods.release.xcconfig */;
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
 				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = (
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-					"-all_load",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -445,16 +415,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"${PROJECT_DIR}/Pods/RestGoatee-Core\"",
-					"\"${PROJECT_DIR}/Pods/AFNetworking\"",
-				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-l\"Pods\"",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -464,16 +426,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"${PROJECT_DIR}/Pods/RestGoatee-Core\"",
-					"\"${PROJECT_DIR}/Pods/AFNetworking\"",
-				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-l\"Pods\"",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

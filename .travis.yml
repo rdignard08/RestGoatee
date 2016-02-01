@@ -1,6 +1,6 @@
 language: objective-c
 osx_image: xcode6.4
-xcode_project: RestGoatee.xcodeproj
+xcode_workspace: RestGoatee.xcworkspace
 xcode_scheme: RestGoatee-Tests
 xcode_sdk: iphonesimulator8.4
 script:
