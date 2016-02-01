@@ -13,8 +13,7 @@
 		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
 		BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
 		BE763B7F1C5EF0910095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
-		BE763B811C5EF0AA0095C4D5 /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B801C5EF0AA0095C4D5 /* libAFNetworking.a */; };
-		BE763B831C5EF0AF0095C4D5 /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B821C5EF0AF0095C4D5 /* libRestGoatee-Core.a */; };
+		BE763B851C5EF51F0095C4D5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B841C5EF51F0095C4D5 /* libPods.a */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
 		BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
@@ -58,6 +57,7 @@
 		BE763B7D1C5EEF980095C4D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE763B801C5EF0AA0095C4D5 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		BE763B821C5EF0AF0095C4D5 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
+		BE763B841C5EF51F0095C4D5 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRestGoatee.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RestGoatee.h; sourceTree = "<group>"; };
 		BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
@@ -72,8 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE763B831C5EF0AF0095C4D5 /* libRestGoatee-Core.a in Frameworks */,
-				BE763B811C5EF0AA0095C4D5 /* libAFNetworking.a in Frameworks */,
+				BE763B851C5EF51F0095C4D5 /* libPods.a in Frameworks */,
 				BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,6 +92,7 @@
 		89520671F6DFFF4060849895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BE763B841C5EF51F0095C4D5 /* libPods.a */,
 				BE763B821C5EF0AF0095C4D5 /* libRestGoatee-Core.a */,
 				BE763B801C5EF0AA0095C4D5 /* libAFNetworking.a */,
 				BE763B7D1C5EEF980095C4D5 /* UIKit.framework */,
@@ -361,6 +361,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-all_load";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -396,6 +397,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-all_load";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -412,6 +414,7 @@
 				);
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-all_load",
 					"-framework",
 					"\"CoreGraphics\"",
@@ -438,6 +441,7 @@
 				);
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-all_load",
 					"-framework",
 					"\"CoreGraphics\"",
