@@ -6,6 +6,21 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		BE67D43C1C633AFC0017BF19 /* OCLint */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = BE67D43F1C633AFC0017BF19 /* Build configuration list for PBXAggregateTarget "OCLint" */;
+			buildPhases = (
+				BE67D4421C633B0A0017BF19 /* ShellScript */,
+			);
+			dependencies = (
+				BE67D4411C633B040017BF19 /* PBXTargetDependency */,
+			);
+			name = OCLint;
+			productName = OCLint;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		BE1CCD461C52006E00267D5C /* NSError+RG_HTTPStatusCode.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */; };
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
@@ -20,6 +35,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		BE67D4401C633B040017BF19 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB2A33C1C51FE7C00B0BE03 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BEB2A3431C51FE7C00B0BE03;
+			remoteInfo = RestGoatee;
+		};
 		BEF5FD5B1C520128006EACA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BEB2A33C1C51FE7C00B0BE03 /* Project object */;
@@ -222,6 +244,10 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Ryan;
 				TargetAttributes = {
+					BE67D43C1C633AFC0017BF19 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 5W2NB69P29;
+					};
 					BEB2A3431C51FE7C00B0BE03 = {
 						CreatedOnToolsVersion = 7.2;
 					};
@@ -245,6 +271,7 @@
 			targets = (
 				BEB2A3431C51FE7C00B0BE03 /* RestGoatee */,
 				BEF5FD541C520128006EACA8 /* RestGoatee-Tests */,
+				BE67D43C1C633AFC0017BF19 /* OCLint */,
 			);
 		};
 /* End PBXProject section */
@@ -290,6 +317,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		BE67D4421C633B0A0017BF19 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = ./oclint_run.sh;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -315,6 +355,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		BE67D4411C633B040017BF19 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BEB2A3431C51FE7C00B0BE03 /* RestGoatee */;
+			targetProxy = BE67D4401C633B040017BF19 /* PBXContainerItemProxy */;
+		};
 		BEF5FD5C1C520128006EACA8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BEB2A3431C51FE7C00B0BE03 /* RestGoatee */;
@@ -323,6 +368,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		BE67D43D1C633AFC0017BF19 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BE67D43E1C633AFC0017BF19 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		BEB2A34B1C51FE7C00B0BE03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -490,6 +549,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		BE67D43F1C633AFC0017BF19 /* Build configuration list for PBXAggregateTarget "OCLint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE67D43D1C633AFC0017BF19 /* Debug */,
+				BE67D43E1C633AFC0017BF19 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		BEB2A33F1C51FE7C00B0BE03 /* Build configuration list for PBXProject "RestGoatee" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

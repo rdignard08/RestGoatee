@@ -4,10 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>OCLint.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
 		<key>RestGoatee-Tests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>1</integer>
 		</dict>
 		<key>RestGoatee.xcscheme_^#shared#^_</key>
 		<dict>
@@ -17,6 +22,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>BE67D43C1C633AFC0017BF19</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>BEB2A3431C51FE7C00B0BE03</key>
 		<dict>
 			<key>primary</key>

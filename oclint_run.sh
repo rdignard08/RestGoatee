@@ -21,7 +21,7 @@ if [ ! -f compile_commands.json ]; then
     xcodebuild clean
  
     #build xcodebuild.log
-    xcodebuild | tee ${TARGET_TEMP_DIR}/xcodebuild.log
+    xcodebuild -workspace RestGoatee.xcworkspace -scheme RestGoatee | tee ${TARGET_TEMP_DIR}/xcodebuild.log
     #xcodebuild <options>| tee ${TARGET_TEMP_DIR}/xcodebuild.log
  
     echo "[*] transforming xcodebuild.log into compile_commands.json..."
@@ -36,6 +36,6 @@ fi
  
 echo "[*] starting analyzing"
 cd ${TARGET_TEMP_DIR}
-oclint-json-compilation-database -max-priority-1 1000 -max-priority-2 1000 -max-priority-3 1000 -rc LONG_LINE=200 | sed 's/\(.*\.\m\{1,2\}:[0-9]*:[0-9]*:\)/\1 warning:/'
+oclint-json-compilation-database | sed 's/\(.*\.\m\{1,2\}:[0-9]*:[0-9]*:\)/\1 warning:/'
 
 printf '\7\7' # notify user that the task is done
