@@ -58,7 +58,7 @@ task :release do
   sh "rake spec"
 
   puts "* Linting the podspec"
-  sh "pod lib lint"
+  sh "pod lib lint --allow-warnings"
 
   # Then release
   sh "git commit #{podspec_path} CHANGELOG.md VERSION -m 'Release #{spec_version}' --allow-empty"
