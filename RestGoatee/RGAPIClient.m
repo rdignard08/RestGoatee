@@ -24,7 +24,7 @@
 #import "RestGoatee.h"
 #import "RGXMLSerializer.h"
 #import <objc/runtime.h>
-#import <RestGoatee-Core.h>
+#import "RestGoatee-Core.h"
 
 #pragma mark - Forward Declarations
 /**
