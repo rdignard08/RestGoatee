@@ -22,7 +22,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <AFNetworking/AFNetworking.h>
-#import <RestGoatee-Core.h>
+#import "RestGoatee-Core.h"
 #import <UIKit/UIKit.h>
 
 void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,

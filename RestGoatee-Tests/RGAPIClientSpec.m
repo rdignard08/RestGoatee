@@ -47,6 +47,11 @@ static NSString* data = @"{"
 @interface RGAPIClient (TestOverride)
 
 @property (nonatomic, strong) NSMutableDictionary* recordedResponses;
+
+@end
+
+@interface RGAPIClient (RGForwardDecl)
+
 - (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keyPath class:(Class)cls context:(NSManagedObjectContext*)context error:(NSError*)error;
 
 @end

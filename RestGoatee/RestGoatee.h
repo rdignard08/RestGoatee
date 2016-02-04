@@ -21,7 +21,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import <RestGoatee-Core.h>
+#import "RestGoatee-Core.h"
 #import "UIImageView+RGImageDownload.h"
 #import "NSError+RG_HTTPStatusCode.h"
 #import "RGResponseObject.h"
