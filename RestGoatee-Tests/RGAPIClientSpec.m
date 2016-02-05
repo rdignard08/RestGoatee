@@ -98,15 +98,32 @@ static NSString* data = @"{"
 @implementation RGAPIClientSpec
 
 - (void) testGetSearch {
-    XCTestExpectation* expectation = [self expectationWithDescription:@""];
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
     client.recordedResponses[@"https://itunes.apple.com/search"] = data;
-    [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:nil class:nil completion:^(RGResponseObject* response) {
+    [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
         XCTAssert(response.responseBody);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
-        
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
+- (void) testPostGoogle {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.recordedResponses[@"https://google.com/logout"] = @"";
+    [client POST:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(!response.responseBody.count);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
     }];
 }
 
