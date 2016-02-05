@@ -4,12 +4,16 @@ Pod::Spec.new do |s|
   s.summary          = "An intuitive JSON & XML deserialization library for ReST based client"
   s.homepage         = "https://github.com/rdignard08/RestGoatee"
   s.license          = 'BSD'
-  s.author           = { "Ryan Dignard" => "conceptuallyflawed@gmail.com" }
+  s.authors          = { "Ryan Dignard" => "conceptuallyflawed@gmail.com" }
   s.source           = { :git => "https://github.com/rdignard08/RestGoatee.git", :tag => s.version }
 
-  s.platform     = :ios, '6.0'
   s.requires_arc = true
+
+  s.ios.deployment_target = '6.0'
+#  s.watchos.deployment_target = '2.0'
+#  s.tvos.deployment_target = '9.0'
+
   s.source_files = 'RestGoatee'
   s.dependency 'RestGoatee-Core', '= 2.1.5'
-  s.dependency 'AFNetworking', '~> 2.0'
+  s.dependency 'AFNetworking', '~> 2.5.0'
 end
