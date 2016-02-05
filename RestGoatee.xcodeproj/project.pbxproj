@@ -26,6 +26,7 @@
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
 		BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD431C52006E00267D5C /* RGResponseObject.m */; };
 		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
+		BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */; };
 		BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
 		BE763B7F1C5EF0910095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
 		BE763B851C5EF51F0095C4D5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B841C5EF51F0095C4D5 /* libPods.a */; };
@@ -76,6 +77,7 @@
 		BE1CCD431C52006E00267D5C /* RGResponseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObject.m; sourceTree = "<group>"; };
 		BE1CCD441C52006E00267D5C /* UIImageView+RGImageDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+RGImageDownload.h"; sourceTree = "<group>"; };
 		BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+RGImageDownload.m"; sourceTree = "<group>"; };
+		BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+RGHTTPStatusCodeSpec.m"; sourceTree = "<group>"; };
 		BE763B7D1C5EEF980095C4D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE763B801C5EF0AA0095C4D5 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		BE763B821C5EF0AF0095C4D5 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */,
+				BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */,
 				BEF5FD591C520128006EACA8 /* Info.plist */,
 			);
 			path = "RestGoatee-Tests";
@@ -348,6 +351,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */,
 				BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -521,8 +525,8 @@
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				HEADER_SEARCH_PATHS = (
-					"${PROJECT_DIR}/Pods/RestGoatee-Core",
-					"${PROJECT_DIR}/Pods/AFNetworking",
+					"${PROJECT_DIR}/Pods/RestGoatee-Core/**",
+					"${PROJECT_DIR}/Pods/AFNetworking/**",
 				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -536,8 +540,8 @@
 			buildSettings = {
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				HEADER_SEARCH_PATHS = (
-					"${PROJECT_DIR}/Pods/RestGoatee-Core",
-					"${PROJECT_DIR}/Pods/AFNetworking",
+					"${PROJECT_DIR}/Pods/RestGoatee-Core/**",
+					"${PROJECT_DIR}/Pods/AFNetworking/**",
 				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -556,6 +560,7 @@
 				BE67D43E1C633AFC0017BF19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BEB2A33F1C51FE7C00B0BE03 /* Build configuration list for PBXProject "RestGoatee" */ = {
 			isa = XCConfigurationList;
