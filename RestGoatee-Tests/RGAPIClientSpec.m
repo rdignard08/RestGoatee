@@ -150,4 +150,8 @@ static NSString* data = @"{"
     XCTAssert(client.serializationDelegate == delegate);
 }
 
+- (void) testInitIsValid {
+    XCTAssertNoThrow([RGAPIClient new]);
+}
+
 @end
