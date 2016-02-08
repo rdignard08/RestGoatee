@@ -80,21 +80,13 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 #pragma clang diagnostic pop
 
 - (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
+
 #if IOS_7_PLUS
-    Class super_class = NSClassFromString(@"AFHTTPSessionManager");
+    self = [super initWithBaseURL:url sessionConfiguration:configuration];
 #else
-    Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager");
+    self = [super initWithBaseURL:url];
 #endif
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
-    if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
-        self = [super initWithBaseURL:url sessionConfiguration:configuration];
-    } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
-        self = [super initWithBaseURL:url];
-    } else {
-        self = [super init];
-    }
-#pragma clang diagnostic pop
+    
     if (self && configuration) {
         self->_sessionConfiguration = (id RG_SUFFIX_NONNULL)configuration;
     }
