@@ -1,4 +1,4 @@
-/* Copyright (c) 07/25/2014, Ryan Dignard
+/* Copyright (c) 02/07/2016, Ryan Dignard
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -21,8 +21,13 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import "RestGoatee.h"
+#import <XCTest/XCTest.h>
+#import "RGResponseObject.h"
 
-@implementation RGResponseObject
+@interface RGResponseObjectSpec : XCTestCase
+
+@end
+
+@implementation RGResponseObjectSpec
 
 @end
