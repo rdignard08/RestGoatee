@@ -22,7 +22,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RestGoatee-Core.h"
-#import "UIImageView+RGImageDownload.h"
 #import "NSError+RG_HTTPStatusCode.h"
 #import "RGResponseObject.h"
 #import "RGAPIClient.h"

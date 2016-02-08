@@ -23,13 +23,10 @@
 
 /* Begin PBXBuildFile section */
 		BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */; };
-		BE14590B1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590A1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m */; };
 		BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */; };
-		BE1459121C6875810071C5E6 /* homepage-samples-408-287.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BE1459111C6875810071C5E6 /* homepage-samples-408-287.jpg */; };
 		BE1CCD461C52006E00267D5C /* NSError+RG_HTTPStatusCode.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */; };
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
 		BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD431C52006E00267D5C /* RGResponseObject.m */; };
-		BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */; };
 		BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */; };
 		BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
 		BE763B7F1C5EF0910095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
@@ -74,18 +71,14 @@
 		79C7CF99F069A1B726AAA0C8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		BA7A9B33E01124B46D4C0336 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObjectSpec.m; sourceTree = "<group>"; };
-		BE14590A1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+RGImageDownloadSpec.m"; sourceTree = "<group>"; };
 		BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGSerializationDelegate.h; sourceTree = "<group>"; };
 		BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGSerializationDelegate.m; sourceTree = "<group>"; };
-		BE1459111C6875810071C5E6 /* homepage-samples-408-287.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "homepage-samples-408-287.jpg"; sourceTree = "<group>"; };
 		BE1CCD3E1C52006E00267D5C /* NSError+RG_HTTPStatusCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+RG_HTTPStatusCode.h"; sourceTree = "<group>"; };
 		BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+RG_HTTPStatusCode.m"; sourceTree = "<group>"; };
 		BE1CCD401C52006E00267D5C /* RGAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGAPIClient.h; sourceTree = "<group>"; };
 		BE1CCD411C52006E00267D5C /* RGAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGAPIClient.m; sourceTree = "<group>"; };
 		BE1CCD421C52006E00267D5C /* RGResponseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGResponseObject.h; sourceTree = "<group>"; };
 		BE1CCD431C52006E00267D5C /* RGResponseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObject.m; sourceTree = "<group>"; };
-		BE1CCD441C52006E00267D5C /* UIImageView+RGImageDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+RGImageDownload.h"; sourceTree = "<group>"; };
-		BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+RGImageDownload.m"; sourceTree = "<group>"; };
 		BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+RGHTTPStatusCodeSpec.m"; sourceTree = "<group>"; };
 		BE763B7D1C5EEF980095C4D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE763B801C5EF0AA0095C4D5 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
@@ -141,8 +134,6 @@
 			children = (
 				BE1CCD3E1C52006E00267D5C /* NSError+RG_HTTPStatusCode.h */,
 				BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */,
-				BE1CCD441C52006E00267D5C /* UIImageView+RGImageDownload.h */,
-				BE1CCD451C52006E00267D5C /* UIImageView+RGImageDownload.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -191,12 +182,10 @@
 		BEF5FD561C520128006EACA8 /* RestGoatee-Tests */ = {
 			isa = PBXGroup;
 			children = (
-				BE1459111C6875810071C5E6 /* homepage-samples-408-287.jpg */,
 				BEF5FD591C520128006EACA8 /* Info.plist */,
 				BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */,
 				BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */,
 				BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */,
-				BE14590A1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m */,
 				BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */,
 				BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */,
 			);
@@ -298,7 +287,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE1459121C6875810071C5E6 /* homepage-samples-408-287.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,7 +346,6 @@
 				BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */,
 				BE1CCD461C52006E00267D5C /* NSError+RG_HTTPStatusCode.m in Sources */,
 				BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */,
-				BE1CCD491C52006E00267D5C /* UIImageView+RGImageDownload.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,7 +355,6 @@
 			files = (
 				BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */,
 				BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */,
-				BE14590B1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m in Sources */,
 				BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */,
 				BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */,
 			);
