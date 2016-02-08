@@ -30,12 +30,9 @@
 /**
  Garbage used that may not be present in the super class (since the super class is variable).
  */
-@interface NSObject (_RGForwardDeclarations)
+@interface NSObject (RGForwardDeclarations)
 
 #pragma mark - AFNetworking
-- (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url sessionConfiguration:(RG_PREFIX_NULLABLE id)configuration;
-- (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url;
-- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(RG_PREFIX_NULLABLE id)parameters; /* deprecated version of below */
 - (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* RG_SUFFIX_NULLABLE)error;
 - (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method path:(id)path parameters:(RG_PREFIX_NULLABLE id)parameters; /* old style */
 @property (nonatomic, strong, RG_PREFIX_NONNULL) id requestSerializer;
@@ -72,25 +69,12 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     return [self initWithBaseURL:nil sessionConfiguration:nil];
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 - (instancetype) initWithBaseURL:(NSURL*)baseURL {
     return [self initWithBaseURL:baseURL sessionConfiguration:nil];
 }
-#pragma clang diagnostic pop
 
 - (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
-
-#if IOS_7_PLUS
-    self = [super initWithBaseURL:url sessionConfiguration:configuration];
-#else
-    self = [super initWithBaseURL:url];
-#endif
-    
-    if (self && configuration) {
-        self->_sessionConfiguration = (id RG_SUFFIX_NONNULL)configuration;
-    }
-    return self;
+    return [super initWithBaseURL:url sessionConfiguration:configuration];
 }
 
 #pragma mark - Engine Methods
@@ -178,16 +162,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     __block __strong id task;
     NSMutableURLRequest* request;
     NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
-    if ([self respondsToSelector:@selector(requestSerializer)]) { /* "Modern" style */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-        id nonnullParameters = parameters;
-        request = [self.requestSerializer requestWithMethod:method URLString:fullPath parameters:nonnullParameters];
-#pragma clang diagnostic pop
-    } else {
-        request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];
-    }
-#if IOS_7_PLUS
+    id nonnullParameters = parameters;
+    request = [self.requestSerializer requestWithMethod:method URLString:fullPath parameters:nonnullParameters error:nil];
     task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse* response, id body, NSError* error) {
         if (error &&
             [self.serializationDelegate respondsToSelector:@selector(shouldRetryRequest:response:error:retryCount:)] &&
@@ -197,26 +173,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, response)]);
         }
     }];
-#else
-    void(^callback)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
-        id body, /* NSError* */ error;
-        [response isKindOfClass:[NSError class]] ? (error = response) : (body = response);
-        if (error &&
-            [self.serializationDelegate respondsToSelector:@selector(shouldRetryRequest:response:error:retryCount:)] &&
-            [self.serializationDelegate shouldRetryRequest:op.request response:op.response error:error retryCount:count]) {
-            [self request:method url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:count + 1];
-        } else if (completion) {
-            completion([self responseObjectFromBody:body keypath:path class:cls context:context error:errorWithStatusCodeFromTask(error, op.response)]);
-        }
-    };
-    task = [self HTTPRequestOperationWithRequest:request success:callback failure:callback];
-#endif
-    
-#if IOS_7_PLUS
     [task resume];
-#else
-    [self.operationQueue addOperation:task];
-#endif
 }
 
 

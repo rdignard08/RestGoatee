@@ -24,19 +24,17 @@
 #import "RestGoatee-Core.h"
 #import <UIKit/UIKit.h>
 
-@class AFHTTPRequestOperation;
-
 void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
                      NSURLRequest* RG_SUFFIX_NONNULL urlRequest,
                      UIImage* RG_SUFFIX_NULLABLE placeholderImage,
                      void(^RG_SUFFIX_NULLABLE success)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE),
                      void(^RG_SUFFIX_NULLABLE failure)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* RG_SUFFIX_NONNULL));
 
-id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NSURLRequest* RG_SUFFIX_NONNULL url, void(^ RG_SUFFIX_NULLABLE handler)(AFHTTPRequestOperation* RG_SUFFIX_NULLABLE, id RG_SUFFIX_NULLABLE));
+id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NSURLRequest* RG_SUFFIX_NONNULL url, void(^ RG_SUFFIX_NULLABLE handler)(NSURLSessionDownloadTask* RG_SUFFIX_NULLABLE, id RG_SUFFIX_NULLABLE));
 
 @interface UIImageView (RGImageDownload)
 
-@property RG_NULLABLE_PROPERTY(nonatomic, strong) AFHTTPRequestOperation* rg_pendingOperation;
+@property RG_NULLABLE_PROPERTY(nonatomic, strong) NSURLSessionDownloadTask* rg_pendingOperation;
 
 - (void) rg_setImageWithURL:(RG_PREFIX_NONNULL NSURL*)url;
 

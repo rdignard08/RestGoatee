@@ -24,12 +24,6 @@
 #import <AFNetworking/AFNetworking.h>
 #import "RGResponseObject.h"
 
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
-    #define IOS_7_PLUS 1
-#else
-    #define IOS_7_PLUS 0
-#endif
-
 /**
  The `RGResponseBlock` type specifies the common handler type for all methods declared in `RGAPIClient`.
  */
@@ -39,28 +33,14 @@ typedef void(^RGResponseBlock)(RGResponseObject* RG_SUFFIX_NONNULL);
 @class NSManagedObjectContext, NSURLSessionConfiguration;
 
 /**
- The RGAPIClient is a subclass of either `AFHTTPSessionManager` or `AFRequestOperationManager` depending on the project's deployment target.  Method calls through this class (specifically those declared at the RGAPIClient level) will attempt to automatically deserialize objects from a raw information type into a type specified by the user.
+ The RGAPIClient is a subclass of `AFHTTPSessionManager`.  Method calls through this class (specifically those declared at the RGAPIClient level) will attempt to automatically deserialize objects from a raw information type into a type specified by the user.
  */
-#if IOS_7_PLUS
 @interface RGAPIClient : AFHTTPSessionManager
-#else
-@interface RGAPIClient : AFHTTPRequestOperationManager
-#endif
-
-/**
- If the instance was constructed with `-initWithBaseURL:sessionConfiguration:` this will contain whatever object from provided for the `configuration` parameter.  Due to the implementation, this value cannot be modified after initialization.
- */
-@property RG_NONNULL_PROPERTY(nonatomic, strong, readonly) NSURLSessionConfiguration* sessionConfiguration;
 
 /**
  You must provide a `serializationDelegate` if you intend to use your API client to unique check, parse XML, or create NSManagedObjects.  All others may safely ignore this property.
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
-
-/**
- designated initializer.  For deployment targets <= iOS 6, pass `nil` for `configuration` or use `-initWithBaseURL:`.
- */
-- (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration;
 
 /**
  This is the primitive method that underlies all requests made by this class.  It is agnostic of the super class.
