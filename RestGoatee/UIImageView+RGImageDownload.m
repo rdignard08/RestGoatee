@@ -32,10 +32,10 @@ void setFileCacheLimit(STCacheBlock handler) {
 
 @implementation NSFileManager (Startup)
 
-- (NSNumber*) sizeForFolderAtPath:(NSURL*)source error:(NSError**)error {
+- (NSNumber*) sizeForFolderAtPath:(NSURL*)source error:(NSError* RG_SUFFIX_NULLABLE *)error {
     uint64_t directorySize = 0;
-    NSDirectoryEnumerator* enumerator = [self enumeratorAtURL:source includingPropertiesForKeys:@[ (id)kCFURLContentAccessDateKey, (id)kCFURLTotalFileAllocatedSizeKey ] options:0 errorHandler:^(NSURL* url, NSError* error) {
-        NSLog(@"%@ %@", url, error);
+    NSDirectoryEnumerator* enumerator = [self enumeratorAtURL:source includingPropertiesForKeys:@[ (id)kCFURLContentAccessDateKey, (id)kCFURLTotalFileAllocatedSizeKey ] options:(NSDirectoryEnumerationOptions)0 errorHandler:^(NSURL* url, NSError* fileError) {
+        NSLog(@"%@ %@", url, fileError);
         return YES;
     }];
     for (NSURL* file in enumerator) {
@@ -139,7 +139,7 @@ void setFileCacheLimit(STCacheBlock handler) {
 
 @end
 
-void(^saveImageBlock)(UIImage*, NSString*) = ^(UIImage* image, NSString* path) {
+void(^saveImageBlock)(UIImage*, NSString*) = ^(UIImage* __unused image, NSString* __unused path) {
     // TODO: save image to disk
 };
 
@@ -155,13 +155,15 @@ id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NS
     static void(^standardCompletionBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
         [[UIImageView rg_imageCacheLock] lock];
         if ([response isKindOfClass:[UIImage class]]) {
-            [[UIImageView rg_imageCache] setObject:response forKey:op.response.URL.path];
+            NSString* key = op.response.URL.path;
+            [[UIImageView rg_imageCache] setObject:response forKey:key];
             [[UIImageView rg_cacheOperationQueue] addOperationWithBlock:^{
                 saveImageBlock(response, op.response.URL.path);
             }];
         } else if (op.response.statusCode >= 400 && op.response.statusCode < 500) {
             NSLog(@"Bad image request %@", op.response.URL);
-            [[UIImageView rg_imageCache] setObject:[NSNull null] forKey:op.response.URL.path];
+            NSString* key = op.response.URL.path;
+            [[UIImageView rg_imageCache] setObject:[NSNull null] forKey:key];
         }
         for (void(^completionBlock)(AFHTTPRequestOperation*, id) in op.completionBlocks) {
             completionBlock(op, response);
@@ -172,7 +174,8 @@ id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NS
     
     [[UIImageView rg_imageCacheLock] lock];
     
-    id resource = [[UIImageView rg_imageCache] objectForKey:url.URL.path];
+    NSString* key = url.URL.path;
+    id resource = [[UIImageView rg_imageCache] objectForKey:key];
     
     if (!resource) {
         // TODO: check disk for image
@@ -185,12 +188,14 @@ id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NS
         [[[UIImageView class] rg_cacheOperationQueue] addOperation:resource];
         self.rg_pendingOperation.queuePriority = NSOperationQueuePriorityNormal;
         self.rg_pendingOperation = resource;
-        [[UIImageView rg_imageCache] setObject:resource forKey:url.URL.path];
+        [[UIImageView rg_imageCache] setObject:resource forKey:key];
     }
     
     if ([resource isKindOfClass:[AFHTTPRequestOperation class]]) {
         self.rg_pendingOperation.queuePriority = self ? NSOperationQueuePriorityHigh : NSOperationQueuePriorityNormal;
-        [[(AFHTTPRequestOperation*)resource completionBlocks] addObject:handler];
+        if (handler) {
+            [[(AFHTTPRequestOperation*)resource completionBlocks] addObject:(id RG_SUFFIX_NONNULL)handler];
+        }
     }
     
     [[UIImageView rg_imageCacheLock] unlock];
