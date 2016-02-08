@@ -35,9 +35,9 @@
 #pragma mark - AFNetworking
 - (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url sessionConfiguration:(RG_PREFIX_NULLABLE id)configuration;
 - (RG_PREFIX_NULLABLE id) initWithBaseURL:(RG_PREFIX_NULLABLE id)url;
-- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(id)parameters; /* deprecated version of below */
+- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(RG_PREFIX_NULLABLE id)parameters; /* deprecated version of below */
 - (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method URLString:(id)url parameters:(id)parameters error:(__autoreleasing id* RG_SUFFIX_NULLABLE)error;
-- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method path:(id)path parameters:(id)parameters; /* old style */
+- (RG_PREFIX_NONNULL id) requestWithMethod:(RG_PREFIX_NONNULL id)method path:(id)path parameters:(RG_PREFIX_NULLABLE id)parameters; /* old style */
 @property (nonatomic, strong, RG_PREFIX_NONNULL) id requestSerializer;
 
 #pragma mark - NSFetchRequest
@@ -60,7 +60,7 @@ static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, i
 
 static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse* task) {
     if ([task isKindOfClass:[NSHTTPURLResponse class]]) {
-        error.HTTPStatusCode = [(NSHTTPURLResponse*)task statusCode];
+        error.HTTPStatusCode = (NSUInteger)[(NSHTTPURLResponse*)task statusCode];
     }
     return error;
 }
@@ -93,7 +93,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         self = [super init];
     }
     if (self && configuration) {
-        self->_sessionConfiguration = configuration;
+        self->_sessionConfiguration = (id RG_SUFFIX_NONNULL)configuration;
     }
     return self;
 }
@@ -110,7 +110,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         if (!context && [self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)]) {
             *outContext = context = [self.serializationDelegate contextForManagedObjectType:cls];
         }
-        context ?: [NSException raise:NSGenericException format:@"Subclasses of NSManagedObject must be created within an NSManagedObjectContext"];
+        context ? RG_VOID_NOOP : [NSException raise:NSGenericException format:@"Subclasses of NSManagedObject must be created within an NSManagedObjectContext"];
     }
     NSArray* target = path ? [response valueForKeyPath:path] : response;
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
@@ -126,7 +126,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         [context performBlockAndWait:^{
             NSError* error;
             allObjects = [context executeFetchRequest:fetch error:&error];
-            error ? NSLog(@"Warning, fetch %@ failed %@", fetch, error) : nil;
+            error ? NSLog(@"Warning, fetch %@ failed %@", fetch, error) : RG_VOID_NOOP;
         }];
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
@@ -148,7 +148,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         NSError* error;
         @try {
             if ([context hasChanges]) {
-                [context save:&error] ?: NSLog(@"Error, context save failed with error %@", error);
+                [context save:&error] ? RG_VOID_NOOP : NSLog(@"Error, context save failed with error %@", error);
             }
         } @catch (NSException* e) {
             NSLog(@"Warning, saving context %@ failed: %@", context, e);
@@ -186,7 +186,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     if ([self respondsToSelector:@selector(requestSerializer)]) { /* "Modern" style */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated"
-        request = [self.requestSerializer requestWithMethod:method URLString:fullPath parameters:parameters];
+        id nonnullParameters = parameters;
+        request = [self.requestSerializer requestWithMethod:method URLString:fullPath parameters:nonnullParameters];
 #pragma clang diagnostic pop
     } else {
         request = [(id)self requestWithMethod:method path:fullPath parameters:parameters];

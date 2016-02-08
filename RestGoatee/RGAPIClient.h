@@ -211,7 +211,7 @@ typedef void(^RGResponseBlock)(RGResponseObject* RG_SUFFIX_NONNULL);
  @param error The error that failed the request.
  @param count The number of times this request has been retried before.
  */
-- (BOOL) shouldRetryRequest:(RG_PREFIX_NONNULL NSURLRequest*)request response:(RG_PREFIX_NONNULL NSURLResponse*)response error:(RG_PREFIX_NONNULL NSError*)error retryCount:(NSUInteger)count;
+- (BOOL) shouldRetryRequest:(RG_PREFIX_NONNULL NSURLRequest*)request response:(RG_PREFIX_NULLABLE NSURLResponse*)response error:(RG_PREFIX_NONNULL NSError*)error retryCount:(NSUInteger)count;
 
 /**
  Return a non-`nil` key to have `NSManagedObject`s be reconciled to an existing object if the value of this key matches.

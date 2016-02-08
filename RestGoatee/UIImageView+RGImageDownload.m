@@ -209,17 +209,17 @@ void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
                         void(^ RG_SUFFIX_NULLABLE success)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, UIImage* RG_SUFFIX_NULLABLE),
                         void(^ RG_SUFFIX_NULLABLE failure)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* RG_SUFFIX_NONNULL)) {
                             
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
     id resource = rg_resourceForURL(self, urlRequest, ^(AFHTTPRequestOperation* op, id response) {
-        __strong typeof(self) strongSelf = weakSelf;
-        if (op == strongSelf.rg_pendingOperation || !strongSelf) { /* if the view dealloc'd we will still call to the blocks */
-            strongSelf.rg_pendingOperation = nil;
+        __strong __typeof__(self) strongSelf1 = weakSelf;
+        if (op == strongSelf1.rg_pendingOperation || !strongSelf1) { /* if the view dealloc'd we will still call to the blocks */
+            strongSelf1.rg_pendingOperation = nil;
             dispatch_async(dispatch_get_main_queue(), ^{ /* request was performed on a background thread */
-                __strong typeof(self) strongSelf = weakSelf;
+                __strong __typeof__(self) strongSelf2 = weakSelf;
                 if ([response isKindOfClass:[UIImage class]] && success) { /* success block will do something... */
                     success(op.response, response);
                 } else if ([response isKindOfClass:[UIImage class]]) { /* no success block, assign it ourselves */
-                    strongSelf.image = response;
+                    strongSelf2.image = response;
                 } else if (failure) { /* not an image, something went wrong! */
                     failure(op.response, response);
                 }
