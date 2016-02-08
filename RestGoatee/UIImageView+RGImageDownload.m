@@ -108,11 +108,11 @@ void setFileCacheLimit(STCacheBlock handler) {
 
 + (NSOperationQueue*)rg_cacheOperationQueue {
     static dispatch_once_t onceToken;
-    static NSOperationQueue* _sCachedOperationQueue;
+    static NSOperationQueue* _sCachedOpQueue;
     dispatch_once(&onceToken, ^{
-        _sCachedOperationQueue = [NSOperationQueue new];
+        _sCachedOpQueue = [NSOperationQueue new];
     });
-    return _sCachedOperationQueue;
+    return _sCachedOpQueue;
 }
 
 - (RG_PREFIX_NULLABLE AFHTTPRequestOperation*)rg_pendingOperation {
@@ -152,23 +152,23 @@ void(^saveImageBlock)(UIImage*, NSString*) = ^(UIImage* __unused image, NSString
  UIImage = I've downloaded this image successful. Will check memory and disk.
  */
 id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NSURLRequest* RG_SUFFIX_NONNULL url, void(^ RG_SUFFIX_NULLABLE handler)(AFHTTPRequestOperation*, id)) {
-    static void(^standardCompletionBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* op, id response) {
+    static void(^standardCompletion)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation* operation, id response) {
         [[UIImageView rg_imageCacheLock] lock];
         if ([response isKindOfClass:[UIImage class]]) {
-            NSString* key = op.response.URL.path;
+            NSString* key = operation.response.URL.path;
             [[UIImageView rg_imageCache] setObject:response forKey:key];
             [[UIImageView rg_cacheOperationQueue] addOperationWithBlock:^{
-                saveImageBlock(response, op.response.URL.path);
+                saveImageBlock(response, operation.response.URL.path);
             }];
-        } else if (op.response.statusCode >= 400 && op.response.statusCode < 500) {
-            NSLog(@"Bad image request %@", op.response.URL);
-            NSString* key = op.response.URL.path;
+        } else if (operation.response.statusCode >= 400 && operation.response.statusCode < 500) {
+            NSLog(@"Bad image request %@", operation.response.URL);
+            NSString* key = operation.response.URL.path;
             [[UIImageView rg_imageCache] setObject:[NSNull null] forKey:key];
         }
-        for (void(^completionBlock)(AFHTTPRequestOperation*, id) in op.completionBlocks) {
-            completionBlock(op, response);
+        for (void(^completionBlock)(AFHTTPRequestOperation*, id) in operation.completionBlocks) {
+            completionBlock(operation, response);
         }
-        [op.completionBlocks removeAllObjects];
+        [operation.completionBlocks removeAllObjects];
         [[UIImageView rg_imageCacheLock] unlock];
     };
     
@@ -177,14 +177,14 @@ id RG_SUFFIX_NULLABLE rg_resourceForURL(UIImageView* RG_SUFFIX_NULLABLE self, NS
     NSString* key = url.URL.path;
     id resource = [[UIImageView rg_imageCache] objectForKey:key];
     
-    if (!resource) {
-        // TODO: check disk for image
-    }
+//    if (!resource) {
+//        // TODO: check disk for image
+//    }
     
     if (!resource) { // make a new request
         resource = [[AFHTTPRequestOperation alloc] initWithRequest:url];
         [(AFHTTPRequestOperation*)resource setResponseSerializer:[AFImageResponseSerializer new]];
-        [resource setCompletionBlockWithSuccess:standardCompletionBlock failure:standardCompletionBlock];
+        [resource setCompletionBlockWithSuccess:standardCompletion failure:standardCompletion];
         [[[UIImageView class] rg_cacheOperationQueue] addOperation:resource];
         self.rg_pendingOperation.queuePriority = NSOperationQueuePriorityNormal;
         self.rg_pendingOperation = resource;
@@ -210,18 +210,18 @@ void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
                         void(^ RG_SUFFIX_NULLABLE failure)(NSHTTPURLResponse* RG_SUFFIX_NULLABLE, NSError* RG_SUFFIX_NONNULL)) {
                             
     __weak __typeof__(self) weakSelf = self;
-    id resource = rg_resourceForURL(self, urlRequest, ^(AFHTTPRequestOperation* op, id response) {
+    id resource = rg_resourceForURL(self, urlRequest, ^(AFHTTPRequestOperation* operation, id response) {
         __strong __typeof__(self) strongSelf1 = weakSelf;
-        if (op == strongSelf1.rg_pendingOperation || !strongSelf1) { /* if the view dealloc'd we will still call to the blocks */
+        if (operation == strongSelf1.rg_pendingOperation || !strongSelf1) { /* if the view dealloc'd we will still call to the blocks */
             strongSelf1.rg_pendingOperation = nil;
             dispatch_async(dispatch_get_main_queue(), ^{ /* request was performed on a background thread */
                 __strong __typeof__(self) strongSelf2 = weakSelf;
                 if ([response isKindOfClass:[UIImage class]] && success) { /* success block will do something... */
-                    success(op.response, response);
+                    success(operation.response, response);
                 } else if ([response isKindOfClass:[UIImage class]]) { /* no success block, assign it ourselves */
                     strongSelf2.image = response;
                 } else if (failure) { /* not an image, something went wrong! */
-                    failure(op.response, response);
+                    failure(operation.response, response);
                 }
             });
         }

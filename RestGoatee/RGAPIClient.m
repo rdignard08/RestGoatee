@@ -85,6 +85,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 #else
     Class super_class = NSClassFromString(@"AFHTTPRequestOperationManager");
 #endif
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
     if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:sessionConfiguration:)]) {
         self = [super initWithBaseURL:url sessionConfiguration:configuration];
     } else if ([super_class instancesRespondToSelector:@selector(initWithBaseURL:)]) {
@@ -92,6 +94,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     } else {
         self = [super init];
     }
+#pragma clang diagnostic pop
     if (self && configuration) {
         self->_sessionConfiguration = (id RG_SUFFIX_NONNULL)configuration;
     }
@@ -134,16 +137,16 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         if (([entry isKindOfClass:[NSDictionary class]] || [entry conformsToProtocol:@protocol(RGDataSource)]) && primaryKey && allObjects && entry[primaryKey]) {
             id keyValue = [entry isKindOfClass:[RGXMLNode class]] ? [entry[primaryKey] innerXML] : entry[primaryKey];
             NSUInteger index = [[allObjects valueForKey:primaryKey] indexOfObject:keyValue inSortedRange:NSMakeRange(0, allObjects.count) options:NSBinarySearchingFirstEqual usingComparator:comparator];
-            if (index != NSNotFound) {
-                [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
-            } else {
+            if (index == NSNotFound) {
                 [ret addObject:[cls objectFromDataSource:entry inContext:context]]; /* New Object */
+            } else {
+                [ret addObject:[allObjects[index] extendWith:entry inContext:context]]; /* Existing Object */
             }
         } else {
             [ret addObject:cls ? [cls objectFromDataSource:entry inContext:context] : entry]; /* Nothing to lookup so it may be new or the raw is desired. */
         }
     }
-    response = [ret copy];
+    id replacementResponse = [ret copy];
     [context performBlockAndWait:^{
         NSError* error;
         @try {
@@ -154,13 +157,15 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             NSLog(@"Warning, saving context %@ failed: %@", context, e);
         }
     }];
-    return response;
+    return replacementResponse;
 }
 
 - (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keyPath class:(Class)cls context:(NSManagedObjectContext*)context error:(NSError*)error {
     RGResponseObject* ret = [RGResponseObject new];
     NSManagedObjectContext* localContext = context;
-    if (!error) {
+    if (error) {
+        error.extraData = body;
+    } else {
         if ([body isKindOfClass:[NSXMLParser class]]) {
             BOOL shouldSerializeXML = [self.serializationDelegate respondsToSelector:@selector(shouldSerializeXML)] && [self.serializationDelegate shouldSerializeXML];
             if (shouldSerializeXML) {
@@ -171,8 +176,6 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         } else {
             ret.responseBody = [self parseResponse:body atPath:keyPath intoClass:cls context:&context];
         }
-    } else {
-        error.extraData = body;
     }
     ret.error = error;
     ret.context = localContext;
