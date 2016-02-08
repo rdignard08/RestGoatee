@@ -21,9 +21,10 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import "AFNetworking.h"
 #import "RestGoatee-Core.h"
 #import <UIKit/UIKit.h>
+
+@class AFHTTPRequestOperation;
 
 void rg_setImageWithURL(UIImageView* RG_SUFFIX_NULLABLE self,
                      NSURLRequest* RG_SUFFIX_NONNULL urlRequest,
