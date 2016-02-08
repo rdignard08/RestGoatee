@@ -22,3 +22,26 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <XCTest/XCTest.h>
+#import "UIImageView+RGImageDownload.h"
+
+@interface UIImageView (RGForwardDecl)
+
++ (NSCache*) rg_imageCache;
+
+@end
+
+@interface UIImageView_RGImageDownloadSpec : XCTestCase
+
+@end
+
+@implementation UIImageView_RGImageDownloadSpec
+
+- (void) testNotificationClears {
+    NSCache* cache = [UIImageView rg_imageCache];
+    [cache setObject:[NSNull null] forKey:@"nonExistentImage"];
+    XCTAssert([cache objectForKey:@"nonExistentImage"]);
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    XCTAssert(![cache objectForKey:@"nonExistentImage"]);
+}
+
+@end
