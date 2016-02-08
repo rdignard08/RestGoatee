@@ -24,6 +24,7 @@
 /* Begin PBXBuildFile section */
 		BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */; };
 		BE14590B1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590A1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m */; };
+		BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */; };
 		BE1CCD461C52006E00267D5C /* NSError+RG_HTTPStatusCode.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */; };
 		BE1CCD471C52006E00267D5C /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
 		BE1CCD481C52006E00267D5C /* RGResponseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD431C52006E00267D5C /* RGResponseObject.m */; };
@@ -73,6 +74,8 @@
 		BA7A9B33E01124B46D4C0336 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObjectSpec.m; sourceTree = "<group>"; };
 		BE14590A1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+RGImageDownloadSpec.m"; sourceTree = "<group>"; };
+		BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGSerializationDelegate.h; sourceTree = "<group>"; };
+		BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGSerializationDelegate.m; sourceTree = "<group>"; };
 		BE1CCD3E1C52006E00267D5C /* NSError+RG_HTTPStatusCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+RG_HTTPStatusCode.h"; sourceTree = "<group>"; };
 		BE1CCD3F1C52006E00267D5C /* NSError+RG_HTTPStatusCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+RG_HTTPStatusCode.m"; sourceTree = "<group>"; };
 		BE1CCD401C52006E00267D5C /* RGAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGAPIClient.h; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 				BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */,
 				BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */,
 				BE14590A1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m */,
+				BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */,
+				BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */,
 			);
 			path = "RestGoatee-Tests";
 			sourceTree = "<group>";
@@ -360,6 +365,7 @@
 				BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */,
 				BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */,
 				BE14590B1C685A340071C5E6 /* UIImageView+RGImageDownloadSpec.m in Sources */,
+				BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */,
 				BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

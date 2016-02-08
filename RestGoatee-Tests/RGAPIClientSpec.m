@@ -25,6 +25,7 @@
 #import "RGResponseObject.h"
 #import "RGAPIClient.h"
 #import <objc/runtime.h>
+#import "RGSerializationDelegate.h"
 
 static NSString* data = @"{"
                             @"\"resultCount\":50,"
@@ -140,6 +141,13 @@ static NSString* data = @"{"
             XCTFail(@"Something went wrong.");
         }
     }];
+}
+
+- (void) testSerializationDelegate {
+    RGSerializationDelegate* delegate = [RGSerializationDelegate new];
+    RGAPIClient* client = [[RGAPIClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://api.bart.gov"] sessionConfiguration:nil];
+    client.serializationDelegate = delegate;
+    XCTAssert(client.serializationDelegate == delegate);
 }
 
 @end
