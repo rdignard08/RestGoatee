@@ -143,6 +143,36 @@ static NSString* data = @"{"
     }];
 }
 
+- (void) testPutGoogle {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.recordedResponses[@"https://google.com/logout"] = @"";
+    [client PUT:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(!response.responseBody.count);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
+- (void) testDeleteGoogle {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.recordedResponses[@"https://google.com/logout"] = @"";
+    [client DELETE:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(!response.responseBody.count);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
 - (void) testSerializationDelegate {
     RGSerializationDelegate* delegate = [RGSerializationDelegate new];
     RGAPIClient* client = [[RGAPIClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://api.bart.gov"] sessionConfiguration:nil];
