@@ -393,13 +393,6 @@
 			};
 			name = Debug;
 		};
-		BE67D43E1C633AFC0017BF19 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		BEB2A34B1C51FE7C00B0BE03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -442,43 +435,6 @@
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
-		};
-		BEB2A34C1C51FE7C00B0BE03 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "-all_load";
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
 		};
 		BEB2A34E1C51FE7C00B0BE03 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -541,67 +497,6 @@
 			};
 			name = Debug;
 		};
-		BEB2A34F1C51FE7C00B0BE03 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79C7CF99F069A1B726AAA0C8 /* Pods.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
-				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
-				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
-				CLANG_WARN_ASSIGN_ENUM = YES;
-				CLANG_WARN_CXX0X_EXTENSIONS = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
-				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
-				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
-				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
-				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PEDANTIC = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"/**",
-					"\"${PODS_ROOT}/Headers/Public/RestGoatee-Core\"/**",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				MACH_O_TYPE = mh_dylib;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-all_load",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				WARNING_CFLAGS = "-Wno-gnu";
-			};
-			name = Release;
-		};
 		BEF5FD5D1C520128006EACA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -617,21 +512,6 @@
 			};
 			name = Debug;
 		};
-		BEF5FD5E1C520128006EACA8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				HEADER_SEARCH_PATHS = (
-					"${PROJECT_DIR}/Pods/RestGoatee-Core/**",
-					"${PROJECT_DIR}/Pods/AFNetworking/**",
-				);
-				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.restgoatee.RestGoatee-Tests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -639,37 +519,33 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE67D43D1C633AFC0017BF19 /* Debug */,
-				BE67D43E1C633AFC0017BF19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		BEB2A33F1C51FE7C00B0BE03 /* Build configuration list for PBXProject "RestGoatee" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BEB2A34B1C51FE7C00B0BE03 /* Debug */,
-				BEB2A34C1C51FE7C00B0BE03 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		BEB2A34D1C51FE7C00B0BE03 /* Build configuration list for PBXNativeTarget "RestGoatee" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BEB2A34E1C51FE7C00B0BE03 /* Debug */,
-				BEB2A34F1C51FE7C00B0BE03 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		BEF5FD5F1C520128006EACA8 /* Build configuration list for PBXNativeTarget "RestGoatee-Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BEF5FD5D1C520128006EACA8 /* Debug */,
-				BEF5FD5E1C520128006EACA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
