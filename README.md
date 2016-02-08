@@ -70,6 +70,48 @@ We will use this example to turn a request to [iTunes Search API](https://itunes
 }
 ```
 
+Another option is to retrieve the raw objects:
+```objc
+- (void) getResults:(NSString*)searchTerm completion:(RGResponseBlock)completion {
+  [self GET:@"/search" parameters:@{ @"term" : searchTerm } keyPath:@"results" class:Nil completion:^(RGResponseObject* response) {
+      NSLog(@"%@", response.responseBody);
+  }];
+}
+```
+
+This API Client can handle XML, this would return the raw `RGXMLNode` document node:
+```objc
+- (void) getBartStations {
+    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:nil keyPath:@"root.stations.station" class:Nil completion:^(RGResponseObject* response) {
+        NSLog(@"%@", response.responseBody);
+    }];
+}
+```
+
+This call would return an array of `RDDBartStation`:
+```objc
+- (void) getBartStations {
+    [self GET:@"http://api.bart.gov/api/stn.aspx" parameters:nil keyPath:@"root.stations.station" class:[RDDBartStation self] completion:^(RGResponseObject* response) {
+        NSLog(@"%@", response.responseBody);
+    }];
+}
+```
+
+Image Downloading is optimized and cached; the use cases can be per `UIImageView` or directly invoked like so:
+```objc
+UIImageView* imageView = [UIImageView new];
+[imageView rg_setImageWithURL:@"http://placekitten.com/200/200"];
+```
+`- OR -`
+```objc
+NSURL* url = [NSURL URLWithString:@"http://placekitten.com/200/200"];
+NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+rg_setImageWithURL(nil, request, nil, ^(NSHTTPURLResponse* response, UIImage* image) {
+    NSLog(@"%@", image);
+    /* Do something with your image */
+}, nil);
+```
+
 License
 =======
 BSD Simplified (2-clause)
