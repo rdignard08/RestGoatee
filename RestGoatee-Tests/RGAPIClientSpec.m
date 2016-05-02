@@ -88,7 +88,10 @@ static NSString* data = @"{"
 }
 
 + (void) load {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
     rg_swizzle(self, @selector(request:url:parameters:keyPath:class:completion:context:count:), @selector(override_request:url:parameters:keyPath:class:completion:context:count:));
+#pragma clang diagnostic pop
 }
 
 - (void) override_request:(NSString*)method url:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context count:(NSUInteger)count {
