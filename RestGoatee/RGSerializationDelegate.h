@@ -47,7 +47,7 @@
  @param error The error that failed the request.
  @param count The number of times this request has been retried before.
  */
-- (BOOL) shouldRetryRequest:(RG_PREFIX_NONNULL NSURLRequest*)request
+- (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request
                    response:(RG_PREFIX_NULLABLE NSURLResponse*)response
                       error:(RG_PREFIX_NONNULL NSError*)error
                  retryCount:(NSUInteger)count;
