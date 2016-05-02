@@ -68,7 +68,11 @@ static NSString* data = @"{"
 
 @interface RGAPIClient (RGForwardDecl)
 
-- (RGResponseObject*) responseObjectFromBody:(id)body keypath:(NSString*)keyPath class:(Class)cls context:(NSManagedObjectContext*)context error:(NSError*)error;
+- (RGResponseObject*) responseObjectFromBody:(id)body
+                                     keyPath:(NSString*)keyPath
+                                       class:(Class)cls
+                                     context:(NSManagedObjectContext*)context
+                                       error:(NSError*)error;
 
 @end
 
@@ -100,7 +104,7 @@ static NSString* data = @"{"
         NSDictionary* response = [NSJSONSerialization JSONObjectWithData:[recordedResponse dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
-                completion([self responseObjectFromBody:response keypath:path class:cls context:context error:nil]);
+                completion([self responseObjectFromBody:response keyPath:path class:cls context:context error:nil]);
             }
         });
     } else {
