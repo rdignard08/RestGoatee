@@ -150,7 +150,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         if ([body isKindOfClass:[NSXMLParser class]]) {
             BOOL shouldSerializeXML = NO;
             if ([self.serializationDelegate respondsToSelector:@selector(shouldSerializeXML)]) {
-                shouldSerializeXML = [self.serializationDelegate shouldSerializeXML];
+                shouldSerializeXML = self.serializationDelegate.shouldSerializeXML;
             }
             if (shouldSerializeXML) {
                 ret.responseBody = [self parseResponse:[[RGXMLSerializer alloc] initWithParser:body].rootNode
