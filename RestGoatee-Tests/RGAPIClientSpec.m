@@ -135,6 +135,21 @@ static NSString* data = @"{"
     }];
 }
 
+- (void) testCallReal {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    [client.recordedResponses removeObjectForKey:@"https://google.com/logout"];
+    [client POST:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.error);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
 - (void) testPostGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
