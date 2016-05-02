@@ -24,17 +24,20 @@
 #import "RestGoatee.h"
 
 /**
- The only component that gets returned up from AFNetworking in the failure case generally is an `NSError*` object.  This is problematic for projects which use status codes to determine behavior.
+ @brief The only component that gets returned up from AFNetworking in the failure case generally is an `NSError*`
+  object.  This is problematic for projects which use status codes to determine behavior.
  */
 @interface NSError (RG_HTTPStatusCode)
 
 /**
- @abstract as part of the RGAPIClient, NSErrors which are related to an HTTP error, will contain the HTTP status code (if available, otherwise 0).
+ @brief as part of the RGAPIClient, NSErrors which are related to an HTTP error, will contain the HTTP status code (if
+  available, otherwise 0).
  */
 @property (nonatomic, assign) NSUInteger HTTPStatusCode;
 
 /**
- If a failure is generated at some point in the response processing event chain, this property will contain if available whatever the state of the response was when the error was encountered.
+ If a failure is generated at some point in the response processing event chain, this property will contain if available
+  whatever the state of the response was when the error was encountered.
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, strong) id extraData;
 
