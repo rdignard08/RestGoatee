@@ -80,6 +80,7 @@
 		BE1CCD421C52006E00267D5C /* RGResponseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGResponseObject.h; sourceTree = "<group>"; };
 		BE1CCD431C52006E00267D5C /* RGResponseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObject.m; sourceTree = "<group>"; };
 		BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+RGHTTPStatusCodeSpec.m"; sourceTree = "<group>"; };
+		BE3B84FB1CD6EDE60040067D /* RGSerializationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGSerializationDelegate.h; sourceTree = "<group>"; };
 		BE763B7D1C5EEF980095C4D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE763B801C5EF0AA0095C4D5 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		BE763B821C5EF0AF0095C4D5 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
@@ -149,6 +150,14 @@
 			name = Classes;
 			sourceTree = "<group>";
 		};
+		BE3B84FA1CD6EDC90040067D /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BE3B84FB1CD6EDE60040067D /* RGSerializationDelegate.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
 		BEB2A33B1C51FE7C00B0BE03 = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +181,7 @@
 		BEB2A3461C51FE7C00B0BE03 /* RestGoatee */ = {
 			isa = PBXGroup;
 			children = (
+				BE3B84FA1CD6EDC90040067D /* Protocols */,
 				BE1CCD4B1C52009100267D5C /* Classes */,
 				BE1CCD4A1C52008200267D5C /* Categories */,
 				BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */,
