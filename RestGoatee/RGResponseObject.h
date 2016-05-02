@@ -26,30 +26,28 @@
 @class NSManagedObjectContext;
 
 /**
- Encapsulate the complete response from a request to RGAPIClient.  The presence of `error` precludes `responseBody` from having a value.
+ @brief Encapsulate the complete response from a request to RGAPIClient.  The presence of `error` precludes
+  `responseBody` from having a value.
  */
 @interface RGResponseObject : NSObject
 
 /**
- In the event of a successful request, this parameter will contain an array of the specified deserialization class.  If no deserialization class was specified or one could not be constructed it will contain the raw json response (up to the json keypath if it was specified).
- 
- Otherwise `nil`.
+ @brief In the event of a successful request, this parameter will contain an array of the specified deserialization
+  class.  If no deserialization class was specified or one could not be constructed it will contain the raw json
+  response (up to the json keypath if it was specified).  Otherwise `nil`.
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, strong) NSArray RG_GENERIC(__kindof NSObject*) * responseBody;
 
 /**
- If there was an error, this will contain the highest level error.  The HTTP status code of the response can be found at `-HTTPStatusCode` if that was the reason for the error.
- 
- Any response data that was available at the time of the error will be present on the property `extraData`.
- 
- Otherwise `nil`.
+ @brief If there was an error, this will contain the highest level error.  The HTTP status code of the response can be
+  found at `-HTTPStatusCode` if that was the reason for the error.  Any response data that was available at the time of
+  the error will be present on the property `extraData`.  Otherwise `nil`.
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, strong) NSError* error;
 
 /**
- If the type of the provided deserialization class is a subclass of `NSManagedObject` then this property is the context that the response was created in.
- 
- Otherwise `nil`.
+ @brief If the type of the provided deserialization class is a subclass of `NSManagedObject` then this property is the
+  context that the response was created in.  Otherwise `nil`.
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, strong) NSManagedObjectContext* context;
 
