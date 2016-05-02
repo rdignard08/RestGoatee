@@ -46,6 +46,7 @@
   anyway.
  @param error The error that failed the request.
  @param count The number of times this request has been retried before.
+ @return `YES` if the given request which failed, should be retried.
  */
 - (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request
                    response:(RG_PREFIX_NULLABLE NSURLResponse*)response
@@ -55,6 +56,8 @@
 /**
  @brief Return a non-`nil` key to have `NSManagedObject`s be reconciled to an existing object if the value of this key
   matches.
+ @param cls The type for which you are reconciling.
+ @return a non-null key to reconcil if two instances of `cls` are equal.  `nil` will always mean not equal.
  */
 - (RG_PREFIX_NULLABLE NSString*) keyForReconciliationOfType:(RG_PREFIX_NONNULL Class)cls;
 
@@ -62,6 +65,6 @@
  @brief Enable basic XML to JSON parsing. If you want the `NSXMLParser` it will be passed back as the `responseBody`
   when `NO`.  Defaults to `NO`.
  */
-- (BOOL) shouldSerializeXML;
+@property (nonatomic, assign, readonly) BOOL shouldSerializeXML;
 
 @end
