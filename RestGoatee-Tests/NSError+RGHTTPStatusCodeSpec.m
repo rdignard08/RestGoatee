@@ -32,7 +32,7 @@
 @implementation NSError_RGHTTPStatusCodeSpec
 
 - (void) testStatusCodeNil {
-    NSError* error = [NSError new];
+    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
     XCTAssert(error.HTTPStatusCode == 0);
 }
 
@@ -43,12 +43,12 @@
 }
 
 - (void) testExtraDataNil {
-    NSError* error = [NSError new];
+    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
     XCTAssert(error.extraData == nil);
 }
 
 - (void) testSetExtraData {
-    NSError* error = [NSError new];
+    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
     error.extraData = @"foobar";
     XCTAssert([error.extraData isEqual:@"foobar"]);
 }
