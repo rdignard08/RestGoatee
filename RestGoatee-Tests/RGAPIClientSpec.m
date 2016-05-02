@@ -60,6 +60,35 @@ static NSString* data = @"{"
                             @"]"
                         @"}";
 
+static NSString *xmlData = @"<xml>"
+                                @"<object>"
+                                    @"<value>"
+                                        @"42"
+                                    @"</value>"
+                                @"</object>"
+                            @"</xml>";
+
+@interface RGXMLTestObj : NSObject <RGSerializationDelegate>
+
+@property (nonatomic, strong) NSString *value;
+
+@end
+
+@implementation RGXMLTestObj
+
+- (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request
+                   response:(RG_PREFIX_NULLABLE NSURLResponse*)response
+                      error:(RG_PREFIX_NONNULL NSError*)error
+                 retryCount:(NSUInteger)count {
+    return NO;
+}
+
+- (BOOL) shouldSerializeXML {
+    return YES;
+}
+
+@end
+
 @interface RGAPIClient (TestOverride)
 
 @property (nonatomic, strong) NSMutableDictionary* recordedResponses;
@@ -101,7 +130,12 @@ static NSString* data = @"{"
 - (void) override_request:(NSString*)method url:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context count:(NSUInteger)count {
     NSString* recordedResponse = self.recordedResponses[url];
     if (recordedResponse) {
-        NSDictionary* response = [NSJSONSerialization JSONObjectWithData:[recordedResponse dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        id response;
+        if ([recordedResponse hasPrefix:@"<xml>"]) {
+            response = [[NSXMLParser alloc] initWithData:[recordedResponse dataUsingEncoding:NSUTF8StringEncoding]];
+        } else {
+            response = [NSJSONSerialization JSONObjectWithData:[recordedResponse dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
                 completion([self responseObjectFromBody:response keyPath:path class:cls context:context error:nil]);
@@ -144,6 +178,26 @@ static NSString* data = @"{"
         XCTAssert(response.error);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
+- (void) testXMLEndpoint {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    RGXMLTestObj* delegate = [RGXMLTestObj new];
+    client.serializationDelegate = delegate;
+    client.recordedResponses[@"https://google.com/xml"] = xmlData;
+    objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObj self] completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.responseBody.count == 1);
+        XCTAssert([[(RGXMLTestObj*)response.responseBody[0] value] isEqual:@"42"]);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, @selector(serializationDelegate), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (error) {
             XCTFail(@"Something went wrong.");
         }
