@@ -200,14 +200,30 @@
 		BEF5FD561C520128006EACA8 /* RestGoatee-Tests */ = {
 			isa = PBXGroup;
 			children = (
+				BEFD29F61CFB87FA00935FAA /* Specs */,
+				BEFD29F51CFB87BE00935FAA /* Support */,
+			);
+			path = "RestGoatee-Tests";
+			sourceTree = "<group>";
+		};
+		BEFD29F51CFB87BE00935FAA /* Support */ = {
+			isa = PBXGroup;
+			children = (
 				BEF5FD591C520128006EACA8 /* Info.plist */,
-				BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */,
-				BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */,
-				BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */,
 				BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */,
 				BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */,
 			);
-			path = "RestGoatee-Tests";
+			name = Support;
+			sourceTree = "<group>";
+		};
+		BEFD29F61CFB87FA00935FAA /* Specs */ = {
+			isa = PBXGroup;
+			children = (
+				BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */,
+				BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */,
+				BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */,
+			);
+			name = Specs;
 			sourceTree = "<group>";
 		};
 		EFE1E582472B95F75A1421E4 /* Pods */ = {
