@@ -7,9 +7,9 @@ let package = Package(
     ],
     dependencies: [
         .Package(url: "https://github.com/rdignard08/RestGoatee-Core.git",
-                 majorVersion: 2.1),
+                 majorVersion: 2.3),
         .Package(url: "https://github.com/AFNetworking/AFNetworking.git",
-                 majorVersion: 2)
+                 majorVersion: 3)
     ]
 )
 

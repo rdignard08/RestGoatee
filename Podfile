@@ -1,2 +1,2 @@
-pod 'RestGoatee-Core', '= 2.1.5'
+pod 'RestGoatee-Core', '~> 2.0'
 pod 'AFNetworking', '~> 3.0'
