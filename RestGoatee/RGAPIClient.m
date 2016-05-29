@@ -104,7 +104,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         }];
     }
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
-    for (id entry in target) {
+    for (NSUInteger i = 0; i < target.count; i++) {
+        id entry = target[i];
         if (([entry isKindOfClass:[NSDictionary class]] || [entry conformsToProtocol:@protocol(RGDataSource)]) &&
             primaryKey &&
             allObjects &&
