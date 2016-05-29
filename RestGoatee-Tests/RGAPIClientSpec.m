@@ -26,74 +26,8 @@
 #import "RGAPIClient.h"
 #import <objc/runtime.h>
 #import "RGSerializationDelegate.h"
-
-static NSString* data = @"{"
-                            @"\"resultCount\":50,"
-                            @"\"results\": ["
-                                @"{"
-                                    @"\"wrapperType\":\"track\","
-                                    @"\"kind\":\"song\","
-                                    @"\"artistId\":487143,"
-                                    @"\"collectionId\":1065975633,"
-                                    @"\"trackId\":1065976170,"
-                                    @"\"artistName\":\"Pink Floyd\","
-                                    @"\"collectionName\":\"The Wall\","
-                                    @"\"trackName\":\"Comfortably Numb\","
-                                    @"\"collectionCensoredName\":\"The Wall\","
-                                    @"\"trackCensoredName\":\"Comfortably Numb\","
-                                    @"\"collectionPrice\":16.99,"
-                                    @"\"trackPrice\":1.29,"
-                                    @"\"releaseDate\":\"1979-11-30T08:00:00Z\","
-                                    @"\"collectionExplicitness\":\"notExplicit\","
-                                    @"\"trackExplicitness\":\"notExplicit\","
-                                    @"\"discCount\":2,"
-                                    @"\"discNumber\":2,"
-                                    @"\"trackCount\":13,"
-                                    @"\"trackNumber\":6,"
-                                    @"\"trackTimeMillis\":382297,"
-                                    @"\"country\":\"USA\","
-                                    @"\"currency\":\"USD\","
-                                    @"\"primaryGenreName\":\"Rock\","
-                                    @"\"radioStationUrl\":\"https://itunes.apple.com/station/idra.1065976170\","
-                                    @"\"isStreamable\":true"
-                                @"}"
-                            @"]"
-                        @"}";
-
-static NSString *xmlData = @"<xml>"
-                                @"<object>"
-                                    @"<value>"
-                                        @"42"
-                                    @"</value>"
-                                @"</object>"
-                            @"</xml>";
-
-@interface RGXMLTestObj : NSObject <RGSerializationDelegate>
-
-@property (nonatomic, strong) NSString *value;
-
-@end
-
-@implementation RGXMLTestObj
-
-- (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request
-                   response:(RG_PREFIX_NULLABLE NSURLResponse*)response
-                      error:(RG_PREFIX_NONNULL NSError*)error
-                 retryCount:(NSUInteger)count {
-    return count < 2;
-}
-
-- (BOOL) shouldSerializeXML {
-    return YES;
-}
-
-@end
-
-@interface RGAPIClient (TestOverride)
-
-@property (nonatomic, strong) NSMutableDictionary* recordedResponses;
-
-@end
+#import "RGTapeDeck.h"
+#import "RGXMLTestObject.h"
 
 @interface RGAPIClient (RGForwardDecl)
 
@@ -105,59 +39,21 @@ static NSString *xmlData = @"<xml>"
 
 @end
 
-@implementation RGAPIClient (TestOverride)
-
-- (NSMutableDictionary*) recordedResponses {
-    id ret = objc_getAssociatedObject(self, @selector(recordedResponses));
-    if (!ret) {
-        ret = [NSMutableDictionary new];
-        objc_setAssociatedObject(self, @selector(recordedResponses), ret, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    return ret;
-}
-
-- (void) setRecordedResponses:(NSMutableDictionary*)recordedResponses {
-    objc_setAssociatedObject(self, @selector(recordedResponses), recordedResponses, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-+ (void) load {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-    rg_swizzle(self, @selector(request:url:parameters:keyPath:class:completion:context:count:), @selector(override_request:url:parameters:keyPath:class:completion:context:count:));
-#pragma clang diagnostic pop
-}
-
-- (void) override_request:(NSString*)method url:(NSString*)url parameters:(RG_PREFIX_NULLABLE NSDictionary*)parameters keyPath:(RG_PREFIX_NULLABLE NSString*)path class:(RG_PREFIX_NULLABLE Class)cls completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context count:(NSUInteger)count {
-    NSString* recordedResponse = self.recordedResponses[url];
-    if (recordedResponse) {
-        id response;
-        if ([recordedResponse hasPrefix:@"<xml>"]) {
-            response = [[NSXMLParser alloc] initWithData:[recordedResponse dataUsingEncoding:NSUTF8StringEncoding]];
-        } else {
-            response = [NSJSONSerialization JSONObjectWithData:[recordedResponse dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) {
-                completion([self responseObjectFromBody:response keyPath:path class:cls context:context error:nil]);
-            }
-        });
-    } else {
-        [self override_request:method url:url parameters:parameters keyPath:path class:cls completion:completion context:context count:count];
-    }
-}
-
-@end
-
 @interface RGAPIClientSpec : XCTestCase
 
 @end
 
 @implementation RGAPIClientSpec
 
+- (void) tearDown {
+    [super tearDown];
+    [[RGTapeDeck sharedTapeDeck] removeAllTapes];
+}
+
 - (void) testGetSearch {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
-    client.recordedResponses[@"https://itunes.apple.com/search"] = data;
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
         XCTAssert(response.responseBody);
@@ -167,34 +63,75 @@ static NSString *xmlData = @"<xml>"
             XCTFail(@"Something went wrong.");
         }
     }];
+    [[RGTapeDeck sharedTapeDeck] removeTapeForURL:@"https://itunes.apple.com/search"];
 }
 
-- (void) testCallReal {
+//- (void) testCallReal {
+//    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+//    RGAPIClient* client = [RGAPIClient manager];
+//    [client.recordedResponses removeObjectForKey:@"https://google.com/logout"];
+//    [client POST:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+//        [expectation fulfill];
+//        XCTAssert(response.error);
+//    }];
+//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+//        if (error) {
+//            XCTFail(@"Something went wrong.");
+//        }
+//    }];
+//}
+
+- (void) testXMLEndpoint {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
-    [client.recordedResponses removeObjectForKey:@"https://google.com/logout"];
-    [client POST:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
+    client.serializationDelegate = delegate;
+    client.responseSerializer = [AFXMLParserResponseSerializer serializer];
+    [[RGTapeDeck sharedTapeDeck] playTape:@"xml_data.txt" forURL:@"https://google.com/xml" withCode:200];
+    objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
         [expectation fulfill];
-        XCTAssert(response.error);
+        XCTAssert(response.responseBody.count == 1);
+        XCTAssert([[(RGXMLTestObject*)response.responseBody[0] value] isEqual:@"42"]);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, @selector(serializationDelegate), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (error) {
             XCTFail(@"Something went wrong.");
         }
     }];
 }
 
-- (void) testXMLEndpoint {
+- (void) testBadXML {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
-    RGXMLTestObj* delegate = [RGXMLTestObj new];
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
     client.serializationDelegate = delegate;
-    client.recordedResponses[@"https://google.com/xml"] = xmlData;
+    client.responseSerializer = [AFXMLParserResponseSerializer serializer];
+    [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/xml" withCode:400];
     objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObj self] completion:^(RGResponseObject* response) {
+    [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
         [expectation fulfill];
-        XCTAssert(response.responseBody.count == 1);
-        XCTAssert([[(RGXMLTestObj*)response.responseBody[0] value] isEqual:@"42"]);
+        XCTAssert(response.error);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, @selector(serializationDelegate), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
+- (void) testXMLNoParsing {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
+    client.responseSerializer = [AFXMLParserResponseSerializer serializer];
+    [[RGTapeDeck sharedTapeDeck] playTape:@"xml_data.txt" forURL:@"https://google.com/xml" withCode:200];
+    objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert([response.responseBody isKindOfClass:[NSXMLParser self]]);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
         objc_setAssociatedObject(client, @selector(serializationDelegate), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -207,7 +144,7 @@ static NSString *xmlData = @"<xml>"
 - (void) testPostGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
-    client.recordedResponses[@"https://google.com/logout"] = @"";
+    [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/logout" withCode:400];
     [client POST:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
         XCTAssert(!response.responseBody.count);
@@ -222,7 +159,7 @@ static NSString *xmlData = @"<xml>"
 - (void) testPutGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
-    client.recordedResponses[@"https://google.com/logout"] = @"";
+    [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/logout" withCode:400];
     [client PUT:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
         XCTAssert(!response.responseBody.count);
@@ -237,7 +174,7 @@ static NSString *xmlData = @"<xml>"
 - (void) testDeleteGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
-    client.recordedResponses[@"https://google.com/logout"] = @"";
+    [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/logout" withCode:400];
     [client DELETE:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
         XCTAssert(!response.responseBody.count);

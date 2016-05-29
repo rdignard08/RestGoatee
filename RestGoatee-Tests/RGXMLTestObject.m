@@ -1,4 +1,4 @@
-/* Copyright (c) 02/07/2016, Ryan Dignard
+/* Copyright (c) 05/29/2016, Ryan Dignard
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -21,36 +21,24 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
-#import "NSError+RG_HTTPStatusCode.h"
+#import "RGXMLTestObject.h"
 
-@interface NSError_RGHTTPStatusCodeSpec : XCTestCase
+@implementation RGXMLTestObject
 
-@end
-
-@implementation NSError_RGHTTPStatusCodeSpec
-
-- (void) testStatusCodeNil {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    XCTAssert(error.HTTPStatusCode == 0);
+- (void) setValue:(NSString*)value {
+    value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    _value = value;
 }
 
-- (void) testSetStatusCode {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    error.HTTPStatusCode = 400;
-    XCTAssert(error.HTTPStatusCode == 400);
+- (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request
+                   response:(RG_PREFIX_NULLABLE NSURLResponse*)response
+                      error:(RG_PREFIX_NONNULL NSError*)error
+                 retryCount:(NSUInteger)count {
+    return count <= 2;
 }
 
-- (void) testExtraDataNil {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    XCTAssert(error.extraData == nil);
-}
-
-- (void) testSetExtraData {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    error.extraData = @"foobar";
-    XCTAssert([error.extraData isEqual:@"foobar"]);
+- (BOOL) shouldSerializeXML {
+    return YES;
 }
 
 @end

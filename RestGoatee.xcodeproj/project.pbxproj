@@ -36,6 +36,10 @@
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
 		BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
+		BEFD29F91CFB883800935FAA /* RGTapeDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD29F81CFB883800935FAA /* RGTapeDeck.m */; };
+		BEFD29FC1CFB8A6300935FAA /* itunes_search_json.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEFD29FB1CFB8A6300935FAA /* itunes_search_json.txt */; };
+		BEFD29FE1CFB8CA600935FAA /* xml_data.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEFD29FD1CFB8CA600935FAA /* xml_data.txt */; };
+		BEFD2A011CFB8CF800935FAA /* RGXMLTestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD2A001CFB8CF800935FAA /* RGXMLTestObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +100,12 @@
 		BEF5FD551C520128006EACA8 /* RestGoatee-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RestGoatee-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGAPIClientSpec.m; sourceTree = "<group>"; };
 		BEF5FD591C520128006EACA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BEFD29F71CFB883800935FAA /* RGTapeDeck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGTapeDeck.h; sourceTree = "<group>"; };
+		BEFD29F81CFB883800935FAA /* RGTapeDeck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGTapeDeck.m; sourceTree = "<group>"; };
+		BEFD29FB1CFB8A6300935FAA /* itunes_search_json.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itunes_search_json.txt; sourceTree = "<group>"; };
+		BEFD29FD1CFB8CA600935FAA /* xml_data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = xml_data.txt; sourceTree = "<group>"; };
+		BEFD29FF1CFB8CF800935FAA /* RGXMLTestObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGXMLTestObject.h; sourceTree = "<group>"; };
+		BEFD2A001CFB8CF800935FAA /* RGXMLTestObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGXMLTestObject.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +212,7 @@
 			children = (
 				BEFD29F61CFB87FA00935FAA /* Specs */,
 				BEFD29F51CFB87BE00935FAA /* Support */,
+				BEFD29FA1CFB89D500935FAA /* Tapes */,
 			);
 			path = "RestGoatee-Tests";
 			sourceTree = "<group>";
@@ -212,6 +223,10 @@
 				BEF5FD591C520128006EACA8 /* Info.plist */,
 				BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */,
 				BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */,
+				BEFD29F71CFB883800935FAA /* RGTapeDeck.h */,
+				BEFD29F81CFB883800935FAA /* RGTapeDeck.m */,
+				BEFD29FF1CFB8CF800935FAA /* RGXMLTestObject.h */,
+				BEFD2A001CFB8CF800935FAA /* RGXMLTestObject.m */,
 			);
 			name = Support;
 			sourceTree = "<group>";
@@ -224,6 +239,15 @@
 				BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */,
 			);
 			name = Specs;
+			sourceTree = "<group>";
+		};
+		BEFD29FA1CFB89D500935FAA /* Tapes */ = {
+			isa = PBXGroup;
+			children = (
+				BEFD29FB1CFB8A6300935FAA /* itunes_search_json.txt */,
+				BEFD29FD1CFB8CA600935FAA /* xml_data.txt */,
+			);
+			name = Tapes;
 			sourceTree = "<group>";
 		};
 		EFE1E582472B95F75A1421E4 /* Pods */ = {
@@ -321,6 +345,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEFD29FE1CFB8CA600935FAA /* xml_data.txt in Resources */,
+				BEFD29FC1CFB8A6300935FAA /* itunes_search_json.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,10 +413,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEFD29F91CFB883800935FAA /* RGTapeDeck.m in Sources */,
 				BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */,
 				BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */,
 				BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */,
 				BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */,
+				BEFD2A011CFB8CF800935FAA /* RGXMLTestObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

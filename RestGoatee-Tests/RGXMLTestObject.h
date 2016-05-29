@@ -1,4 +1,4 @@
-/* Copyright (c) 02/07/2016, Ryan Dignard
+/* Copyright (c) 05/29/2016, Ryan Dignard
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -22,35 +22,10 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
-#import "NSError+RG_HTTPStatusCode.h"
+#import "RestGoatee.h"
 
-@interface NSError_RGHTTPStatusCodeSpec : XCTestCase
+@interface RGXMLTestObject : NSObject <RGSerializationDelegate>
 
-@end
-
-@implementation NSError_RGHTTPStatusCodeSpec
-
-- (void) testStatusCodeNil {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    XCTAssert(error.HTTPStatusCode == 0);
-}
-
-- (void) testSetStatusCode {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    error.HTTPStatusCode = 400;
-    XCTAssert(error.HTTPStatusCode == 400);
-}
-
-- (void) testExtraDataNil {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    XCTAssert(error.extraData == nil);
-}
-
-- (void) testSetExtraData {
-    NSError* error = [NSError errorWithDomain:NSGenericException code:0 userInfo:nil];
-    error.extraData = @"foobar";
-    XCTAssert([error.extraData isEqual:@"foobar"]);
-}
+@property (nonatomic, strong) NSString* value;
 
 @end

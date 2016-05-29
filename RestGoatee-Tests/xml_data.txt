@@ -1,0 +1,7 @@
+<xml>
+    <object>
+        <value>
+            42
+        </value>
+    </object>
+</xml>
