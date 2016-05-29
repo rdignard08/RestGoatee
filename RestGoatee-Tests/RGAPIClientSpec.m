@@ -80,7 +80,7 @@ static NSString *xmlData = @"<xml>"
                    response:(RG_PREFIX_NULLABLE NSURLResponse*)response
                       error:(RG_PREFIX_NONNULL NSError*)error
                  retryCount:(NSUInteger)count {
-    return NO;
+    return count < 2;
 }
 
 - (BOOL) shouldSerializeXML {
