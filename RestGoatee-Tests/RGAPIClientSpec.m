@@ -229,8 +229,11 @@
     objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
         [expectation fulfill];
-        XCTAssert(response.responseBody.count == 1);
-        XCTAssert([[(RGXMLTestObject*)response.responseBody[0] value] isEqual:@"42"]);
+        XCTAssert(response.responseBody.count == 2);
+        RGXMLTestObject* obj1 = response.responseBody.firstObject;
+        RGXMLTestObject* obj2 = response.responseBody.lastObject;
+        XCTAssert([obj1.value isEqual:@"42"]);
+        XCTAssert([obj2.value isEqual:@"43"]);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
         objc_setAssociatedObject(client, @selector(serializationDelegate), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
