@@ -51,7 +51,7 @@
     [[RGTapeDeck sharedTapeDeck] removeAllTapes];
 }
 
-- (void) testManagedObjects {
+- (void) testManagedObjectsWithoutDelegate {
     NSEntityDescription* entity = [NSEntityDescription new];
     entity.name = NSStringFromClass([RGTestManagedObject self]);
     entity.managedObjectClassName = entity.name;
@@ -73,6 +73,28 @@
         XCTAssert([obj1.trackName isEqual:@"Comfortably Numb"]);
         XCTAssert([obj2.trackId isEqual:@"1065976170"]);
         XCTAssert([obj2.trackName isEqual:@"Comfortably Numb"]);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
+- (void) testManagedObjectsWithDelegate {
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.serializationDelegate = delegate;
+    objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGTestManagedObject self] completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.responseBody.count == 1);
+        RGTestManagedObject* obj = response.responseBody.firstObject;
+        XCTAssert([obj.trackId isEqual:@"1065976170"]);
+        XCTAssert([obj.trackName isEqual:@"Comfortably Numb"]);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
         objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

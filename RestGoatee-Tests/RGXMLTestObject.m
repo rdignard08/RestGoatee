@@ -22,12 +22,29 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "RGXMLTestObject.h"
+#import "RGTestManagedObject.h"
 
 @implementation RGXMLTestObject
 
 - (void) setValue:(NSString*)value {
     value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     _value = value;
+}
+
+- (NSManagedObjectContext*) contextForManagedObjectType:(NSString *)type {
+    NSEntityDescription* entity = [NSEntityDescription new];
+    entity.name = NSStringFromClass([RGTestManagedObject self]);
+    entity.managedObjectClassName = entity.name;
+    NSManagedObjectModel* model = [NSManagedObjectModel new];
+    model.entities = @[ entity ];
+    NSPersistentStoreCoordinator* store = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSManagedObjectContext* context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    context.persistentStoreCoordinator = store;
+    return context;
+}
+
+- (RG_PREFIX_NULLABLE NSString*) keyForReconciliationOfType:(RG_PREFIX_NONNULL Class)cls {
+    return @"trackId";
 }
 
 - (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request

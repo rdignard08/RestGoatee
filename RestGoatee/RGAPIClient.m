@@ -115,6 +115,13 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
                                                                     inSortedRange:NSMakeRange(0, allObjects.count)
                                                                           options:NSBinarySearchingFirstEqual
                                                                   usingComparator:comparator];
+            NSUInteger currentIndex = [[ret valueForKey:primaryKey] indexOfObjectPassingTest:^BOOL (id obj, __unused NSUInteger idx, __unused BOOL* stop) {
+                return comparator(obj, keyValue) == NSOrderedSame;
+            }];
+            if (currentIndex != NSNotFound) {
+                RGLog(@"Warning, duplicate object present in response discarded %@ with key %@", cls, keyValue);
+                continue;
+            }
             if (index == NSNotFound) {
                 [ret addObject:[cls objectFromDataSource:entry inContext:context]]; /* New Object */
             } else {
