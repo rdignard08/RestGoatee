@@ -40,6 +40,8 @@
 		BEFD29FC1CFB8A6300935FAA /* itunes_search_json.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEFD29FB1CFB8A6300935FAA /* itunes_search_json.txt */; };
 		BEFD29FE1CFB8CA600935FAA /* xml_data.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEFD29FD1CFB8CA600935FAA /* xml_data.txt */; };
 		BEFD2A011CFB8CF800935FAA /* RGXMLTestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD2A001CFB8CF800935FAA /* RGXMLTestObject.m */; };
+		BEFD2A041CFBC25A00935FAA /* RGTestManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD2A031CFBC25A00935FAA /* RGTestManagedObject.m */; };
+		BEFD2A061CFBC27900935FAA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFD2A051CFBC27900935FAA /* CoreData.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +108,9 @@
 		BEFD29FD1CFB8CA600935FAA /* xml_data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = xml_data.txt; sourceTree = "<group>"; };
 		BEFD29FF1CFB8CF800935FAA /* RGXMLTestObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGXMLTestObject.h; sourceTree = "<group>"; };
 		BEFD2A001CFB8CF800935FAA /* RGXMLTestObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGXMLTestObject.m; sourceTree = "<group>"; };
+		BEFD2A021CFBC25A00935FAA /* RGTestManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGTestManagedObject.h; sourceTree = "<group>"; };
+		BEFD2A031CFBC25A00935FAA /* RGTestManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGTestManagedObject.m; sourceTree = "<group>"; };
+		BEFD2A051CFBC27900935FAA /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEFD2A061CFBC27900935FAA /* CoreData.framework in Frameworks */,
 				BE763B7F1C5EF0910095C4D5 /* UIKit.framework in Frameworks */,
 				BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */,
 			);
@@ -135,6 +141,7 @@
 		89520671F6DFFF4060849895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BEFD2A051CFBC27900935FAA /* CoreData.framework */,
 				BE3B84FE1CD6F9FA0040067D /* libRestGoatee-Core.a */,
 				BE3B84FC1CD6F9F60040067D /* libAFNetworking.a */,
 				BE763B841C5EF51F0095C4D5 /* libPods.a */,
@@ -225,6 +232,8 @@
 				BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */,
 				BEFD29F71CFB883800935FAA /* RGTapeDeck.h */,
 				BEFD29F81CFB883800935FAA /* RGTapeDeck.m */,
+				BEFD2A021CFBC25A00935FAA /* RGTestManagedObject.h */,
+				BEFD2A031CFBC25A00935FAA /* RGTestManagedObject.m */,
 				BEFD29FF1CFB8CF800935FAA /* RGXMLTestObject.h */,
 				BEFD2A001CFB8CF800935FAA /* RGXMLTestObject.m */,
 			);
@@ -419,6 +428,7 @@
 				BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */,
 				BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */,
 				BEFD2A011CFB8CF800935FAA /* RGXMLTestObject.m in Sources */,
+				BEFD2A041CFBC25A00935FAA /* RGTestManagedObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
