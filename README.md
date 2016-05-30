@@ -14,7 +14,7 @@ RestGoatee is an add-on framework to AFNetworking; taking the raw `NSDictionary`
 
 This library deals solely with networking, and uses the underlying pod, [RestGoatee-Core](https://github.com/rdignard08/RestGoatee-Core) for deserializing JSON and XML.
 
-Supports: iOS 6.0+ and AFNetworking 2.0.0+, branch v1.5.4 supports down to AFNetworking 1.3.3 (does not have XML support).
+Supports: iOS 7.0+ and AFNetworking 3.x, below version 2.6 supports AFNetworking 2.x, branch v1.5.4 supports down to AFNetworking 1.3.3 (does not have XML support).
 
 This library's aim is one of simplicity in the common case and extensibility in the general case:<br/>
 1) The "API reponse to working objects" operation is not the place for business logic or key translation.<br/>
