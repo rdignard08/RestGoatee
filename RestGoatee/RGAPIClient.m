@@ -119,12 +119,13 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             entry[primaryKey]) {
             id keyValue = [entry isKindOfClass:[RGXMLNode class]] ? [entry[primaryKey] innerXML] : entry[primaryKey];
             NSArray* existingKeys = [allObjects valueForKey:primaryKey];
+            NSArray* newKeys = [ret valueForKey:primaryKey];
             NSUInteger index = [existingKeys indexOfObject:keyValue
                                              inSortedRange:NSMakeRange(0, allObjects.count)
                                                    options:NSBinarySearchingFirstEqual
                                            usingComparator:comparator];
             __block NSUInteger currentIndex = NSNotFound;
-            [existingKeys enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL* stop) {
+            [newKeys enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL* stop) {
                 if (comparator(obj, keyValue) == NSOrderedSame) {
                     currentIndex = idx;
                     *stop = YES;
