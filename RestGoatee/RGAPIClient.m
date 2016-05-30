@@ -118,12 +118,17 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             allObjects &&
             entry[primaryKey]) {
             id keyValue = [entry isKindOfClass:[RGXMLNode class]] ? [entry[primaryKey] innerXML] : entry[primaryKey];
-            NSUInteger index = [[allObjects valueForKey:primaryKey] indexOfObject:keyValue
-                                                                    inSortedRange:NSMakeRange(0, allObjects.count)
-                                                                          options:NSBinarySearchingFirstEqual
-                                                                  usingComparator:comparator];
-            NSUInteger currentIndex = [[ret valueForKey:primaryKey] indexOfObjectPassingTest:^BOOL (id obj, __unused NSUInteger idx, __unused BOOL* stop) {
-                return comparator(obj, keyValue) == NSOrderedSame;
+            NSArray* existingKeys = [allObjects valueForKey:primaryKey];
+            NSUInteger index = [existingKeys indexOfObject:keyValue
+                                             inSortedRange:NSMakeRange(0, allObjects.count)
+                                                   options:NSBinarySearchingFirstEqual
+                                           usingComparator:comparator];
+            __block NSUInteger currentIndex = NSNotFound;
+            [existingKeys enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL* stop) {
+                if (comparator(obj, keyValue) == NSOrderedSame) {
+                    currentIndex = idx;
+                    *stop = YES;
+                }
             }];
             if (currentIndex != NSNotFound) {
                 RGLog(@"Warning, duplicate object present in response discarded %@ with key %@", cls, keyValue);
@@ -229,7 +234,12 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
      keyPath:(RG_PREFIX_NULLABLE NSString*)path
        class:(RG_PREFIX_NULLABLE Class)cls
   completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
-    [self GET:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
+    [self GET:url
+   parameters:parameters
+      keyPath:path
+        class:cls
+      context:nil
+   completion:completion];
 }
 
 - (void) GET:(NSString*)url
@@ -253,7 +263,12 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
       keyPath:(RG_PREFIX_NULLABLE NSString*)path
         class:(RG_PREFIX_NULLABLE Class)cls
    completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
-    [self POST:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
+    [self POST:url
+    parameters:parameters
+       keyPath:path
+         class:cls
+       context:nil
+    completion:completion];
 }
 
 - (void) POST:(NSString*)url
@@ -277,7 +292,12 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
      keyPath:(RG_PREFIX_NULLABLE NSString*)path
        class:(RG_PREFIX_NULLABLE Class)cls
   completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
-    [self PUT:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
+    [self PUT:url
+   parameters:parameters
+      keyPath:path
+        class:cls
+      context:nil
+   completion:completion];
 }
 
 - (void) PUT:(NSString*)url
@@ -301,7 +321,12 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         keyPath:(RG_PREFIX_NULLABLE NSString*)path
           class:(RG_PREFIX_NULLABLE Class)cls
      completion:(RG_PREFIX_NULLABLE RGResponseBlock)completion {
-    [self DELETE:url parameters:parameters keyPath:path class:cls context:nil completion:completion];
+    [self DELETE:url
+      parameters:parameters
+         keyPath:path
+           class:cls
+         context:nil
+      completion:completion];
 }
 
 - (void) DELETE:(NSString*)url
