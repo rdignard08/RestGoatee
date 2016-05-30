@@ -4,7 +4,6 @@
 [![Pod Version](https://img.shields.io/cocoapods/v/RestGoatee.svg)](https://cocoapods.org/pods/RestGoatee)
 [![Pod Platform](http://img.shields.io/cocoapods/p/RestGoatee.svg?style=flat)](http://cocoadocs.org/docsets/RestGoatee/)
 [![Pod License](http://img.shields.io/cocoapods/l/RestGoatee.svg?style=flat)](https://github.com/rdignard08/RestGoatee/blob/master/LICENSE)
-[![Dependency Status](https://www.versioneye.com/objective-c/restgoatee/2.4.0/badge?style=flat)](https://www.versioneye.com/objective-c/restgoatee/2.4.0)
 [![Readme Score](http://readme-score-api.herokuapp.com/score.svg?url=rdignard08/restgoatee)](http://clayallsopp.github.io/readme-score?url=rdignard08/restgoatee)
 
 RestGoatee
