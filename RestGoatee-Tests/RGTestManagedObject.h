@@ -25,7 +25,7 @@
 
 @interface RGTestManagedObject : NSManagedObject
 
-@property (nonatomic, strong) NSString* id;
-@property (nonatomic, strong) NSNumber* fooProperty;
+@property (nonatomic, strong) NSString* trackId;
+@property (nonatomic, strong) NSString* trackName;
 
 @end
