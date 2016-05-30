@@ -51,6 +51,8 @@
         [taskDelegate URLSession:session task:self didCompleteWithError:nil];
     } else {
         NSError* error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1011 userInfo:@{ NSLocalizedDescriptionKey : @"The operation couldn't be completed(-1011)." }];
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:components.URL statusCode:statusCode HTTPVersion:nil headerFields:nil];
+        [self setValue:response forKey:@"response"];
         [taskDelegate URLSession:session task:self didCompleteWithError:error];
     }
 }
