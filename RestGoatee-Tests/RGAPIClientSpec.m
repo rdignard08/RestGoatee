@@ -146,6 +146,22 @@
     [[RGTapeDeck sharedTapeDeck] removeTapeForURL:@"https://itunes.apple.com/search"];
 }
 
+- (void) testGetSearchNoPath {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:nil class:Nil completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.responseBody.count == 1);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+    [[RGTapeDeck sharedTapeDeck] removeTapeForURL:@"https://itunes.apple.com/search"];
+}
+
 - (void) testWithoutCompletion {
     RGAPIClient* client = [RGAPIClient manager];
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
