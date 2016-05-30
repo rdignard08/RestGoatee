@@ -131,7 +131,7 @@
     }];
 }
 
-- (void) testManagedObjectsWithDelegateFetchError {
+- (void) testManagedObjectsWithDelegateFetchError { // TODO: I feel like this should have response.responseBody.count == 1
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.wantsPrimaryKey = YES;
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
