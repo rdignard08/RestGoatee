@@ -92,7 +92,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         NSObject* fetch = [objc_getClass("NSFetchRequest") fetchRequestWithEntityName:NSStringFromClass(cls)];
         NSArray* incomingKeys = [target valueForKey:primaryKey];
         NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
-        for (__strong id value in incomingKeys) {
+        for (NSUInteger i = 0; i < incomingKeys.count; i++) {
+            id value = incomingKeys[i];
             [parsedKeys addObject:[value isKindOfClass:[RGXMLNode class]] ? [value innerXML] : value];
         }
         fetch.predicate = [NSPredicate predicateWithFormat:@"%K in %@", primaryKey, parsedKeys];
