@@ -24,7 +24,7 @@
 #import "RGTestManagedObject.h"
 
 @implementation RGTestManagedObject
-@synthesize trackId = _trackId;
+@dynamic trackId;
 @synthesize trackName = _trackName;
 
 @end

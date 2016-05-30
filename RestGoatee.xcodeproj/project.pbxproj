@@ -43,6 +43,7 @@
 		BEFD2A041CFBC25A00935FAA /* RGTestManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD2A031CFBC25A00935FAA /* RGTestManagedObject.m */; };
 		BEFD2A061CFBC27900935FAA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFD2A051CFBC27900935FAA /* CoreData.framework */; };
 		BEFD2A091CFBD4FF00935FAA /* NSManagedObjectContext+RGNeverHasChanges.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD2A081CFBD4FF00935FAA /* NSManagedObjectContext+RGNeverHasChanges.m */; };
+		BEFD2A0B1CFC1A0200935FAA /* itunes_search_non_dupe.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEFD2A0A1CFC1A0200935FAA /* itunes_search_non_dupe.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,7 @@
 		BEFD2A051CFBC27900935FAA /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		BEFD2A071CFBD4FF00935FAA /* NSManagedObjectContext+RGNeverHasChanges.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+RGNeverHasChanges.h"; sourceTree = "<group>"; };
 		BEFD2A081CFBD4FF00935FAA /* NSManagedObjectContext+RGNeverHasChanges.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+RGNeverHasChanges.m"; sourceTree = "<group>"; };
+		BEFD2A0A1CFC1A0200935FAA /* itunes_search_non_dupe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itunes_search_non_dupe.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				BEFD29FB1CFB8A6300935FAA /* itunes_search_json.txt */,
+				BEFD2A0A1CFC1A0200935FAA /* itunes_search_non_dupe.txt */,
 				BEFD29FD1CFB8CA600935FAA /* xml_data.txt */,
 			);
 			name = Tapes;
@@ -361,6 +364,7 @@
 			files = (
 				BEFD29FE1CFB8CA600935FAA /* xml_data.txt in Resources */,
 				BEFD29FC1CFB8A6300935FAA /* itunes_search_json.txt in Resources */,
+				BEFD2A0B1CFC1A0200935FAA /* itunes_search_non_dupe.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

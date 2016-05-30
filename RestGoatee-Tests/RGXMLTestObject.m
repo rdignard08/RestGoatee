@@ -32,14 +32,23 @@
 }
 
 - (NSManagedObjectContext*) contextForManagedObjectType:(NSString *)type {
-    NSEntityDescription* entity = [NSEntityDescription new];
-    entity.name = NSStringFromClass([RGTestManagedObject self]);
-    entity.managedObjectClassName = entity.name;
-    NSManagedObjectModel* model = [NSManagedObjectModel new];
-    model.entities = @[ entity ];
-    NSPersistentStoreCoordinator* store = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    NSManagedObjectContext* context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    context.persistentStoreCoordinator = store;
+    static dispatch_once_t onceToken;
+    static NSManagedObjectContext* context;
+    dispatch_once(&onceToken, ^{
+        NSEntityDescription* entity = [NSEntityDescription new];
+        NSAttributeDescription* idAttribute = [NSAttributeDescription new];
+        idAttribute.attributeType = NSStringAttributeType;
+        idAttribute.name = RG_STRING_SEL(trackId);
+        entity.properties = @[ idAttribute ];
+        entity.name = NSStringFromClass([RGTestManagedObject self]);
+        entity.managedObjectClassName = entity.name;
+        NSManagedObjectModel* model = [NSManagedObjectModel new];
+        model.entities = @[ entity ];
+        NSPersistentStoreCoordinator* store = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+        [store addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:nil];
+        context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        context.persistentStoreCoordinator = store;
+    });
     return context;
 }
 
