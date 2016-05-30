@@ -122,7 +122,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             NSArray* newKeys = [ret valueForKey:primaryKey];
             NSUInteger index = [existingKeys indexOfObject:keyValue
                                              inSortedRange:NSMakeRange(0, allObjects.count)
-                                                   options:NSBinarySearchingFirstEqual
+                                                   options:(NSBinarySearchingOptions)0
                                            usingComparator:comparator];
             __block NSUInteger currentIndex = NSNotFound;
             [newKeys enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL* stop) {
