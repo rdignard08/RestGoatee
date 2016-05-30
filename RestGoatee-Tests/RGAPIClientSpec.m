@@ -131,6 +131,31 @@
     }];
 }
 
+- (void) testManagedObjectsWithDelegateFetchError {
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
+    delegate.wantsPrimaryKey = YES;
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.serializationDelegate = delegate;
+    objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    rg_swizzle([NSManagedObjectContext self], @selector(executeFetchRequest:error:), @selector(override_executeFetchRequest:error:));
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGTestManagedObject self] completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.responseBody.count == 2);
+        RGTestManagedObject* obj = response.responseBody.firstObject;
+        XCTAssert([obj.trackId isEqual:@"1065976170"]);
+        XCTAssert([obj.trackName isEqual:@"Comfortably Numb"]);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        rg_swizzle([NSManagedObjectContext self], @selector(executeFetchRequest:error:), @selector(override_executeFetchRequest:error:));
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
 - (void) testManagedObjectsDelegateNoPrimary {
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];

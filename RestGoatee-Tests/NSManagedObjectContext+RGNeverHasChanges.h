@@ -27,4 +27,6 @@
 
 - (BOOL) override_hasChanges;
 
+- (NSArray*) override_executeFetchRequest:(id)request error:(NSError**)error;
+
 @end

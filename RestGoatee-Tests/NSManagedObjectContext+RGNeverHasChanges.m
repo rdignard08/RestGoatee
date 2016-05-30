@@ -29,4 +29,9 @@
     return NO;
 }
 
+- (NSArray*) override_executeFetchRequest:(id)request error:(NSError**)error {
+    *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1011 userInfo:nil];
+    return nil;
+}
+
 @end
