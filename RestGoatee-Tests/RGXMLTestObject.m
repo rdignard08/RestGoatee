@@ -44,7 +44,7 @@
 }
 
 - (RG_PREFIX_NULLABLE NSString*) keyForReconciliationOfType:(RG_PREFIX_NONNULL Class)cls {
-    return @"trackId";
+    return self.wantsPrimaryKey ? @"trackId" : nil;
 }
 
 - (BOOL) shouldRetryRequest:(RG_PREFIX_NULLABLE NSURLRequest*)request

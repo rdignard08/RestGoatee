@@ -28,4 +28,6 @@
 
 @property (nonatomic, strong) NSString* value;
 
+@property (nonatomic, assign) BOOL wantsPrimaryKey;
+
 @end
