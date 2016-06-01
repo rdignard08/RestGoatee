@@ -1,5 +1,9 @@
 # RestGoatee CHANGELOG
 
+## 2.6.1
+- Updated README.md such that the lowest supported version of iOS is 7.0 (and Mac equivalent)
+- Binary search slightly changed when searching for existing managed objects
+
 ## 2.6.0
 - Upgraded support to AFNetworking to 3.x
 - Upgraded RestGoatee-Core reference to use any 2.2+ version
