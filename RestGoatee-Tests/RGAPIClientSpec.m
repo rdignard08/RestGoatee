@@ -208,7 +208,8 @@
     RGAPIClient* client = [RGAPIClient manager];
     client.serializationDelegate = delegate;
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesNO));
+    rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesYES));
+    rg_swizzle([NSManagedObjectContext self], @selector(save:), @selector(override_save:));
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGTestManagedObject self] completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -222,7 +223,8 @@
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
         objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesNO));
+        rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesYES));
+        rg_swizzle([NSManagedObjectContext self], @selector(save:), @selector(override_save:));
         if (error) {
             XCTFail(@"Something went wrong.");
         }
