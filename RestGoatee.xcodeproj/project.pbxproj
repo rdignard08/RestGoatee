@@ -30,8 +30,6 @@
 		BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */; };
 		BE3B84FD1CD6F9F60040067D /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE3B84FC1CD6F9F60040067D /* libAFNetworking.a */; };
 		BE3B84FF1CD6F9FA0040067D /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE3B84FE1CD6F9FA0040067D /* libRestGoatee-Core.a */; };
-		BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
-		BE763B7F1C5EF0910095C4D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B7D1C5EEF980095C4D5 /* UIKit.framework */; };
 		BE763B851C5EF51F0095C4D5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B841C5EF51F0095C4D5 /* libPods.a */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
 		BEB695991D1E2C4B00063018 /* itunes_search_as_xml.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEB695981D1E2C4B00063018 /* itunes_search_as_xml.txt */; };
@@ -132,7 +130,6 @@
 				BE3B84FF1CD6F9FA0040067D /* libRestGoatee-Core.a in Frameworks */,
 				BE3B84FD1CD6F9F60040067D /* libAFNetworking.a in Frameworks */,
 				BE763B851C5EF51F0095C4D5 /* libPods.a in Frameworks */,
-				BE763B7E1C5EEF980095C4D5 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,7 +138,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEFD2A061CFBC27900935FAA /* CoreData.framework in Frameworks */,
-				BE763B7F1C5EF0910095C4D5 /* UIKit.framework in Frameworks */,
 				BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
