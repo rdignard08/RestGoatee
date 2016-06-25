@@ -155,7 +155,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         NSError* error;
         @try {
             NSLog(@"hasChanges %@", @([context hasChanges]));
-            if ([context hasChanges] && ![context save:&error]) {
+            if ([context hasChanges] && ![(NSObject*)context save:&error]) {
                 RGLog(@"Error, context save failed with error %@", error);
             }
         } @catch (NSException* e) {
