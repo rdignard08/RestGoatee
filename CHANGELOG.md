@@ -1,5 +1,9 @@
 # RestGoatee CHANGELOG
 
+## 2.6.2
+- Primary key based deserialization now supports the key being an attribute when handling XML
+- Two exceptional cases have been given specific asserts to better aid debugging
+
 ## 2.6.1
 - Updated README.md such that the lowest supported version of iOS is 7.0 (and Mac equivalent)
 - Binary search slightly changed when searching for existing managed objects
