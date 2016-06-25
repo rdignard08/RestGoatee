@@ -260,6 +260,37 @@
     }];
 }
 
+- (void) testManagedObjectsFromXMLAttributes {
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
+    delegate.primaryKey = @"trackId";
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.serializationDelegate = delegate;
+    client.responseSerializer = [AFXMLParserResponseSerializer new];
+    objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_as_xml_id.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search"
+     parameters:@{ @"term" : @"Pink Floyd" }
+        keyPath:@"results.object"
+          class:[RGTestManagedObject self]
+     completion:^(RGResponseObject* response) {
+         [expectation fulfill];
+         XCTAssert(response.responseBody.count == 2);
+         RGTestManagedObject* obj1 = response.responseBody.firstObject;
+         RGTestManagedObject* obj2 = response.responseBody.lastObject;
+         XCTAssert([obj1.trackId isEqual:@"1"]);
+         XCTAssert([obj1.trackName isEqual:@"Money"]);
+         XCTAssert([obj2.trackId isEqual:@"2"]);
+         XCTAssert([obj2.trackName isEqual:@"Time"]);
+     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
 - (void) testGetSearch {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];

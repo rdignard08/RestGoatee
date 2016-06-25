@@ -35,6 +35,7 @@
 		BE763B851C5EF51F0095C4D5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE763B841C5EF51F0095C4D5 /* libPods.a */; };
 		BEB2A3481C51FE7C00B0BE03 /* RestGoatee.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */; };
 		BEB695991D1E2C4B00063018 /* itunes_search_as_xml.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEB695981D1E2C4B00063018 /* itunes_search_as_xml.txt */; };
+		BEB6959B1D1E34E200063018 /* itunes_search_as_xml_id.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEB6959A1D1E34E200063018 /* itunes_search_as_xml_id.txt */; };
 		BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */; };
 		BEF5FD5A1C520128006EACA8 /* libRestGoatee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */; };
 		BEFD29F91CFB883800935FAA /* RGTapeDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD29F81CFB883800935FAA /* RGTapeDeck.m */; };
@@ -101,6 +102,7 @@
 		BEB2A3441C51FE7C00B0BE03 /* libRestGoatee.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRestGoatee.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB2A3471C51FE7C00B0BE03 /* RestGoatee.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RestGoatee.h; sourceTree = "<group>"; };
 		BEB695981D1E2C4B00063018 /* itunes_search_as_xml.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itunes_search_as_xml.txt; sourceTree = "<group>"; };
+		BEB6959A1D1E34E200063018 /* itunes_search_as_xml_id.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itunes_search_as_xml_id.txt; sourceTree = "<group>"; };
 		BED254FA1C5E0CDE00F41F48 /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
 		BED254FC1C5E0CE100F41F48 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		BEF5FD551C520128006EACA8 /* RestGoatee-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RestGoatee-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -266,6 +268,7 @@
 				BEFD2A0A1CFC1A0200935FAA /* itunes_search_non_dupe.txt */,
 				BEFD29FD1CFB8CA600935FAA /* xml_data.txt */,
 				BEB695981D1E2C4B00063018 /* itunes_search_as_xml.txt */,
+				BEB6959A1D1E34E200063018 /* itunes_search_as_xml_id.txt */,
 			);
 			name = Tapes;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 			files = (
 				BEFD29FE1CFB8CA600935FAA /* xml_data.txt in Resources */,
 				BEFD29FC1CFB8A6300935FAA /* itunes_search_json.txt in Resources */,
+				BEB6959B1D1E34E200063018 /* itunes_search_as_xml_id.txt in Resources */,
 				BEB695991D1E2C4B00063018 /* itunes_search_as_xml.txt in Resources */,
 				BEFD2A0B1CFC1A0200935FAA /* itunes_search_non_dupe.txt in Resources */,
 			);
