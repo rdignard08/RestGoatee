@@ -81,7 +81,9 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
             primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
         }
-        if (!context && [self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)]) {
+        if (!context) {
+            NSAssert([self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)],
+                     @"A context was not provided and contextForManagedObjectType: was not implemented");
             *outContext = context = [self.serializationDelegate contextForManagedObjectType:cls];
         }
         NSAssert(context, @"Subclasses of NSManagedObject must be created within an NSManagedObjectContext");
