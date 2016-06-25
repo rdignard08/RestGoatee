@@ -22,6 +22,8 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "NSManagedObjectContext+RGNeverHasChanges.h"
+#import "RGTestManagedObject.h"
+#import "RestGoatee.h"
 
 @implementation NSManagedObjectContext (RGNeverHasChanges)
 
@@ -41,9 +43,17 @@
     return YES;
 }
 
-- (NSArray*) override_executeFetchRequest:(id)request error:(NSError**)error {
+- (NSArray*) override_executeFetchRequestBAD:(id)request error:(NSError**)error {
     *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1011 userInfo:nil];
     return nil;
+}
+
+- (NSArray*) override_executeFetchRequestGOOD:(id)request error:(NSError**)error {
+    RGTestManagedObject* obj = [RGTestManagedObject objectFromDataSource:@{
+                                                                           @"trackId" : @"1065976122",
+                                                                           @"trackName" : @"Mother"
+                                                                           } inContext:self];
+    return @[ obj ];
 }
 
 @end

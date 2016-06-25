@@ -33,6 +33,8 @@
 
 - (BOOL) override_saveYES:(NSError * __autoreleasing *)error;
 
-- (NSArray*) override_executeFetchRequest:(id)request error:(NSError**)error;
+- (NSArray*) override_executeFetchRequestBAD:(id)request error:(NSError**)error;
+
+- (NSArray*) override_executeFetchRequestGOOD:(id)request error:(NSError**)error;
 
 @end
