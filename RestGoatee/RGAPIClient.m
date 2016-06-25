@@ -108,11 +108,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (NSUInteger i = 0; i < target.count; i++) {
         id entry = target[i];
-        if (([entry isKindOfClass:[NSDictionary class]] ||
-             [entry conformsToProtocol:@protocol(RGDataSource)]) &&
-            primaryKey &&
-            allObjects &&
-            [entry valueForKey:primaryKey]) {
+        BOOL dataSrc = [entry isKindOfClass:[NSDictionary self]] || [entry conformsToProtocol:@protocol(RGDataSource)];
+        if (dataSrc && primaryKey && allObjects && [entry valueForKey:primaryKey]) {
             id entryKey = [entry valueForKey:primaryKey];
             id keyValue = entryKey;
             if ([entry isKindOfClass:[RGXMLNode self]]) {
@@ -152,6 +149,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     [context performBlockAndWait:^{
         NSError* error;
         @try {
+            NSLog(@"hasChanges %@", @([context hasChanges]));
             if ([context hasChanges]) {
                 [context save:&error] ? RG_VOID_NOOP : RGLog(@"Error, context save failed with error %@", error);
             }
