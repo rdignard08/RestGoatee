@@ -33,7 +33,11 @@
     return YES;
 }
 
-- (BOOL) override_save:(NSError * __autoreleasing *)error {
+- (BOOL) override_saveNO:(NSError * __autoreleasing *)error {
+    return NO;
+}
+
+- (BOOL) override_saveYES:(NSError * __autoreleasing *)error {
     return YES;
 }
 
