@@ -94,7 +94,7 @@
 
 - (void) testManagedObjectsWithDelegate {
     RGXMLTestObject* delegate = [RGXMLTestObject new];
-    delegate.wantsPrimaryKey = YES;
+    delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
     client.serializationDelegate = delegate;
@@ -117,7 +117,7 @@
 
 - (void) testManagedObjectsDelegateNoDupe {
     RGXMLTestObject* delegate = [RGXMLTestObject new];
-    delegate.wantsPrimaryKey = YES;
+    delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
     client.serializationDelegate = delegate;
@@ -154,7 +154,7 @@
 
 - (void) testManagedObjectsWithDelegateNoChanges {
     RGXMLTestObject* delegate = [RGXMLTestObject new];
-    delegate.wantsPrimaryKey = YES;
+    delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
@@ -179,7 +179,7 @@
 
 - (void) testManagedObjectsWithDelegateFetchError { // TODO: I feel like this should have response.responseBody.count == 1
     RGXMLTestObject* delegate = [RGXMLTestObject new];
-    delegate.wantsPrimaryKey = YES;
+    delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
     client.serializationDelegate = delegate;
@@ -219,6 +219,39 @@
         XCTAssert([obj1.trackName isEqual:@"Comfortably Numb"]);
         XCTAssert([obj2.trackId isEqual:@"1065976170"]);
         XCTAssert([obj2.trackName isEqual:@"Comfortably Numb"]);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChanges));
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
+- (void) testManagedObjectsFromXML {
+    RGXMLTestObject* delegate = [RGXMLTestObject new];
+    delegate.primaryKey = @"trackId";
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    client.serializationDelegate = delegate;
+    client.responseSerializer = [AFXMLParserResponseSerializer new];
+    objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChanges));
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_as_xml.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search"
+     parameters:@{ @"term" : @"Pink Floyd" }
+        keyPath:@"results.object"
+          class:[RGTestManagedObject self]
+     completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.responseBody.count == 2);
+        RGTestManagedObject* obj1 = response.responseBody.firstObject;
+        RGTestManagedObject* obj2 = response.responseBody.lastObject;
+        XCTAssert([obj1.trackId isEqual:@"1"]);
+        XCTAssert([obj1.trackName isEqual:@"Money"]);
+        XCTAssert([obj2.trackId isEqual:@"2"]);
+        XCTAssert([obj2.trackName isEqual:@"Time"]);
     }];
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
         objc_setAssociatedObject(client, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -271,6 +304,7 @@
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
     RGXMLTestObject* delegate = [RGXMLTestObject new];
+    delegate.primaryKey = @"id";
     client.serializationDelegate = delegate;
     client.responseSerializer = [AFXMLParserResponseSerializer serializer];
     [[RGTapeDeck sharedTapeDeck] playTape:@"xml_data.txt" forURL:@"https://google.com/xml" withCode:200];

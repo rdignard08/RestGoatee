@@ -26,8 +26,10 @@
 
 @interface RGXMLTestObject : NSObject <RGSerializationDelegate>
 
+@property (nonatomic, strong) NSString* id;
+
 @property (nonatomic, strong) NSString* value;
 
-@property (nonatomic, assign) BOOL wantsPrimaryKey;
+@property (nonatomic, strong) NSString* primaryKey;
 
 @end

@@ -27,4 +27,8 @@
 @dynamic trackId;
 @synthesize trackName = _trackName;
 
+- (void) setTrackName:(NSString*)trackName {
+    _trackName = [trackName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 @end
