@@ -88,7 +88,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     }
     NSArray* target = path ? [response valueForKeyPath:path] : response;
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
-    if (primaryKey && [cls isSubclassOfClass:kRGNSManagedObject]) {
+    if (primaryKey) {
         NSObject* fetch = [objc_getClass("NSFetchRequest") fetchRequestWithEntityName:NSStringFromClass(cls)];
         NSArray* incomingKeys = [target valueForKey:primaryKey];
         NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
