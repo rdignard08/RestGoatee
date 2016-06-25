@@ -156,7 +156,7 @@
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.wantsPrimaryKey = YES;
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChanges));
