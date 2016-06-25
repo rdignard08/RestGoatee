@@ -108,7 +108,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     for (NSUInteger i = 0; i < target.count; i++) {
         id entry = target[i];
         BOOL dataSrc = [entry isKindOfClass:[NSDictionary self]] || [entry conformsToProtocol:@protocol(RGDataSource)];
-        if (dataSrc && primaryKey && allObjects) {
+        if (dataSrc && allObjects) {
             NSAssert([entry valueForKey:primaryKey],
                      @"entry %@ did not provide a value for primaryKey %@",
                      entry,
