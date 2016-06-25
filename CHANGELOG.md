@@ -1,5 +1,8 @@
 # RestGoatee CHANGELOG
 
+## 2.6.3
+- Added support for OS X (10.9)
+
 ## 2.6.2
 - Primary key based deserialization now supports the key being an attribute when handling XML
 - Two exceptional cases have been given specific asserts to better aid debugging
