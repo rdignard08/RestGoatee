@@ -33,6 +33,10 @@
     return YES;
 }
 
+- (BOOL) override_save:(NSError * __autoreleasing *)error {
+    return YES;
+}
+
 - (NSArray*) override_executeFetchRequest:(id)request error:(NSError**)error {
     *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1011 userInfo:nil];
     return nil;
