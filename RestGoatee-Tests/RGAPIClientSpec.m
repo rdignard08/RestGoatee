@@ -432,6 +432,23 @@
     }];
 }
 
+- (void) testDumbJSONResponse {
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    [[RGTapeDeck sharedTapeDeck] playTape:@"dumb_data.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search" parameters:nil keyPath:@"results" class:Nil completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert([response.responseBody[0] isEqual:@2]);
+        XCTAssert([response.responseBody[1] isEqual:@3]);
+        XCTAssert([response.responseBody[2] isEqual:@"5"]);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
 - (void) testPostGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
     RGAPIClient* client = [RGAPIClient manager];
