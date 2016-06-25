@@ -25,7 +25,9 @@
 
 @interface NSManagedObjectContext (RGNeverHasChanges)
 
-- (BOOL) override_hasChanges;
+- (BOOL) override_hasChangesNO;
+
+- (BOOL) override_hasChangesYES;
 
 - (NSArray*) override_executeFetchRequest:(id)request error:(NSError**)error;
 
