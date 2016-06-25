@@ -229,6 +229,41 @@
     }];
 }
 
+- (void) testManagedObjectsNoDelegateNoPrimary {
+    NSEntityDescription* entity = [NSEntityDescription new];
+    NSAttributeDescription* idAttribute = [NSAttributeDescription new];
+    idAttribute.attributeType = NSStringAttributeType;
+    idAttribute.name = RG_STRING_SEL(trackId);
+    entity.properties = @[ idAttribute ];
+    entity.name = NSStringFromClass([RGTestManagedObject self]);
+    entity.managedObjectClassName = entity.name;
+    NSManagedObjectModel* model = [NSManagedObjectModel new];
+    model.entities = @[ entity ];
+    NSPersistentStoreCoordinator* store = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSManagedObjectContext* context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    context.persistentStoreCoordinator = store;
+    XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
+    RGAPIClient* client = [RGAPIClient manager];
+    rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesNO));
+    [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
+    [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGTestManagedObject self] context:context completion:^(RGResponseObject* response) {
+        [expectation fulfill];
+        XCTAssert(response.responseBody.count == 2);
+        RGTestManagedObject* obj1 = response.responseBody.firstObject;
+        RGTestManagedObject* obj2 = response.responseBody.lastObject;
+        XCTAssert([obj1.trackId isEqual:@"1065976170"]);
+        XCTAssert([obj1.trackName isEqual:@"Comfortably Numb"]);
+        XCTAssert([obj2.trackId isEqual:@"1065976170"]);
+        XCTAssert([obj2.trackName isEqual:@"Comfortably Numb"]);
+    }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError* error) {
+        rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesNO));
+        if (error) {
+            XCTFail(@"Something went wrong.");
+        }
+    }];
+}
+
 - (void) testManagedObjectsFromXML {
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"trackId";

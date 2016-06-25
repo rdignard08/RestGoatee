@@ -75,8 +75,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
                  intoClass:(Class)cls
                    context:(inout __strong NSManagedObjectContext**)outContext {
     /* NSManagedObjectContext* */ id context = *outContext;
-    NSString* primaryKey;
-    __block NSArray* allObjects;
+    NSString* primaryKey = nil;
+    __block NSArray* allObjects = nil;
     if ([cls isSubclassOfClass:kRGNSManagedObject]) {
         if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
             primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
