@@ -67,9 +67,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 - (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url
                               sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
     self = [super init];
-    if (self) {
-        self->_manager = [[AFHTTPSessionManager alloc] initWithBaseURL:url sessionConfiguration:configuration];
-    }
+    self->_manager = [[AFHTTPSessionManager alloc] initWithBaseURL:url sessionConfiguration:configuration];
     return self;
 }
 
