@@ -33,14 +33,23 @@ typedef void(^RGResponseBlock)(RGResponseObject* RG_SUFFIX_NONNULL);
 @class NSManagedObjectContext, NSURLSessionConfiguration;
 
 /**
- @brief The `RGAPIClient` is a subclass of `AFHTTPSessionManager`.  Method calls through this class (specifically those
-  declared at the `RGAPIClient` level) will attempt to automatically deserialize objects from a raw information type
-  into a type specified by the user.
+ @brief The `RGAPIClient` is a manager of an instance of `AFHTTPSessionManager`.  Method calls through this class 
+  (specifically those declared at the `RGAPIClient` level) will attempt to automatically deserialize objects from a raw
+  information type into a type specified by the user.
  */
 @interface RGAPIClient : NSObject
 
+/**
+ @brief an initializer using a base url and default `NSURLSessionConfiguration`.
+ @param baseURL the url base onto which paths are added to create the full url.
+ */
 - (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)baseURL;
 
+/**
+ @brief an initializer using a base url and the provided configuration.
+ @param baseURL the url base onto which paths are added to create the full url.
+ @param configuration the configuration to be used to create the session.
+ */
 - (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)baseURL
                               sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration;
 
@@ -50,7 +59,10 @@ typedef void(^RGResponseBlock)(RGResponseObject* RG_SUFFIX_NONNULL);
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
 
-@property RG_NONNULL_PROPERTY(nonatomic, strong) AFHTTPSessionManager* manager;
+/**
+ @brief The backing `AFHTTPSessionManager` which handles the raw requests.
+ */
+@property RG_NONNULL_PROPERTY(nonatomic, strong, readonly) AFHTTPSessionManager* manager;
 
 /**
  @brief GET the specified relative endpoint.
