@@ -525,7 +525,7 @@
     id delegate = [RGXMLTestObject new];
     client.serializationDelegate = delegate;
     XCTAssert(client.serializationDelegate == delegate);
-    XCTAssert(client.session == [NSURLSessionConfiguration defaultSessionConfiguration]);
+    XCTAssert(client.session);
     XCTAssert(client.tasks.count == 0);
     XCTAssert(client.uploadTasks.count == 0);
 }
