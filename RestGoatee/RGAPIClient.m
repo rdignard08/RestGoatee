@@ -56,11 +56,11 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 @implementation RGAPIClient
 
 #pragma mark - Initialization
-- (instancetype) init {
+- (RG_PREFIX_NONNULL instancetype) init {
     return [self initWithBaseURL:nil sessionConfiguration:nil];
 }
 
-- (instancetype) initWithBaseURL:(NSURL*)baseURL {
+- (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(NSURL*)baseURL {
     return [self initWithBaseURL:baseURL sessionConfiguration:nil];
 }
 
@@ -70,13 +70,42 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 }
 
 #pragma mark - Engine Methods
+- (RG_PREFIX_NULLABLE NSArray*) incomingKeysInTarget:(NSArray*)target onProperty:(NSString*)primaryKey {
+    if (primaryKey) {
+        NSArray* incomingKeys = [target valueForKey:primaryKey];
+        NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
+        for (NSUInteger i = 0; i < incomingKeys.count; i++) {
+            id value = incomingKeys[i];
+            [parsedKeys addObject:[value isKindOfClass:[RGXMLNode class]] ? [value innerXML] : value];
+        }
+    }
+    return nil;
+}
+
+- (RG_PREFIX_NULLABLE NSArray RG_GENERIC(NSObject*) *) existingObjectsOfClass:(Class)cls
+                                                                 matchingKeys:(NSArray RG_GENERIC(NSString*) *)keys
+                                                                   onProperty:(NSString*)primaryKey
+                                                                    inContext:(id)context {
+    __block NSArray* objects = nil;
+    if (primaryKey) {
+        id fetch = [objc_getClass("NSFetchRequest") fetchRequestWithEntityName:NSStringFromClass(cls)];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"%K in %@", primaryKey, keys]];
+        [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
+        [context performBlockAndWait:^{
+            NSError* error;
+            objects = [context executeFetchRequest:fetch error:&error];
+            error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : RG_VOID_NOOP;
+        }];
+    }
+    return objects;
+}
+
 - (NSArray*) parseResponse:(id)response
                     atPath:(NSString*)path
                  intoClass:(Class)cls
                    context:(inout __strong NSManagedObjectContext**)outContext {
     /* NSManagedObjectContext* */ id context = *outContext;
     NSString* primaryKey = nil;
-    __block NSArray* allObjects = nil;
     NSLog(@"[cls isSubclassOfClass:kRGNSManagedObject] %@", @([cls isSubclassOfClass:kRGNSManagedObject]));
     if ([cls isSubclassOfClass:kRGNSManagedObject]) {
         NSLog(@"[self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)] %@", @([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]));
@@ -92,22 +121,8 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     }
     NSArray* target = path ? [response valueForKeyPath:path] : response;
     target = !target || [target isKindOfClass:[NSArray class]] ? target : @[ target ];
-    if (primaryKey) {
-        id fetch = [objc_getClass("NSFetchRequest") fetchRequestWithEntityName:NSStringFromClass(cls)];
-        NSArray* incomingKeys = [target valueForKey:primaryKey];
-        NSMutableArray* parsedKeys = [NSMutableArray arrayWithCapacity:incomingKeys.count];
-        for (NSUInteger i = 0; i < incomingKeys.count; i++) {
-            id value = incomingKeys[i];
-            [parsedKeys addObject:[value isKindOfClass:[RGXMLNode class]] ? [value innerXML] : value];
-        }
-        [fetch setPredicate:[NSPredicate predicateWithFormat:@"%K in %@", primaryKey, parsedKeys]];
-        [fetch setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:primaryKey ascending:YES] ]];
-        [context performBlockAndWait:^{
-            NSError* error;
-            allObjects = [context executeFetchRequest:fetch error:&error];
-            error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : RG_VOID_NOOP;
-        }];
-    }
+    NSArray* keys = [self incomingKeysInTarget:target onProperty:primaryKey];
+    NSArray* allObjects = [self existingObjectsOfClass:cls matchingKeys:keys onProperty:primaryKey inContext:context];
     NSMutableArray* ret = [NSMutableArray arrayWithCapacity:[target count]];
     for (NSUInteger i = 0; i < target.count; i++) {
         id entry = target[i];
