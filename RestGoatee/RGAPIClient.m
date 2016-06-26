@@ -227,7 +227,9 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
                                                                           URLString:fullPath
                                                                          parameters:parameters
                                                                               error:nil];
-    task = [self.manager dataTaskWithRequest:inRequest completionHandler:^(NSURLResponse* response, id body, NSError* error) {
+    task = [self.manager dataTaskWithRequest:inRequest completionHandler:^(NSURLResponse* response,
+                                                                           id body,
+                                                                           NSError* error) {
         NSURLRequest* request = task.currentRequest;
         if (error &&
             [self.serializationDelegate respondsToSelector:@selector(shouldRetryRequest:response:error:retryCount:)] &&
