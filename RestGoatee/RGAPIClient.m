@@ -160,7 +160,6 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             [ret addObject:cls ? [cls objectFromDataSource:entry inContext:context] : entry]; /* Nothing to lookup */
         }
     }
-    id replacementResponse = [ret copy];
     [context performBlockAndWait:^{
         NSError* error;
         @try {
@@ -173,7 +172,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
             RGLog(@"Warning, saving context %@ failed: %@", context, e);
         }
     }];
-    return replacementResponse;
+    return ret;
 }
 
 - (RGResponseObject*) responseObjectFromBody:(id)body
