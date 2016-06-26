@@ -170,11 +170,10 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     [context performBlockAndWait:^{
         NSError* error;
         @try {
-            BOOL value = [(NSObject*)context save:&error];
-            NSLog(@"value %@", @(value));
-//            if ([context hasChanges] && ![(NSObject*)context save:&error]) {
-//                RGLog(@"Error, context save failed with error %@", error);
-//            }
+            BOOL value = [(NSObject*)context save:&error]; /* TODO: add back hasChanges check */
+            if (!value) {
+                RGLog(@"Error, context save failed with error %@", error);
+            }
         } @catch (NSException* e) {
             RGLog(@"Warning, saving context %@ failed: %@", context, e);
         }
