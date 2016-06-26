@@ -499,4 +499,35 @@
     XCTAssertNoThrow([RGAPIClient new]);
 }
 
+- (void) testProperties {
+    RGAPIClient* client = [[RGAPIClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://hello.com"]];
+    client.attemptsToRecreateUploadTasksForBackgroundSessions = YES;
+    XCTAssert(client.attemptsToRecreateUploadTasksForBackgroundSessions == YES);
+    XCTAssert([client.baseURL isEqual:[NSURL URLWithString:@"https://hello.com"]]);
+    client.completionGroup = dispatch_group_create();
+    XCTAssert(client.completionGroup);
+    client.completionQueue = dispatch_queue_create("hello", DISPATCH_QUEUE_CONCURRENT);
+    XCTAssert(client.completionQueue);
+    XCTAssert(client.dataTasks.count == 0);
+    XCTAssert(client.downloadTasks.count == 0);
+    XCTAssert(client.operationQueue);
+    client.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    XCTAssert(client.reachabilityManager == [AFNetworkReachabilityManager sharedManager]);
+    id<AFURLRequestSerialization> requestSerializer = [AFPropertyListRequestSerializer serializer];
+    client.requestSerializer = requestSerializer;
+    XCTAssert(client.requestSerializer == requestSerializer);
+    id<AFURLResponseSerialization> responseSerializer = [AFXMLParserResponseSerializer serializer];
+    client.responseSerializer = responseSerializer;
+    XCTAssert(client.responseSerializer == responseSerializer);
+    AFSecurityPolicy* policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    client.securityPolicy = policy;
+    XCTAssert(client.securityPolicy == policy);
+    id delegate = [RGXMLTestObject new];
+    client.serializationDelegate = delegate;
+    XCTAssert(client.serializationDelegate == delegate);
+    XCTAssert(client.session == [NSURLSessionConfiguration defaultSessionConfiguration]);
+    XCTAssert(client.tasks.count == 0);
+    XCTAssert(client.uploadTasks.count == 0);
+}
+
 @end
