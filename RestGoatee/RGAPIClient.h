@@ -37,13 +37,20 @@ typedef void(^RGResponseBlock)(RGResponseObject* RG_SUFFIX_NONNULL);
   declared at the `RGAPIClient` level) will attempt to automatically deserialize objects from a raw information type
   into a type specified by the user.
  */
-@interface RGAPIClient : AFHTTPSessionManager
+@interface RGAPIClient : NSObject
+
+- (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)baseURL;
+
+- (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)baseURL
+                              sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration;
 
 /**
  @brief You must provide a `serializationDelegate` if you intend to use your API client to unique check, parse XML, or
   create `NSManagedObject`s.  All others may safely ignore this property.
  */
 @property RG_NULLABLE_PROPERTY(nonatomic, weak) id<RGSerializationDelegate> serializationDelegate;
+
+@property RG_NONNULL_PROPERTY(nonatomic, strong) AFHTTPSessionManager* manager;
 
 /**
  @brief GET the specified relative endpoint.

@@ -71,7 +71,7 @@
     NSManagedObjectContext* context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     context.persistentStoreCoordinator = store;
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     objc_setAssociatedObject(client, _cmd, context, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGTestManagedObject self] context:context completion:^(RGResponseObject* response) {
@@ -96,7 +96,7 @@
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
@@ -119,7 +119,7 @@
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     NSManagedObjectContext* context = [delegate contextForManagedObjectType:[RGTestManagedObject self]];
@@ -173,7 +173,7 @@
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     rg_swizzle([NSManagedObjectContext self], @selector(executeFetchRequest:error:), @selector(override_executeFetchRequestBAD:error:));
@@ -197,7 +197,7 @@
 - (void) testManagedObjectsDelegateNoPrimary {
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesYES));
@@ -237,7 +237,7 @@
     NSManagedObjectContext* context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     context.persistentStoreCoordinator = store;
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesNO));
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:[RGTestManagedObject self] context:context completion:^(RGResponseObject* response) {
@@ -262,9 +262,9 @@
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
-    client.responseSerializer = [AFXMLParserResponseSerializer new];
+    client.manager.responseSerializer = [AFXMLParserResponseSerializer new];
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     rg_swizzle([NSManagedObjectContext self], @selector(hasChanges), @selector(override_hasChangesYES));
     rg_swizzle([NSManagedObjectContext self], @selector(save:), @selector(override_saveNO:));
@@ -297,9 +297,9 @@
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"trackId";
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     client.serializationDelegate = delegate;
-    client.responseSerializer = [AFXMLParserResponseSerializer new];
+    client.manager.responseSerializer = [AFXMLParserResponseSerializer new];
     objc_setAssociatedObject(client, _cmd, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_as_xml_id.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search"
@@ -326,7 +326,7 @@
 
 - (void) testGetSearch {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:@"results" class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -342,7 +342,7 @@
 
 - (void) testGetSearchNoPath {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -357,18 +357,18 @@
 }
 
 - (void) testWithoutCompletion {
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:@"itunes_search_json.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     XCTAssertNoThrow([client GET:@"https://itunes.apple.com/search" parameters:@{ @"term" : @"Pink Floyd" } keyPath:nil class:Nil completion:nil]);
 }
 
 - (void) testXMLEndpoint {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     delegate.primaryKey = @"id";
     client.serializationDelegate = delegate;
-    client.responseSerializer = [AFXMLParserResponseSerializer serializer];
+    client.manager.responseSerializer = [AFXMLParserResponseSerializer serializer];
     [[RGTapeDeck sharedTapeDeck] playTape:@"xml_data.txt" forURL:@"https://google.com/xml" withCode:200];
     objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
@@ -389,10 +389,10 @@
 
 - (void) testBadXML {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     RGXMLTestObject* delegate = [RGXMLTestObject new];
     client.serializationDelegate = delegate;
-    client.responseSerializer = [AFXMLParserResponseSerializer serializer];
+    client.manager.responseSerializer = [AFXMLParserResponseSerializer serializer];
     [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/xml" withCode:400];
     objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
@@ -409,9 +409,9 @@
 
 - (void) testXMLNoParsing {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     RGXMLTestObject* delegate = [RGXMLTestObject new];
-    client.responseSerializer = [AFXMLParserResponseSerializer serializer];
+    client.manager.responseSerializer = [AFXMLParserResponseSerializer serializer];
     [[RGTapeDeck sharedTapeDeck] playTape:@"xml_data.txt" forURL:@"https://google.com/xml" withCode:200];
     objc_setAssociatedObject(client, @selector(serializationDelegate), delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [client POST:@"https://google.com/xml" parameters:nil keyPath:@"xml.object" class:[RGXMLTestObject self] completion:^(RGResponseObject* response) {
@@ -428,7 +428,7 @@
 
 - (void) testDumbJSONResponse {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:@"dumb_data.txt" forURL:@"https://itunes.apple.com/search" withCode:200];
     [client GET:@"https://itunes.apple.com/search" parameters:nil keyPath:@"results" class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -445,7 +445,7 @@
 
 - (void) testPostGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/logout" withCode:400];
     [client POST:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -460,7 +460,7 @@
 
 - (void) testPutGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/logout" withCode:400];
     [client PUT:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -475,7 +475,7 @@
 
 - (void) testDeleteGoogle {
     XCTestExpectation* expectation = [self expectationWithDescription:@(sel_getName(_cmd))];
-    RGAPIClient* client = [RGAPIClient manager];
+    RGAPIClient* client = [RGAPIClient new];
     [[RGTapeDeck sharedTapeDeck] playTape:nil forURL:@"https://google.com/logout" withCode:400];
     [client DELETE:@"https://google.com/logout" parameters:nil keyPath:nil class:Nil completion:^(RGResponseObject* response) {
         [expectation fulfill];
@@ -501,33 +501,33 @@
 
 - (void) testProperties {
     RGAPIClient* client = [[RGAPIClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://hello.com"]];
-    client.attemptsToRecreateUploadTasksForBackgroundSessions = YES;
-    XCTAssert(client.attemptsToRecreateUploadTasksForBackgroundSessions == YES);
-    XCTAssert([client.baseURL isEqual:[NSURL URLWithString:@"https://hello.com"]]);
-    client.completionGroup = dispatch_group_create();
-    XCTAssert(client.completionGroup);
-    client.completionQueue = dispatch_queue_create("hello", DISPATCH_QUEUE_CONCURRENT);
-    XCTAssert(client.completionQueue);
-    XCTAssert(client.dataTasks.count == 0);
-    XCTAssert(client.downloadTasks.count == 0);
-    XCTAssert(client.operationQueue);
-    client.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
-    XCTAssert(client.reachabilityManager == [AFNetworkReachabilityManager sharedManager]);
+    client.manager.attemptsToRecreateUploadTasksForBackgroundSessions = YES;
+    XCTAssert(client.manager.attemptsToRecreateUploadTasksForBackgroundSessions == YES);
+    XCTAssert([client.manager.baseURL isEqual:[NSURL URLWithString:@"https://hello.com"]]);
+    client.manager.completionGroup = dispatch_group_create();
+    XCTAssert(client.manager.completionGroup);
+    client.manager.completionQueue = dispatch_queue_create("hello", DISPATCH_QUEUE_CONCURRENT);
+    XCTAssert(client.manager.completionQueue);
+    XCTAssert(client.manager.dataTasks.count == 0);
+    XCTAssert(client.manager.downloadTasks.count == 0);
+    XCTAssert(client.manager.operationQueue);
+    client.manager.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    XCTAssert(client.manager.reachabilityManager == [AFNetworkReachabilityManager sharedManager]);
     id<AFURLRequestSerialization> requestSerializer = [AFPropertyListRequestSerializer serializer];
-    client.requestSerializer = requestSerializer;
-    XCTAssert(client.requestSerializer == requestSerializer);
+    client.manager.requestSerializer = requestSerializer;
+    XCTAssert(client.manager.requestSerializer == requestSerializer);
     id<AFURLResponseSerialization> responseSerializer = [AFXMLParserResponseSerializer serializer];
-    client.responseSerializer = responseSerializer;
-    XCTAssert(client.responseSerializer == responseSerializer);
+    client.manager.responseSerializer = responseSerializer;
+    XCTAssert(client.manager.responseSerializer == responseSerializer);
     AFSecurityPolicy* policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-    client.securityPolicy = policy;
-    XCTAssert(client.securityPolicy == policy);
+    client.manager.securityPolicy = policy;
+    XCTAssert(client.manager.securityPolicy == policy);
     id delegate = [RGXMLTestObject new];
     client.serializationDelegate = delegate;
     XCTAssert(client.serializationDelegate == delegate);
-    XCTAssert(client.session);
-    XCTAssert(client.tasks.count == 0);
-    XCTAssert(client.uploadTasks.count == 0);
+    XCTAssert(client.manager.session);
+    XCTAssert(client.manager.tasks.count == 0);
+    XCTAssert(client.manager.uploadTasks.count == 0);
 }
 
 @end

@@ -66,7 +66,9 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
 
 - (RG_PREFIX_NONNULL instancetype) initWithBaseURL:(RG_PREFIX_NULLABLE NSURL*)url
                               sessionConfiguration:(RG_PREFIX_NULLABLE NSURLSessionConfiguration*)configuration {
-    return [super initWithBaseURL:url sessionConfiguration:configuration];
+    self = [super init];
+    self.manager = [[AFHTTPSessionManager alloc] initWithBaseURL:url sessionConfiguration:configuration];
+    return self;
 }
 
 #pragma mark - Engine Methods
@@ -221,12 +223,12 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
          context:(RG_PREFIX_NULLABLE NSManagedObjectContext*)context
            count:(NSUInteger)count {
     __block __strong NSURLSessionDataTask* RG_SUFFIX_NONNULL task;
-    NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.baseURL] absoluteString];
-    NSMutableURLRequest* inRequest = [self.requestSerializer requestWithMethod:method
+    NSString* fullPath = [[NSURL URLWithString:url relativeToURL:self.manager.baseURL] absoluteString];
+    NSMutableURLRequest* inRequest = [self.manager.requestSerializer requestWithMethod:method
                                                                           URLString:fullPath
                                                                          parameters:parameters
                                                                               error:nil];
-    task = [self dataTaskWithRequest:inRequest completionHandler:^(NSURLResponse* response, id body, NSError* error) {
+    task = [self.manager dataTaskWithRequest:inRequest completionHandler:^(NSURLResponse* response, id body, NSError* error) {
         NSURLRequest* request = task.currentRequest;
         if (error &&
             [self.serializationDelegate respondsToSelector:@selector(shouldRetryRequest:response:error:retryCount:)] &&
