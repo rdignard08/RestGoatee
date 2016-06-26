@@ -1,5 +1,9 @@
 # RestGoatee CHANGELOG
 
+## 2.7.0
+- `RGAPIClient` is no longer a subclass of `AFHTTPSessionManager` instead there is the property `manager`
+- 100% branch coverage
+
 ## 2.6.3
 - Added support for OS X (10.9)
 
