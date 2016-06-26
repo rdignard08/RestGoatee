@@ -100,22 +100,27 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
     return objects;
 }
 
+- (id) provideContextForClass:(Class)cls existingContext:(inout __strong NSManagedObjectContext**)context {
+    id value = *context;
+    if (!value) {
+        NSAssert([self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)],
+                 @"A context was not provided and contextForManagedObjectType: was not implemented");
+        *context = value = [self.serializationDelegate contextForManagedObjectType:cls];
+        return value;
+    }
+    return value;
+}
+
 - (NSArray*) parseResponse:(id)response
                     atPath:(NSString*)path
                  intoClass:(Class)cls
                    context:(inout __strong NSManagedObjectContext**)outContext {
-    /* NSManagedObjectContext* */ id context = *outContext;
+    id context = nil;
     NSString* primaryKey = nil;
-    NSLog(@"[cls isSubclassOfClass:kRGNSManagedObject] %@", @([cls isSubclassOfClass:kRGNSManagedObject]));
     if ([cls isSubclassOfClass:kRGNSManagedObject]) {
-        NSLog(@"[self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)] %@", @([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]));
+        context = [self provideContextForClass:cls existingContext:outContext];
         if ([self.serializationDelegate respondsToSelector:@selector(keyForReconciliationOfType:)]) {
             primaryKey = [self.serializationDelegate keyForReconciliationOfType:cls];
-        }
-        if (!context) {
-            NSAssert([self.serializationDelegate respondsToSelector:@selector(contextForManagedObjectType:)],
-                     @"A context was not provided and contextForManagedObjectType: was not implemented");
-            *outContext = context = [self.serializationDelegate contextForManagedObjectType:cls];
         }
         NSAssert(context, @"Subclasses of NSManagedObject must be created within an NSManagedObjectContext");
     }
