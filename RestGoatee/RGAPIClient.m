@@ -119,6 +119,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
                      primaryKey);
             id entryKey = [entry valueForKey:primaryKey];
             id keyValue = entryKey;
+            NSLog(@"[entry isKindOfClass:[RGXMLNode self]] %@ [entryKey isKindOfClass:[RGXMLNode self]] %@", @([entry isKindOfClass:[RGXMLNode self]]), @([entryKey isKindOfClass:[RGXMLNode self]]));
             if ([entry isKindOfClass:[RGXMLNode self]]) {
                 if ([entryKey isKindOfClass:[RGXMLNode self]]) {
                     keyValue = [entryKey innerXML];
