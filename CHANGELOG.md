@@ -1,5 +1,8 @@
 # RestGoatee CHANGELOG
 
+## 2.7.1
+- Better support Carthage by providing a framework target and scheme
+
 ## 2.7.0
 - `RGAPIClient` is no longer a subclass of `AFHTTPSessionManager` instead there is the property `manager`
 - 100% branch coverage
