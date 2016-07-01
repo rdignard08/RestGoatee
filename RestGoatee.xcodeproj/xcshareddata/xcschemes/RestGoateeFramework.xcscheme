@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "35E0A02A4A5AC13FB414444A790E2FE3"
-               BuildableName = "libPods.a"
-               BlueprintName = "Pods"
-               ReferencedContainer = "container:Pods/Pods.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BEB2A3431C51FE7C00B0BE03"
-               BuildableName = "libRestGoatee.a"
-               BlueprintName = "RestGoatee"
+               BlueprintIdentifier = "BE9003761D2615EE00D10C24"
+               BuildableName = "RestGoateeFramework.framework"
+               BlueprintName = "RestGoateeFramework"
                ReferencedContainer = "container:RestGoatee.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BEB2A3431C51FE7C00B0BE03"
-            BuildableName = "libRestGoatee.a"
-            BlueprintName = "RestGoatee"
-            ReferencedContainer = "container:RestGoatee.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -68,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BEB2A3431C51FE7C00B0BE03"
-            BuildableName = "libRestGoatee.a"
-            BlueprintName = "RestGoatee"
+            BlueprintIdentifier = "BE9003761D2615EE00D10C24"
+            BuildableName = "RestGoateeFramework.framework"
+            BlueprintName = "RestGoateeFramework"
             ReferencedContainer = "container:RestGoatee.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -78,7 +55,7 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -86,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BEB2A3431C51FE7C00B0BE03"
-            BuildableName = "libRestGoatee.a"
-            BlueprintName = "RestGoatee"
+            BlueprintIdentifier = "BE9003761D2615EE00D10C24"
+            BuildableName = "RestGoateeFramework.framework"
+            BlueprintName = "RestGoateeFramework"
             ReferencedContainer = "container:RestGoatee.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -97,7 +74,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

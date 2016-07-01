@@ -21,7 +21,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import <RestGoatee-Core/RestGoatee-Core.h>
+#import "RestGoatee-Core.h"
 
 /**
  @brief Certain requests to the API require additional information that might not be available in a standard request. An
