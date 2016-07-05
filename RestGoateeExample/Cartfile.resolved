@@ -1,0 +1,3 @@
+github "AFNetworking/AFNetworking" "3.1.0"
+github "rdignard08/RestGoatee-Core" "2.4.1"
+github "rdignard08/RestGoatee" "ef34e8387d611d33182d3dc8b24e31654adf1be5"
