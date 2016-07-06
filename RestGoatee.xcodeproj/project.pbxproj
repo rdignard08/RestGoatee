@@ -22,8 +22,8 @@
 
 /* Begin PBXBuildFile section */
 		BE1375671D262BD0000AB4AE /* RestGoateeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9003771D2615EE00D10C24 /* RestGoateeFramework.framework */; };
-		BE1375691D262BDB000AB4AE /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1375681D262BDB000AB4AE /* libAFNetworking.a */; };
-		BE13756B1D262BE2000AB4AE /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE13756A1D262BE2000AB4AE /* libRestGoatee-Core.a */; };
+		BE1375691D262BDB000AB4AE /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1375681D262BDB000AB4AE /* libAFNetworking.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BE13756B1D262BE2000AB4AE /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE13756A1D262BE2000AB4AE /* libRestGoatee-Core.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */; };
 		BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */; };
 		BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */; };
