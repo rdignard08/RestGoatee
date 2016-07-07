@@ -542,7 +542,6 @@
 		};
 		BEF5FD5D1C520128006EACA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3E0BC7583FEF4E55EE1F7A9B /* Pods.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
