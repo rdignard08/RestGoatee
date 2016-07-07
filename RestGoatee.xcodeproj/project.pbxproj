@@ -24,6 +24,7 @@
 		BE1375671D262BD0000AB4AE /* RestGoateeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9003771D2615EE00D10C24 /* RestGoateeFramework.framework */; };
 		BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */; };
 		BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */; };
+		BE2F259F1D2E3D3A0029D61C /* RestGoateeCoreiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEE738901D2E219B008E799B /* RestGoateeCoreiOS.framework */; };
 		BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */; };
 		BE90037A1D2615EF00D10C24 /* RestGoateeFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = BE9003791D2615EF00D10C24 /* RestGoateeFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE90037E1D26165300D10C24 /* RGAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1CCD411C52006E00267D5C /* RGAPIClient.m */; };
@@ -106,6 +107,7 @@
 			files = (
 				BE1375671D262BD0000AB4AE /* RestGoateeFramework.framework in Frameworks */,
 				BEFD2A061CFBC27900935FAA /* CoreData.framework in Frameworks */,
+				BE2F259F1D2E3D3A0029D61C /* RestGoateeCoreiOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,6 +529,10 @@
 		BEF5FD5D1C520128006EACA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "";
