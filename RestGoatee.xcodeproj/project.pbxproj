@@ -22,8 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		BE1375671D262BD0000AB4AE /* RestGoateeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9003771D2615EE00D10C24 /* RestGoateeFramework.framework */; };
-		BE1375691D262BDB000AB4AE /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1375681D262BDB000AB4AE /* libAFNetworking.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		BE13756B1D262BE2000AB4AE /* libRestGoatee-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE13756A1D262BE2000AB4AE /* libRestGoatee-Core.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BE1459091C6859200071C5E6 /* RGResponseObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */; };
 		BE14590E1C685C5A0071C5E6 /* RGSerializationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */; };
 		BE3122701C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE31226F1C64918F00008E5A /* NSError+RGHTTPStatusCodeSpec.m */; };
@@ -39,6 +37,8 @@
 		BEB695991D1E2C4B00063018 /* itunes_search_as_xml.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEB695981D1E2C4B00063018 /* itunes_search_as_xml.txt */; };
 		BEB6959B1D1E34E200063018 /* itunes_search_as_xml_id.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEB6959A1D1E34E200063018 /* itunes_search_as_xml_id.txt */; };
 		BEB6959D1D1E897B00063018 /* dumb_data.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEB6959C1D1E897B00063018 /* dumb_data.txt */; };
+		BEE7388F1D2E2193008E799B /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEE7388E1D2E2193008E799B /* AFNetworking.framework */; };
+		BEE738911D2E219B008E799B /* RestGoateeCoreiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEE738901D2E219B008E799B /* RestGoateeCoreiOS.framework */; };
 		BEF5FD581C520128006EACA8 /* RGAPIClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */; };
 		BEFD29F91CFB883800935FAA /* RGTapeDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFD29F81CFB883800935FAA /* RGTapeDeck.m */; };
 		BEFD29FC1CFB8A6300935FAA /* itunes_search_json.txt in Resources */ = {isa = PBXBuildFile; fileRef = BEFD29FB1CFB8A6300935FAA /* itunes_search_json.txt */; };
@@ -53,11 +53,6 @@
 /* Begin PBXFileReference section */
 		3E0BC7583FEF4E55EE1F7A9B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		79C7CF99F069A1B726AAA0C8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		BE1375611D262BB3000AB4AE /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
-		BE1375621D262BB3000AB4AE /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
-		BE1375631D262BB3000AB4AE /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
-		BE1375681D262BDB000AB4AE /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
-		BE13756A1D262BE2000AB4AE /* libRestGoatee-Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRestGoatee-Core.a"; path = "Pods/../build/Debug-iphoneos/libRestGoatee-Core.a"; sourceTree = "<group>"; };
 		BE1459081C6859200071C5E6 /* RGResponseObjectSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGResponseObjectSpec.m; sourceTree = "<group>"; };
 		BE14590C1C685C5A0071C5E6 /* RGSerializationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGSerializationDelegate.h; sourceTree = "<group>"; };
 		BE14590D1C685C5A0071C5E6 /* RGSerializationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGSerializationDelegate.m; sourceTree = "<group>"; };
@@ -76,6 +71,8 @@
 		BEB695981D1E2C4B00063018 /* itunes_search_as_xml.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itunes_search_as_xml.txt; sourceTree = "<group>"; };
 		BEB6959A1D1E34E200063018 /* itunes_search_as_xml_id.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itunes_search_as_xml_id.txt; sourceTree = "<group>"; };
 		BEB6959C1D1E897B00063018 /* dumb_data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dumb_data.txt; sourceTree = "<group>"; };
+		BEE7388E1D2E2193008E799B /* AFNetworking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AFNetworking.framework; path = Carthage/Build/iOS/AFNetworking.framework; sourceTree = "<group>"; };
+		BEE738901D2E219B008E799B /* RestGoateeCoreiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestGoateeCoreiOS.framework; path = Carthage/Build/iOS/RestGoateeCoreiOS.framework; sourceTree = "<group>"; };
 		BEF5FD551C520128006EACA8 /* RestGoatee-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RestGoatee-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEF5FD571C520128006EACA8 /* RGAPIClientSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGAPIClientSpec.m; sourceTree = "<group>"; };
 		BEF5FD591C520128006EACA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -98,8 +95,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE13756B1D262BE2000AB4AE /* libRestGoatee-Core.a in Frameworks */,
-				BE1375691D262BDB000AB4AE /* libAFNetworking.a in Frameworks */,
+				BEE738911D2E219B008E799B /* RestGoateeCoreiOS.framework in Frameworks */,
+				BEE7388F1D2E2193008E799B /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,11 +115,8 @@
 		89520671F6DFFF4060849895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BE13756A1D262BE2000AB4AE /* libRestGoatee-Core.a */,
-				BE1375681D262BDB000AB4AE /* libAFNetworking.a */,
-				BE1375611D262BB3000AB4AE /* libAFNetworking.a */,
-				BE1375621D262BB3000AB4AE /* libPods.a */,
-				BE1375631D262BB3000AB4AE /* libRestGoatee-Core.a */,
+				BEE738901D2E219B008E799B /* RestGoateeCoreiOS.framework */,
+				BEE7388E1D2E2193008E799B /* AFNetworking.framework */,
 				BEFD2A051CFBC27900935FAA /* CoreData.framework */,
 			);
 			name = Frameworks;
@@ -430,24 +424,15 @@
 		BE90037D1D2615EF00D10C24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = RestGoateeFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.restgoatee.RestGoateeFramework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -490,11 +475,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -528,13 +513,12 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Carthage/Build/iOS/RestGoateeCore.framework/Headers",
+					"$(PROJECT_DIR)/Carthage/Build/iOS/RestGoateeCoreiOS.framework/Headers",
 					"$(PROJECT_DIR)/Carthage/Build/iOS/AFNetworking.framework/Headers",
 					"$(PROJECT_DIR)/Pods/Headers/Public/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(FRAMEWORK_SEARCH_PATHS)";
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-all_load";
 				SDKROOT = iphoneos;
 			};
@@ -543,14 +527,6 @@
 		BEF5FD5D1C520128006EACA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				HEADER_SEARCH_PATHS = (
-					"${PROJECT_DIR}/Pods/RestGoatee-Core/**",
-					"${PROJECT_DIR}/Pods/AFNetworking/**",
-				);
 				INFOPLIST_FILE = "RestGoatee-Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "";
