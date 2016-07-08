@@ -23,6 +23,7 @@
 
 #import "RGTapeDeck.h"
 #import "RestGoatee.h"
+#import <objc/runtime.h>
 
 @interface RGTapeDeck ()
 
@@ -64,7 +65,8 @@
 
 + (void) initialize {
     Class cls = NSClassFromString(@"__NSCFLocalDataTask");
-    rg_swizzle(cls, @selector(resume), @selector(override_resume));
+    method_exchangeImplementations(class_getInstanceMethod(cls, @selector(resume)),
+                                   class_getInstanceMethod(cls, @selector(override_resume)));
 }
 
 + (RGTapeDeck*) sharedTapeDeck {
