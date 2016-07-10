@@ -5,6 +5,7 @@ xcode_scheme: RestGoatee-Tests
 xcode_sdk: iphonesimulator9.3
 
 before_script:
+  - brew update
   - brew install carthage
   - carthage bootstrap --verbose
 
