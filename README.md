@@ -9,7 +9,7 @@
 RestGoatee
 ==========
 
-RestGoatee is an add-on framework to AFNetworking; taking the raw `NSDictionary` and `NSXMLParser` responses and convienently converts them to your own objects.  If you have AFNetworking 2.0.0+ this library will use that version, otherwise it will be included as part of the [CocoaPods](http://cocoapods.org/) `pod install` process.
+RestGoatee is an add-on framework to AFNetworking; taking the raw `NSDictionary` and `NSXMLParser` responses and convienently converts them to your own objects.  If you have AFNetworking >= 3.0 this library will use that version, otherwise it will be included as part of the [CocoaPods](http://cocoapods.org/) `pod install` process.
 
 This library deals solely with networking, and uses the underlying pod, [RestGoatee-Core](https://github.com/rdignard08/RestGoatee-Core) for deserializing JSON and XML.
 
