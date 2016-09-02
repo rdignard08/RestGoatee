@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
 
   s.source_files = 'RestGoatee'
-  s.dependency 'RestGoatee-Core', '~> 2.2'
+  s.dependency 'RestGoatee-Core', '~> 2.5.4'
   s.dependency 'AFNetworking', '~> 3.0'
 end
