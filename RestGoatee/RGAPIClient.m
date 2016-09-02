@@ -96,7 +96,7 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         [context performBlockAndWait:^{
             NSError* error;
             objects = [context executeFetchRequest:fetch error:&error];
-            error ? RGLog(@"Warning, fetch %@ failed %@", fetch, error) : RG_VOID_NOOP;
+            error ? RGLogs(kRGLogSeverityWarning, @"fetch %@ failed %@", fetch, error) : RG_VOID_NOOP;
         }];
     }
     return objects;
@@ -155,7 +155,10 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
                 }
             }];
             if (currentIndex != NSNotFound) {
-                RGLog(@"Warning, duplicate object present in response discarded %@ with key %@", cls, keyValue);
+                RGLogs(kRGLogSeverityWarning,
+                       @"duplicate object present in response discarded %@ with key %@",
+                       cls,
+                       keyValue);
                 continue;
             }
             if (index == NSNotFound) {
@@ -172,10 +175,10 @@ static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse
         @try {
             BOOL value = [(NSObject*)context save:&error]; /* TODO: add back hasChanges check */
             if (!value) {
-                RGLog(@"Error, context save failed with error %@", error);
+                RGLogs(kRGLogSeverityError, @"context save failed with error %@", error);
             }
         } @catch (NSException* e) {
-            RGLog(@"Warning, saving context %@ failed: %@", context, e);
+            RGLogs(kRGLogSeverityError, @"saving context %@ failed: %@", context, e);
         }
     }];
     return ret;
