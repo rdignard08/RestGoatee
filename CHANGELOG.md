@@ -1,5 +1,11 @@
 # RestGoatee CHANGELOG
 
+## 2.8.0
+- Updated version peg on RestGoatee-Core to 2.5.5+
+- Upgraded from `RGLog` to `RGLogs`
+- Fixed some project file warnings
+- Switched logic which depended on `-[NSObject description]` to `-[NSObject rg_stringValue]`
+
 ## 2.7.1
 - Better support Carthage by providing a framework target and scheme
 
