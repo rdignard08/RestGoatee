@@ -43,7 +43,7 @@
 
 #pragma mark - Constants
 static NSComparisonResult(^comparator)(id, id) = ^NSComparisonResult (id obj1, id obj2) {
-    return [[obj1 description] compare:[obj2 description]];
+    return [[obj1 rg_stringValue] compare:[obj2 rg_stringValue]];
 };
 
 static inline NSError* errorWithStatusCodeFromTask(NSError* error, NSURLResponse* task) {
