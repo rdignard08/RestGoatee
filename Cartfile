@@ -1,2 +1,2 @@
-github "rdignard08/RestGoatee-Core" >= 2.5.4
+github "rdignard08/RestGoatee-Core" >= 2.5.5
 github "AFNetworking/AFNetworking" >= 3.0.0
