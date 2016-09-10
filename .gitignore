@@ -3,13 +3,9 @@ Podfile.lock
 build
 Carthage/
 compile_commands.json
-
 RestGoateeExample/RestGoateeExample.xcworkspace/xcuserdata/dignar.xcuserdatad/UserInterfaceState.xcuserstate
-
 RestGoatee.xcworkspace/xcuserdata/dignar.xcuserdatad/UserInterfaceState.xcuserstate
-
 ObjectiveC.gcno
-
 RestGoatee.xcworkspace/xcuserdata/dignar.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
-
 RestGoatee.xcodeproj/project.xcworkspace/xcuserdata/dignar.xcuserdatad/UserInterfaceState.xcuserstate
+.DS_Store
